@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import SearchBar from "./searchbar";
+import UserProfile from "./userProfile";
+import { Button } from "../ui/button";
+import SignIn from "./clerkSignIn";
 
 export default function HeaderComponent() {
   return (
@@ -21,6 +24,13 @@ export default function HeaderComponent() {
             <SearchBar />
           </div>
         </div>
+        {true ? (
+          <SignIn />
+        ) : (
+          <div>
+            <UserProfile />
+          </div>
+        )}
       </div>
     </header>
   );
