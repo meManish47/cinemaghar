@@ -1,8 +1,9 @@
-import { getAllMovies } from "./resolvers/movie";
+import { getAllMovies, getMovieWithId } from "./resolvers/movie";
 
 const resolvers = {
   Query: {
-    getAllMovies
+    getAllMovies,
+    getMovieWithId
   },
 };
 export default resolvers

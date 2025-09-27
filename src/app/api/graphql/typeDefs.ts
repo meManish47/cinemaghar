@@ -1,8 +1,14 @@
 import { gql } from "graphql-tag";
 
 const typeDefs = gql`
+  type MovieResponse {
+  success: Boolean!
+  movie: Movie
+  message: String
+}
   type Query {
     getAllMovies: [Movie]
+    getMovieWithId(id:String!):MovieResponse
   }
   type Movie{
     id:           String   

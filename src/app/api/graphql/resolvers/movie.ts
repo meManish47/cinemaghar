@@ -9,3 +9,16 @@ export async function getAllMovies() {
     return null;
   }
 }
+export async function getMovieWithId(_: unknown, args: { id: string }) {
+  try {
+    const movie = await prismaClient.movie.findUnique({ where: { id :args.id} });
+
+    if (!movie) {
+      return { success: false, movie: null, message: "Movie not found" };
+    }
+
+    return { success: true, movie, message: "Fetched successfully" };
+  } catch (error) {
+    return { success: false, movie: null, message: "Database error" };
+  }
+}
