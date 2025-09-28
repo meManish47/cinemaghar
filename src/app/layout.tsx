@@ -3,6 +3,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import HeaderComponent from "@/components/header/header";
 import NavBar from "@/components/header/navbar";
+import SyncUser from "@/components/layout/syncUser";
 
 export const metadata: Metadata = {
   title: "Show Time",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <body className="bg-[#EBEBEB]">
           <HeaderComponent />
           <NavBar />
+          <SyncUser />
           {children}
         </body>
       </html>

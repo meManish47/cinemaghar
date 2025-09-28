@@ -3,7 +3,6 @@ import { Movie } from "../../../../generated/prisma";
 import Link from "next/link";
 import { gql } from "graphql-request";
 import { gqlClient } from "@/services/gql";
-
 const GETMOVIEWITHID = gql`
   query GetMovieWithId($getMovieWithIdId: String!) {
     getMovieWithId(id: $getMovieWithIdId) {
@@ -34,9 +33,9 @@ async function getMovie(id: string): Promise<Movie | null> {
 export default async function MoviePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
   const movie = await getMovie(id);
   if (!movie) return notFound();
 
@@ -92,7 +91,7 @@ export default async function MoviePage({
 
             {/* CTA */}
             <Link
-              href="#"
+              href={`/movie/buytickets/${movie.id}`}
               className="inline-block px-6 py-3 bg-pink-600 hover:bg-pink-700 text-lg font-semibold rounded-lg transition"
             >
               Book Tickets

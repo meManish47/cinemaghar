@@ -32,7 +32,7 @@ export default async function HomePage() {
   return (
     <main className=" w-full h-full mt-4 flex flex-col gap-8">
       <div className="h-80 w-full ">
-        <Carousel slides={covers.slice(0, 20)} />
+         {covers && <Carousel slides={covers.slice(0, 20)} />}
       </div>
       <div className="h-full w-full px-32">
         <RecommendedMovies movies = {movies}/>

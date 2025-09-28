@@ -50,10 +50,10 @@ export default function Carousel({ slides }: { slides: Movie[] }) {
 
             {/* Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black/90 to-transparent z-10">
-              <h2 className="text-xl md:text-3xl font-bold text-white">
+              <h2 className="relative text-xl md:text-3xl font-bold text-white">
                 {s.movie_title}
               </h2>
-              <p className="mt-2 text-white/90 text-sm hidden md:block">
+              <p className="relative mt-2 text-white/90 text-sm hidden md:block">
                 {s.overview}
               </p>
             </div>

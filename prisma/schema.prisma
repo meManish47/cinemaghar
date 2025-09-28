@@ -15,11 +15,12 @@ datasource db {
 }
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String   @unique
+  username  String?   @unique
   email     String   @unique
-  password  String
+  password  String?
   name      String
-  age       Int
+  age       Int?
+  clerkId   String  @unique
   createdAt DateTime @default(now())
 
   bookings  Booking[]
