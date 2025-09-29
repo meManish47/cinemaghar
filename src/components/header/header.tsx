@@ -7,7 +7,7 @@ import SignIn from "./clerkSignIn";
 export default function HeaderComponent() {
   return (
     <header>
-      <div className="w-full h-18 flex items-center px-32 justify-between bg-[#EBEBEB]">
+      <div className="w-full h-18 flex items-center px-32 justify-between bg-[#FFFFFF]">
         <div className="h-full w-max flex items-center gap-4">
           <div className="h-full flex items-center overflow-hidden w-40">
             <Link href={"/"}>

@@ -1,50 +1,114 @@
+"use client";
 
-import prismaClient from "@/services/prisma";
-import { notFound } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { gqlClient } from "@/services/gql";
+import Link from "next/link";
+import { gql } from "graphql-request";
+import { Hall, Movie, Show } from "../../../../../generated/prisma";
+import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
 
-export default async function BookTicketsPage({ params }: { params: { id: string } }) {
-  const movie = await prismaClient.movie.findUnique({
-    where: { id: params.id },
-    include: {
-      shows: {
-        include: {
-          hall: {
-            include: { cinema: true },
-          },
-        },
-      },
-    },
-  });
+export type ShowWithHall = Show & {
+  hall: Hall;
+};
+export default function BuyTicketsPage() {
+  const { id } = useParams();
+  const [shows, setShows] = useState<ShowWithHall[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [movie, setMovie] = useState<Movie>();
+  useEffect(() => {
+    async function fetchShows() {
+      try {
+        const res: { getShowsByMovie: ShowWithHall[] } =
+          await gqlClient.request(GET_SHOWS_BY_MOVIE, { movieId: id });
+        setShows(res.getShowsByMovie || []);
+      } catch (err) {
+        console.error("Error fetching shows:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    async function fetchMovie() {
+      try {
+        const movRes: {
+          getMovieWithId: {
+            success: boolean;
+            message: string;
+            movie: Movie;
+          };
+        } = await gqlClient.request(GET_MOVIES_BY_ID, { getMovieWithIdId: id });
 
-  if (!movie) return notFound();
+        setMovie(movRes.getMovieWithId.movie);
+      } catch (error) {
+        console.error("Error fetching shows:", error);
+      }
+    }
+    if (id) {
+      fetchShows();
+      fetchMovie();
+    }
+  }, [id]);
 
+  if (loading)
+    return (
+      <p className="p-6 h-screen flex items-center justify-center">
+        <span className="loading loading-spinner loading-xl"></span>
+      </p>
+    );
+  if (!shows.length)
+    return <p className="p-6 h-screen">No shows available for this movie.</p>;
+
+  const groupedByCinema = shows.reduce((acc: any, show: any) => {
+    const cinemaId = show.hall.cinema.id;
+    if (!acc[cinemaId]) {
+      acc[cinemaId] = {
+        cinema: show.hall.cinema,
+        shows: [],
+      };
+    }
+    acc[cinemaId].shows.push(show);
+    return acc;
+  }, {});
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8">{movie.movie_title} – Book Tickets</h1>
+    <div className="max-w-6xl mx-auto p-6 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6">
+        Available Shows of {movie?.movie_title}
+      </h1>
 
       <div className="space-y-6">
-        {movie.shows.map((show) => (
-          <div key={show.id} className="border-b pb-4 flex justify-between items-center">
-            {/* Cinema & Hall Info */}
-            <div>
-              <h2 className="text-lg font-semibold">{show.hall.cinema.name}</h2>
-              <p className="text-sm text-gray-500">{show.hall.cinema.location}</p>
-              <p className="text-sm text-gray-700">Hall: {show.hall.hall_name}</p>
+        {Object.values(groupedByCinema).map((group: any) => (
+          <div
+            key={group.cinema.id}
+            className="p-4 px-8 bg-white rounded-sm shadow-md border border-gray-200 flex"
+          >
+            <div className="w-2/5 ">
+              <h2 className="text-xl font-semibold mb-1">
+                {group.cinema.name}
+              </h2>
+              <p className="text-gray-500 mb-4 text-sm">
+                {group.cinema.location}
+              </p>
             </div>
-
-            {/* Show Time */}
-            <button
-              className="px-4 py-2 rounded-md border text-sm font-medium transition 
-                hover:bg-red-600 hover:text-white hover:border-red-600"
-            >
-              {new Date(show.start).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </button>
+            <div className="flex flex-wrap gap-3 w-3/5 ">
+              {group.shows.map((show: ShowWithHall) => (
+                <Link
+                  key={show.id}
+                  href={`/movie/seatselection/${show.id}`}
+                  className="px-4 py-2  text-muted-foreground text-sm flex flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32"
+                >
+                  {new Date(Number(show.start)).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                  <p className="text-[8px] font-bold text-muted-foreground">
+                    Dolby Atmos
+                  </p>
+                </Link>
+              ))}
+            </div>
           </div>
         ))}
       </div>
-    </main>
+    </div>
   );
 }
