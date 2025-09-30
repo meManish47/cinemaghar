@@ -1,4 +1,3 @@
-
 import { gql } from "graphql-request";
 
 export const GET_ALL_HALLS = gql`
@@ -75,13 +74,61 @@ export const GET_SHOWS_BY_MOVIE = gql`
 `;
 
 export const GET_MOVIES_BY_ID = gql`
-query GetMovieWithId($getMovieWithIdId: String!) {
-  getMovieWithId(id: $getMovieWithIdId) {
-    message
-    movie {
-      movie_title
-      id 
+  query GetMovieWithId($getMovieWithIdId: String!) {
+    getMovieWithId(id: $getMovieWithIdId) {
+      message
+      movie {
+        movie_title
+        id
+      }
+      success
     }
-    success
   }
-}`
+`;
+
+export const GET_SHOW_BY_ID = gql`
+  query GetShowById($showId: String!) {
+    getShowById(showId: $showId) {
+      date
+      finish
+      hallId
+      id
+      movieId
+      start
+      hall {
+        cinema {
+          name
+        }
+        seats {
+          id
+          seat_no
+          row_no
+        }
+        hall_name
+        id
+      }
+      movie {
+        movie_title
+        id
+        release_date
+      }
+    }
+  }
+`;
+
+export const GET_SEAT_BY_ID = gql`
+  query GetSeatById($seatId: String!) {
+    getSeatById(seatId: $seatId) {
+      row_no
+      seat_no
+      id
+      hallId
+      hall {
+        hall_name
+        cinema {
+          name
+        }
+      }
+    }
+  }
+`;

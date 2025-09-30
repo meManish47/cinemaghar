@@ -1,8 +1,13 @@
 import { addCinema, getAllCinemas } from "./resolvers/cinema";
 import { addHall, getAllHalls } from "./resolvers/halls";
 import { getAllMovies, getMovieWithId } from "./resolvers/movie";
-import { addBulkSeats } from "./resolvers/seats";
-import { addShow, getShowsByCinema, getShowsByMovie } from "./resolvers/shows";
+import { addBulkSeats, getSeatById } from "./resolvers/seats";
+import {
+  addShow,
+  getShowById,
+  getShowsByCinema,
+  getShowsByMovie,
+} from "./resolvers/shows";
 
 const resolvers = {
   Query: {
@@ -11,13 +16,15 @@ const resolvers = {
     getAllCinemas,
     getAllHalls,
     getShowsByCinema,
-    getShowsByMovie
+    getShowsByMovie,
+    getShowById,
+    getSeatById,
   },
-  Mutation:{
-      addCinema,
-      addHall,
-      addBulkSeats,
-      addShow
-  }
+  Mutation: {
+    addCinema,
+    addHall,
+    addBulkSeats,
+    addShow,
+  },
 };
-export default resolvers
+export default resolvers;

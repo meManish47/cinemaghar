@@ -13,21 +13,22 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  username  String?   @unique
+  username  String?
   email     String   @unique
   password  String?
   name      String
   age       Int?
-  clerkId   String  @unique
+  clerkId   String   @unique
   createdAt DateTime @default(now())
 
-  bookings  Booking[]
+  bookings Booking[]
 }
 
 model Movie {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
   movie_title  String
   popularity   Int
   thumbnail    String?
@@ -35,74 +36,81 @@ model Movie {
   release_date String
   overview     String
 
-  shows        Show[]
+  shows Show[]
 }
 
 model Booking {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
+  id        String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt DateTime      @default(now())
   status    BookingStatus
 
-  userId    String   @db.ObjectId
-  showId    String   @db.ObjectId
+  userId String @db.ObjectId
+  showId String @db.ObjectId
 
-  user      User     @relation(fields: [userId], references: [id])
-  show      Show     @relation(fields: [showId], references: [id])
-  tickets   Ticket[]
+  user    User     @relation(fields: [userId], references: [id])
+  show    Show     @relation(fields: [showId], references: [id])
+  tickets Ticket[]
+
+  @@index([showId])
 }
 
 model Cinema {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   location String
 
-  halls    Hall[]
+  halls Hall[]
 }
 
 model Hall {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  capacity Int
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  capacity  Int
   hall_name String
 
-  cinemaId String  @db.ObjectId
-  cinema   Cinema  @relation(fields: [cinemaId], references: [id])
+  cinemaId String @db.ObjectId
+  cinema   Cinema @relation(fields: [cinemaId], references: [id])
 
-  shows    Show[]
-  seats    Seat[]
+  shows Show[]
+  seats Seat[]
 }
 
 model Seat {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  seat_no Int
-  row_no  Int
-
-  hallId  String  @db.ObjectId
-  hall    Hall    @relation(fields: [hallId], references: [id])
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  seat_no  Int
+  row_no   Int
+  isBooked Boolean @default(false)
+  hallId   String  @db.ObjectId
+  hall     Hall    @relation(fields: [hallId], references: [id])
 
   tickets Ticket[]
 }
 
 model Show {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  start    DateTime
-  finish   DateTime
-  date     DateTime
+  id     String   @id @default(auto()) @map("_id") @db.ObjectId
+  start  DateTime
+  finish DateTime
+  date   DateTime
 
-  hallId   String   @db.ObjectId
-  movieId  String   @db.ObjectId
+  hallId  String @db.ObjectId
+  movieId String @db.ObjectId
 
-  hall     Hall     @relation(fields: [hallId], references: [id])
-  movie    Movie    @relation(fields: [movieId], references: [id])
+  hall     Hall      @relation(fields: [hallId], references: [id])
+  movie    Movie     @relation(fields: [movieId], references: [id])
   bookings Booking[]
+
+  @@index([movieId])
+  @@index([hallId])
 }
 
 model Ticket {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  bookingId String  @db.ObjectId
-  seatId    String  @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  bookingId String @db.ObjectId
+  seatId    String @db.ObjectId
 
-  booking   Booking @relation(fields: [bookingId], references: [id])
-  seat      Seat    @relation(fields: [seatId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
+  seat    Seat    @relation(fields: [seatId], references: [id])
+
+  @@unique([bookingId, seatId])
 }
 
 enum BookingStatus {

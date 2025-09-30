@@ -62,3 +62,21 @@ export async function addShow(
     return null;
   }
 }
+export async function getShowById(
+  parent: unknown,
+  { showId }: { showId: string }
+) {
+  try {
+    const show = await prismaClient.show.findUnique({
+      where: { id: showId },
+      include: {
+        hall: { include: { seats: true, cinema: true } },
+        movie: true,
+      },
+    });
+    if (show) return show;
+    return null;
+  } catch (error) {
+    return null;
+  }
+}

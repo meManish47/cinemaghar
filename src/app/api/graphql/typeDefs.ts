@@ -19,6 +19,7 @@ const typeDefs = gql`
     capacity: Int!
     cinemaId: String!
     cinema: Cinema!
+    seats:[Seat]
   }
   type Movie {
     id: String
@@ -58,6 +59,8 @@ const typeDefs = gql`
     getAllHalls: [Hall!]!
     getShowsByMovie(movieId: String!): [Show!]!
     getShowsByCinema(cinemaId: String!): [Show!]!
+    getShowById(showId:String!):Show!
+    getSeatById(seatId:String!):Seat
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
