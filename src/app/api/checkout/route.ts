@@ -13,7 +13,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   try {
-    const { showId, seats, coupon ,userId} = await req.json();
+    const { showId, seats, coupon, currentUserId } = await req.json();
 
     if (!showId || !Array.isArray(seats) || seats.length === 0) {
       return NextResponse.json(
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
             currency: "inr",
             product_data: {
               name: `Movie Ticket (Show: ${data.getShowById.movie.movie_title})`,
-              description: `Seats: ${seatsData.join(", ")}`, 
+              description: `Seats: ${seatsData.join(", ")}`,
             },
             unit_amount: 200 * 100,
           },
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
       metadata: {
         showId,
         seatIds: seats.join(","),
-        userId: userId || "guest",
+        userId: currentUserId || "guest",
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${

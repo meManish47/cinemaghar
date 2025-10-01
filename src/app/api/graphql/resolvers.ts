@@ -8,6 +8,8 @@ import {
   getShowsByCinema,
   getShowsByMovie,
 } from "./resolvers/shows";
+import { getTicketDataFromSession } from "./resolvers/ticket";
+import { getUserByClerkId } from "./resolvers/user";
 
 const resolvers = {
   Query: {
@@ -19,6 +21,8 @@ const resolvers = {
     getShowsByMovie,
     getShowById,
     getSeatById,
+    getTicketDataFromSession,
+    getUserByClerkId,
   },
   Mutation: {
     addCinema,

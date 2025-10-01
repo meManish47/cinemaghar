@@ -1,14 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Hall, Movie, Seat, Show } from "../../../../../generated/prisma";
+import {
+  Cinema,
+  Hall,
+  Movie,
+  Seat,
+  Show,
+} from "../../../../../generated/prisma";
 import { gqlClient } from "@/services/gql";
 import { GET_SHOW_BY_ID } from "@/app/queries";
 import { useParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
+import { useUser } from "@clerk/nextjs";
 
 export type SHOW_WITH_HALL_MOVIE = Show & {
-  hall: Hall & { seats: Seat[] };
+  hall: Hall & { cinema: Cinema; seats: Seat[] };
   movie: Movie;
 };
 
@@ -21,7 +28,8 @@ export default function SeatSelection() {
   const [seats, setSeats] = useState<Seat[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const currentUser = useUser();
+  const currentUserId = currentUser.user?.id;
   useEffect(() => {
     async function fetchSeats() {
       try {
@@ -67,7 +75,7 @@ export default function SeatSelection() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ showId: id, seats: selected }),
+        body: JSON.stringify({ showId: id, seats: selected, currentUserId }),
       });
 
       const data = await res.json();

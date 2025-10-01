@@ -4,6 +4,18 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import QRCode from "react-qr-code";
+import { gqlClient } from "@/services/gql";
+import { GET_TICKET_RESPONSE } from "../queries";
+export interface TicketResponse {
+  movieTitle: string;
+  moviePoster: string;
+  hallName: string;
+  cinemaName: string;
+  showDate: string;
+  showTime: string;
+  seats: string[];
+  screen: string;
+}
 
 export default function SuccessPage() {
   const searchParams = useSearchParams();
@@ -18,10 +30,12 @@ export default function SuccessPage() {
 
     const fetchData = async () => {
       try {
-        const res = await fetch(`/api/ticket?session_id=${sessionId}`);
-        const data = await res.json();
-        console.log("ticketdata", data);
-        setTicketData(data);
+        // const res = await fetch(`/api/ticket?session_id=${sessionId}`);
+        // const data = await res.json();
+        const res: { getTicketDataFromSession: TicketResponse } =
+          await gqlClient.request(GET_TICKET_RESPONSE, { sessionId });
+        console.log("ticketdata", res.getTicketDataFromSession);
+        setTicketData(res.getTicketDataFromSession);
       } catch (err) {
         console.error("Error fetching ticket:", err);
       } finally {
@@ -45,7 +59,7 @@ export default function SuccessPage() {
       </p>
     );
   }
-
+  console.log("TICKET DATAT", ticketData);
   return (
     <main className="flex flex-col items-center min-h-screen bg-gray-100 py-10 px-4">
       <h1 className="text-2xl font-bold text-green-600 mb-6">
@@ -83,8 +97,10 @@ export default function SuccessPage() {
               <p>{ticketData.seats?.join(", ")}</p>
             </div>
             <div>
-              <p className="font-semibold">Screen</p>
-              <p>{ticketData.screen || "Screen 1"}</p>
+              <p className="font-semibold">Cinema</p>
+              <p>
+                {ticketData.cinemaName || "Cinema"}({ticketData.hallName})
+              </p>
             </div>
           </div>
 

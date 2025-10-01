@@ -133,3 +133,34 @@ export const GET_SEAT_BY_ID = gql`
     }
   }
 `;
+
+export const GET_TICKET_RESPONSE = gql`
+  query GetTicketDataFromSession($sessionId: String!) {
+    getTicketDataFromSession(sessionId: $sessionId) {
+      movieTitle
+      cinemaName
+      hallName
+      moviePoster
+      screen
+      seats
+      showDate
+      showTime
+      user {
+        clerkId
+        email
+        id
+        name
+      }
+    }
+  }
+`;
+export const GET_USER_BY_CLERK_ID = gql`
+  query getUserByClerkId($clerkId: String!) {
+    getUserByClerkId(clerkId: $clerkId) {
+      name
+      email
+      clerkId
+      id
+    }
+  }
+`;

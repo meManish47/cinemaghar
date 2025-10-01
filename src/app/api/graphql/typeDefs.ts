@@ -6,6 +6,23 @@ const typeDefs = gql`
     movie: Movie
     message: String
   }
+  type TicketResponse {
+    movieTitle: String
+    moviePoster: String
+    hallName: String
+    cinemaName: String
+    showDate: String
+    showTime: String
+    seats: [String!]
+    screen: String
+    user: User
+  }
+  type User {
+    id: String!
+    clerkId: String!
+    email: String!
+    name: String!
+  }
   type Cinema {
     id: String!
     name: String!
@@ -19,7 +36,7 @@ const typeDefs = gql`
     capacity: Int!
     cinemaId: String!
     cinema: Cinema!
-    seats:[Seat]
+    seats: [Seat]
   }
   type Movie {
     id: String
@@ -59,8 +76,10 @@ const typeDefs = gql`
     getAllHalls: [Hall!]!
     getShowsByMovie(movieId: String!): [Show!]!
     getShowsByCinema(cinemaId: String!): [Show!]!
-    getShowById(showId:String!):Show!
-    getSeatById(seatId:String!):Seat
+    getShowById(showId: String!): Show!
+    getSeatById(seatId: String!): Seat
+    getUserByClerkId(clerkId: String!): User
+    getTicketDataFromSession(sessionId: String!): TicketResponse
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
