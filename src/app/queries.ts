@@ -111,6 +111,7 @@ export const GET_SHOW_BY_ID = gql`
         movie_title
         id
         release_date
+        cover
       }
     }
   }

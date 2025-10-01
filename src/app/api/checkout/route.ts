@@ -13,7 +13,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   try {
-    const { showId, seats, coupon } = await req.json();
+    const { showId, seats, coupon ,userId} = await req.json();
 
     if (!showId || !Array.isArray(seats) || seats.length === 0) {
       return NextResponse.json(
@@ -31,7 +31,6 @@ export async function POST(req: Request) {
           await gqlClient.request(GET_SEAT_BY_ID, { seatId });
 
         const rowLetter = String.fromCharCode(64 + seatRes.getSeatById.row_no);
-      
 
         return `${rowLetter} ${seatRes.getSeatById.seat_no}`;
       })
@@ -45,7 +44,7 @@ export async function POST(req: Request) {
             currency: "inr",
             product_data: {
               name: `Movie Ticket (Show: ${data.getShowById.movie.movie_title})`,
-              description: `Seats: ${seatsData.join(", ")}`, // e.g. "L 10, L 11"
+              description: `Seats: ${seatsData.join(", ")}`, 
             },
             unit_amount: 200 * 100,
           },
@@ -55,6 +54,11 @@ export async function POST(req: Request) {
       mode: "payment",
       allow_promotion_codes: true,
       discounts: coupon ? [{ coupon }] : [],
+      metadata: {
+        showId,
+        seatIds: seats.join(","),
+        userId: userId || "guest",
+      },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${
         process.env.NEXT_PUBLIC_BASE_URL
