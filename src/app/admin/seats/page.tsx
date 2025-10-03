@@ -36,7 +36,7 @@ export type HallsWithCinema = Hall & {
 export default function BulkAddSeatsForm({
   onAdded,
 }: {
-  onAdded?: () => void;
+  onAdded: () => void;
 }) {
   const [halls, setHalls] = useState<HallsWithCinema[]>([]);
   const [hallId, setHallId] = useState("");

@@ -11,7 +11,7 @@ export type TicketResponse = {
   showDate: string;
   showTime: string;
   seats: string[];
-  screen: string;
+  screen: string;?
   user: User;
   tickets: Ticket[];
 };
