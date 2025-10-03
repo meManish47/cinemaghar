@@ -21,7 +21,7 @@ const GET_CINEMAS = gql`
 `;
 
 export default function CinemasPage() {
-  const [cinemas, setCinemas] = useState<any[]>([]);
+  const [cinemas, setCinemas] = useState<Cinema[]>([]);
 
   const load = async () => {
     const data: { getAllCinemas: Cinema[] } = await gqlClient.request(

@@ -4,8 +4,36 @@ import { useState } from "react";
 import { gqlClient } from "@/services/gql";
 import { ADD_SHOW } from "@/app/queries";
 
-export default function AddShowForm({ movies, halls, onAdded }: any) {
-  const [form, setForm] = useState({
+type Movie = {
+  id: string;
+  movie_title: string;
+};
+
+type HallWithCinema = {
+  id: string;
+  hall_name: string;
+  cinema: {
+    id: string;
+    name: string;
+  };
+};
+
+type AddShowFormProps = {
+  movies: Movie[];
+  halls: HallWithCinema[];
+  onAdded?: () => void;
+};
+
+type ShowForm = {
+  movieId: string;
+  hallId: string;
+  start: string;
+  finish: string;
+  date: string;
+};
+
+export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps) {
+  const [form, setForm] = useState<ShowForm>({
     movieId: "",
     hallId: "",
     start: "",
@@ -34,7 +62,7 @@ export default function AddShowForm({ movies, halls, onAdded }: any) {
         className="w-full border rounded-lg px-3 py-2"
       >
         <option value="">Select Movie</option>
-        {movies.map((m: any) => (
+        {movies.map((m) => (
           <option key={m.id} value={m.id}>
             {m.movie_title}
           </option>
@@ -48,7 +76,7 @@ export default function AddShowForm({ movies, halls, onAdded }: any) {
         className="w-full border rounded-lg px-3 py-2"
       >
         <option value="">Select Hall</option>
-        {halls.map((h: any) => (
+        {halls.map((h) => (
           <option key={h.id} value={h.id}>
             {h.hall_name} ({h.cinema.name})
           </option>

@@ -81,9 +81,9 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ ok: true, id: session.id, url: session.url });
-  } catch (err: any) {
+  } catch (err) {
     return NextResponse.json(
-      { ok: false, error: err.message || "checkout_failed" },
+      { ok: false, error: (err as Error).message || "checkout_failed" },
       { status: 500 }
     );
   }

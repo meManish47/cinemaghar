@@ -51,7 +51,7 @@ export default function CustomUserProfile() {
               {/* Sidebar Menu */}
               <ul className="w-full p-0 flex-1 text-gray-700">
                 <li>
-                  <a
+                  <Link
                     className="w-full h-24 flex items-center space-x-3 px-5 py-4 hover:bg-gray-100 rounded-md transition-colors"
                     href="/"
                   >
@@ -62,7 +62,7 @@ export default function CustomUserProfile() {
                         View all your bookings and purchases
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 </li>
                 <li>
                   <Link

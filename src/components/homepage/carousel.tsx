@@ -17,15 +17,19 @@ export default function Carousel({ slides }: { slides: Movie[] }) {
     setCurrent(current === lastIndex ? 0 : current + 1);
   };
 
+  useEffect(() => {
+    const interval = setInterval(next, 3000);
+    return () => clearInterval(interval);
+  }, [current]);
+  useEffect(() => {
+    const interval = setInterval(next, 3000);
+    return () => clearInterval(interval);
+  }, [current]);
   if (!slides || slides.length === 0) {
     return <div>No slides to display.</div>;
   }
 
   // Automatic slide
-  useEffect(() => {
-    const interval = setInterval(next, 3000);
-    return () => clearInterval(interval);
-  }, [current]);
 
   return (
     <div className="overflow-hidden h-full relative">
