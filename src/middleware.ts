@@ -31,18 +31,16 @@ export default clerkMiddleware(async (auth, req) => {
       userCookies = undefined;
     }
     const clerkId = userCookies?.clerkId;
-    // Redirect to sign in if not logged in
+
     if (!clerkId) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    const currentUser: { getUserByEmail: User } = await gqlClient.request(
+    const currentUser: { getUserByClerkId: User } = await gqlClient.request(
       GET_USER_BY_CLERK_ID,
       { clerkId }
     );
-
-    // Example check: only allow users with role=admin in Clerk metadata
-    if (currentUser.getUserByEmail.email !== "kmanish57610@gmail.com") {
-      return NextResponse.redirect(new URL("/403", req.url)); // forbidden page
+    if (currentUser.getUserByClerkId.email !== "kmanish57610@gmail.com") {
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
