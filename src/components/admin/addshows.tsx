@@ -21,7 +21,7 @@ type HallWithCinema = {
 type AddShowFormProps = {
   movies: Movie[];
   halls: HallWithCinema[];
-  onAdded?: () => void;
+  onAdded: () => void;
 };
 
 type ShowForm = {
