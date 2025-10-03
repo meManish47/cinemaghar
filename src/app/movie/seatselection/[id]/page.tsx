@@ -46,14 +46,13 @@ export default function SeatSelection() {
     fetchSeats();
   }, [id]);
 
-  // group seats by row_no
   const grouped = seats.reduce((acc, seat) => {
     if (!acc[seat.row_no]) acc[seat.row_no] = [];
     acc[seat.row_no].push(seat);
     return acc;
   }, {} as Record<number, Seat[]>);
 
-  // toggle seat select/unselect
+ 
   const toggleSeat = (seatId: string) => {
     setSelected((prev) =>
       prev.includes(seatId)
@@ -62,7 +61,6 @@ export default function SeatSelection() {
     );
   };
 
-  // proceed handler with Stripe
   const handleProceed = async () => {
     console.log("Proceeding with seats:", selected);
 
@@ -86,7 +84,7 @@ export default function SeatSelection() {
         return;
       }
 
-      // Redirect user to Stripe Checkout page
+      
       window.location.href = data.url;
     } catch (err) {
       console.error("Checkout error:", err);
@@ -114,7 +112,7 @@ export default function SeatSelection() {
                   .sort((a, b) => a.seat_no - b.seat_no)
                   .map((seat) => {
                     const isSelected = selected.includes(seat.id);
-                    const isBooked = (seat as any).isBooked;
+                    const isBooked =seat.isBooked;
 
                     return (
                       <button

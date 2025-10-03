@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import Link from "next/link";
-import { gql } from "graphql-request";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Hall, Movie, Show } from "../../../../../generated/prisma";
-import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
 
 export type ShowWithHall = Show & {
   hall: Hall;

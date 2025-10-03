@@ -30,11 +30,8 @@ export default function SuccessPage() {
 
     const fetchData = async () => {
       try {
-        // const res = await fetch(`/api/ticket?session_id=${sessionId}`);
-        // const data = await res.json();
         const res: { getTicketDataFromSession: TicketResponse } =
           await gqlClient.request(GET_TICKET_RESPONSE, { sessionId });
-        console.log("ticketdata", res.getTicketDataFromSession);
         setTicketData(res.getTicketDataFromSession);
       } catch (err) {
         console.error("Error fetching ticket:", err);
@@ -86,7 +83,7 @@ export default function SuccessPage() {
           <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
             <div>
               <p className="font-semibold">Date</p>
-              <p>{ticketData.showDate.split("T")[0]}</p>
+              <p>{ticketData.showDate?.split("T")[0]}</p>
             </div>
             <div>
               <p className="font-semibold">Time</p>

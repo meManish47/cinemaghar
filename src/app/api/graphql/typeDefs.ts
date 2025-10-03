@@ -62,12 +62,35 @@ const typeDefs = gql`
     row_no: Int!
     seat_no: Int!
   }
+  input SeatInputForTicket {
+    id: String!
+    row_no: Int!
+    seat_no: Int!
+  }
   type Seat {
     id: String!
     row_no: Int!
     seat_no: Int!
     hallId: String!
     hall: Hall
+    isBooked:Boolean
+  }
+  type Ticket {
+    id: String
+    bookingId: String
+    seatId: String
+    booking: Booking
+    seat: Seat
+  }
+  type Booking {
+    id: String
+    userId: String
+    createdAt: String
+    status: String
+    showId: String
+    user: User
+    show: Show
+    ticket: [Ticket]
   }
   type Query {
     getAllMovies: [Movie]
@@ -92,6 +115,9 @@ const typeDefs = gql`
       finish: String!
       date: String!
     ): Show
+    createBooking(userId: String!, showId: String!, status: String!): Booking
+    confirmBooking(bookingId: String!): Booking
+    generateTickets(seats: [SeatInputForTicket!]!, bookingId: String!): [Ticket]
   }
 `;
 export default typeDefs;

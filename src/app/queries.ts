@@ -103,6 +103,7 @@ export const GET_SHOW_BY_ID = gql`
           id
           seat_no
           row_no
+          isBooked
         }
         hall_name
         id
@@ -161,6 +162,79 @@ export const GET_USER_BY_CLERK_ID = gql`
       email
       clerkId
       id
+    }
+  }
+`;
+
+export const CREATE_BOOKING = gql`
+  mutation CreateBooking($userId: String!, $showId: String!, $status: String!) {
+    createBooking(userId: $userId, showId: $showId, status: $status) {
+      createdAt
+      id
+      show {
+        id
+      }
+      showId
+      status
+      user {
+        name
+        clerkId
+      }
+      userId
+      ticket {
+        id
+        seatId
+      }
+    }
+  }
+`;
+
+export const CONFIRM_BOOKING = gql`
+  mutation ConfirmBooking($bookingId: String!) {
+    confirmBooking(bookingId: $bookingId) {
+      createdAt
+      id
+      showId
+      userId
+      user {
+        name
+      }
+      show {
+        hall {
+          hall_name
+        }
+        id
+        movie {
+          movie_title
+        }
+      }
+      status
+    }
+  }
+`;
+
+export const GENERATE_TICKETS = gql`
+  mutation Mutation($seats: [SeatInputForTicket!]!, $bookingId: String!) {
+    generateTickets(seats: $seats, bookingId: $bookingId) {
+      booking {
+        id
+      }
+      bookingId
+      id
+      seat {
+        row_no
+        seat_no
+        hall {
+          hall_name
+          cinema {
+            name
+            location
+          }
+        }
+        hallId
+        id
+      }
+      seatId
     }
   }
 `;

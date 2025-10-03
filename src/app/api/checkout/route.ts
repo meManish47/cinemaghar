@@ -1,11 +1,12 @@
 // src/app/api/checkout/route.ts
 import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
-import { GET_SEAT_BY_ID, GET_SHOW_BY_ID } from "@/app/queries";
+import { CREATE_BOOKING, GET_SEAT_BY_ID, GET_SHOW_BY_ID } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { Hall, Seat } from "../../../../generated/prisma";
+import { Booking, Hall, Seat } from "../../../../generated/prisma";
 import { HallsWithCinema } from "@/app/admin/halls/page";
+import prismaClient from "@/services/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
@@ -36,6 +37,19 @@ export async function POST(req: Request) {
       })
     );
 
+    // console.log("_-_-_--_-_-_-_____-_--_-----_--__-___-__----_", currentUserId);
+    const currentUser = await prismaClient.user.findUnique({
+      where: { clerkId: currentUserId },
+    });
+    const booking: { createBooking: Booking } = await gqlClient.request(
+      CREATE_BOOKING,
+      {
+        showId,
+        userId: currentUser?.id,
+        status: "PENDING",
+      }
+    );
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -58,6 +72,7 @@ export async function POST(req: Request) {
         showId,
         seatIds: seats.join(","),
         userId: currentUserId || "guest",
+        bookingId: booking.createBooking.id || "bbokingid",
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${

@@ -1,3 +1,4 @@
+import { confirmBooking, createBooking } from "./resolvers/booking";
 import { addCinema, getAllCinemas } from "./resolvers/cinema";
 import { addHall, getAllHalls } from "./resolvers/halls";
 import { getAllMovies, getMovieWithId } from "./resolvers/movie";
@@ -8,7 +9,7 @@ import {
   getShowsByCinema,
   getShowsByMovie,
 } from "./resolvers/shows";
-import { getTicketDataFromSession } from "./resolvers/ticket";
+import { generateTickets, getTicketDataFromSession } from "./resolvers/ticket";
 import { getUserByClerkId } from "./resolvers/user";
 
 const resolvers = {
@@ -29,6 +30,9 @@ const resolvers = {
     addHall,
     addBulkSeats,
     addShow,
+    createBooking,
+    confirmBooking,
+    generateTickets,
   },
 };
 export default resolvers;
