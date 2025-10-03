@@ -1,35 +1,17 @@
-import { useUser } from "@clerk/nextjs";
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { gqlClient } from "./services/gql";
-import { GET_USER_BY_CLERK_ID } from "./app/queries";
 import { User } from "../generated/prisma";
-import { getCookies } from "./services/jwt";
-import { JwtPayload } from "jsonwebtoken";
+import { getUserFromCookie } from "./app/helper/helper";
+import { GET_USER_BY_CLERK_ID } from "./app/queries";
+import { gqlClient } from "./services/gql";
 
 // Match /admin routes
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
-
+const isMovieRoute = createRouteMatcher(["/movie(.*)"])
 export default clerkMiddleware(async (auth, req) => {
   // If route is /admin, check user
   if (isAdminRoute(req)) {
-    const cookiesResult = await getCookies();
-    let userCookies: { clerkId: string; id: string; email: string } | undefined;
-    if (
-      cookiesResult &&
-      typeof cookiesResult === "object" &&
-      "clerkId" in cookiesResult &&
-      "id" in cookiesResult &&
-      "email" in cookiesResult
-    ) {
-      userCookies = cookiesResult as {
-        clerkId: string;
-        id: string;
-        email: string;
-      };
-    } else {
-      userCookies = undefined;
-    }
+    const userCookies = await getUserFromCookie();
     const clerkId = userCookies?.clerkId;
 
     if (!clerkId) {
@@ -44,6 +26,12 @@ export default clerkMiddleware(async (auth, req) => {
     }
   }
 
+  if(isMovieRoute(req)){
+    const userCookies = await getUserFromCookie();
+    if(!userCookies){
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+  }
   return NextResponse.next();
 });
 

@@ -103,6 +103,7 @@ const typeDefs = gql`
     getSeatById(seatId: String!): Seat
     getUserByClerkId(clerkId: String!): User
     getTicketDataFromSession(sessionId: String!): TicketResponse
+    
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
@@ -118,6 +119,8 @@ const typeDefs = gql`
     createBooking(userId: String!, showId: String!, status: String!): Booking
     confirmBooking(bookingId: String!): Booking
     generateTickets(seats: [SeatInputForTicket!]!, bookingId: String!): [Ticket]
+    logoutUser:Boolean
+  
   }
 `;
 export default typeDefs;

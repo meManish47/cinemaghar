@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 export default function SyncUser() {
   const { isLoaded, isSignedIn, user } = useUser();
-
   useEffect(() => {
     if (!isLoaded || !isSignedIn) return;
 
@@ -23,5 +22,5 @@ export default function SyncUser() {
     syncUser();
   }, [isLoaded, isSignedIn, user]);
 
-  return null; 
+  return null;
 }

@@ -10,7 +10,7 @@ import {
   getShowsByMovie,
 } from "./resolvers/shows";
 import { generateTickets, getTicketDataFromSession } from "./resolvers/ticket";
-import { getUserByClerkId } from "./resolvers/user";
+import { getUserByClerkId, logoutUser } from "./resolvers/user";
 
 const resolvers = {
   Query: {
@@ -33,6 +33,7 @@ const resolvers = {
     createBooking,
     confirmBooking,
     generateTickets,
+    logoutUser
   },
 };
 export default resolvers;
