@@ -104,6 +104,7 @@ const typeDefs = gql`
     getSeatById(seatId: String!): Seat
     getUserByClerkId(clerkId: String!): User
     getTicketDataFromSession(sessionId: String!): TicketResponse
+    getCurrentUserEmail: String
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!

@@ -7,7 +7,7 @@ export default function AdminDashboard() {
   const pathname = usePathname();
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen px-32 bg-gray-50">
       {/* Main Content */}
       <main className="flex-1 p-10">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">

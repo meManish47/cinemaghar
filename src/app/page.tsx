@@ -1,12 +1,9 @@
-import HeaderComponent from "@/components/header/header";
-import NavBar from "@/components/header/navbar";
-import HomePage from "@/components/homepage/homepage";
-import { Button } from "@/components/ui/button";
+import HomeLogic from "@/components/main/homelogic";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="bg-[#FFFFFF]">
-      <HomePage />
+      <HomeLogic />
     </main>
   );
 }

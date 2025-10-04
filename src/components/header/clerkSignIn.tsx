@@ -2,8 +2,7 @@ import {
   SignedIn,
   SignedOut,
   SignInButton,
-  SignUpButton,
-  UserButton,
+  UserButton
 } from "@clerk/nextjs";
 import { Button } from "../ui/button";
 

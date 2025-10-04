@@ -10,7 +10,11 @@ import {
   getShowsByMovie,
 } from "./resolvers/shows";
 import { generateTickets, getTicketDataFromSession } from "./resolvers/ticket";
-import { getUserByClerkId, logoutUser } from "./resolvers/user";
+import {
+  getCurrentUserEmail,
+  getUserByClerkId,
+  logoutUser,
+} from "./resolvers/user";
 
 const resolvers = {
   Query: {
@@ -24,6 +28,7 @@ const resolvers = {
     getSeatById,
     getTicketDataFromSession,
     getUserByClerkId,
+    getCurrentUserEmail,
   },
   Mutation: {
     addCinema,
@@ -33,7 +38,7 @@ const resolvers = {
     createBooking,
     confirmBooking,
     generateTickets,
-    logoutUser
+    logoutUser,
   },
 };
 export default resolvers;

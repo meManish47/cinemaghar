@@ -13,6 +13,7 @@ import { GET_SHOW_BY_ID } from "@/app/queries";
 import { useParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { useUser } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 export type SHOW_WITH_HALL_MOVIE = Show & {
   hall: Hall & { cinema: Cinema; seats: Seat[] };
@@ -52,7 +53,6 @@ export default function SeatSelection() {
     return acc;
   }, {} as Record<number, Seat[]>);
 
- 
   const toggleSeat = (seatId: string) => {
     setSelected((prev) =>
       prev.includes(seatId)
@@ -84,7 +84,6 @@ export default function SeatSelection() {
         return;
       }
 
-      
       window.location.href = data.url;
     } catch (err) {
       console.error("Checkout error:", err);
@@ -92,34 +91,43 @@ export default function SeatSelection() {
     }
   };
 
+  function selectSeat(id: string) {
+    if (selected.length >= 6) {
+      toast.error("Cant select more than 6 seats!!!");
+      return;
+    }
+    toggleSeat(id);
+  }
+
   return (
-    <main className="min-h-screen w-full flex flex-col items-center p-10">
-      <h1 className="text-2xl font-bold mb-6">🎟 Select Your Seats</h1>
+    <main className="min-h-screen w-full flex  justify-center p-10">
+      <div className="w-5xl flex flex-col items-center">
+        <h1 className="text-2xl font-bold mb-6">🎟 Select Your Seats</h1>
 
-      {loading ? (
-        <p className="text-gray-600">Loading seats...</p>
-      ) : (
-        <div className="h-160 w-320 bg-gray-100 rounded-xl p-6 shadow-md overflow-auto">
-          {Object.keys(grouped)
-            .sort((a, b) => Number(a) - Number(b))
-            .map((row) => (
-              <div key={row} className="flex gap-2 mb-4 justify-center">
-                <span className="w-6 font-bold text-gray-700">
-                  {String.fromCharCode(64 + Number(row))}
-                </span>
+        {loading ? (
+          <p className="text-gray-600">Loading seats...</p>
+        ) : (
+          <div className="h-160 bg-gray-100 rounded-xl p-6 shadow-md overflow-auto">
+            {Object.keys(grouped)
+              .sort((a, b) => Number(a) - Number(b))
+              .map((row) => (
+                <div key={row} className="flex gap-2 mb-4 justify-center">
+                  <span className="w-6 font-bold text-gray-700">
+                    {String.fromCharCode(64 + Number(row))}
+                  </span>
 
-                {grouped[Number(row)]
-                  .sort((a, b) => a.seat_no - b.seat_no)
-                  .map((seat) => {
-                    const isSelected = selected.includes(seat.id);
-                    const isBooked =seat.isBooked;
+                  {grouped[Number(row)]
+                    .sort((a, b) => a.seat_no - b.seat_no)
+                    .map((seat) => {
+                      const isSelected = selected.includes(seat.id);
+                      const isBooked = seat.isBooked;
 
-                    return (
-                      <button
-                        key={seat.id}
-                        onClick={() => toggleSeat(seat.id)}
-                        disabled={isBooked}
-                        className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded 
+                      return (
+                        <button
+                          key={seat.id}
+                          onClick={() => selectSeat(seat.id)}
+                          disabled={isBooked}
+                          className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded 
                           border transition
                           ${
                             isBooked
@@ -128,19 +136,19 @@ export default function SeatSelection() {
                               ? "bg-green-600 text-white"
                               : "bg-white hover:bg-green-100"
                           }`}
-                      >
-                        {seat.seat_no}
-                      </button>
-                    );
-                  })}
-              </div>
-            ))}
-        </div>
-      )}
-
+                        >
+                          {seat.seat_no}
+                        </button>
+                      );
+                    })}
+                </div>
+              ))}
+          </div>
+        )}
+      </div>
       {/* Bottom actions */}
-      <div className="mt-6 flex gap-4">
-        <span className="px-4 py-2 bg-green-600 text-white rounded-lg">
+      <div className=" flex gap-4 flex-col mt-20">
+        <span className="px-4 py-2 text-black rounded-lg">
           Selected: {selected.length}
         </span>
         <button
