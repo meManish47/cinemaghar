@@ -33,11 +33,13 @@ export type HallsWithCinema = Hall & {
   cinema: Cinema;
 };
 
+type BulkAddSeatsFormProps = {
+  onAdded: () => void;
+};
+
 export default function BulkAddSeatsForm({
   onAdded,
-}: {
-  onAdded: () => void;
-}) {
+}: BulkAddSeatsFormProps) {
   const [halls, setHalls] = useState<HallsWithCinema[]>([]);
   const [hallId, setHallId] = useState("");
   const [rows, setRows] = useState<number>(10);
