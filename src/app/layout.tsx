@@ -25,7 +25,7 @@ export default function RootLayout({
           
           <SyncUser />
           <LogoutCleanup />
-          <Toaster richColors />
+          <Toaster richColors position="top-center"/>
           {children}
         </body>
       </html>

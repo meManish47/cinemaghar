@@ -33,20 +33,17 @@ export type HallsWithCinema = Hall & {
   cinema: Cinema;
 };
 
-type BulkAddSeatsFormProps = {
-  onAdded: () => void;
-};
-
 export default function BulkAddSeatsForm({
   onAdded,
-}: BulkAddSeatsFormProps) {
+}: {
+  onAdded: () => void;
+}) {
   const [halls, setHalls] = useState<HallsWithCinema[]>([]);
   const [hallId, setHallId] = useState("");
   const [rows, setRows] = useState<number>(10);
   const [seatsPerRow, setSeatsPerRow] = useState<number>(20);
   const [loading, setLoading] = useState(false);
 
-  // Fetch halls using GraphQL
   const loadHalls = async () => {
     try {
       const data: { getAllHalls: HallsWithCinema[] } = await gqlClient.request(
@@ -54,7 +51,7 @@ export default function BulkAddSeatsForm({
       );
       setHalls(data.getAllHalls);
     } catch (err) {
-      console.error("Failed to fetch halls:", err);
+      console.error("Failed", err);
     }
   };
 
@@ -84,7 +81,7 @@ export default function BulkAddSeatsForm({
       setHallId("");
       setRows(10);
       setSeatsPerRow(20);
-      onAdded?.();
+      onAdded();
     } catch (err) {
       console.error("Failed to add seats:", err);
     } finally {
