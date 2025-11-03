@@ -1,5 +1,5 @@
 import { gqlClient } from "@/services/gql";
-import { Ticket, User } from "../../../generated/prisma";
+import { User } from "../../../generated/prisma";
 import { GET_TICKET_RESPONSE } from "../queries";
 import SuccessPageClient from "@/components/success/successpageClient";
 
@@ -13,7 +13,6 @@ export type TicketResponse = {
   seats: string[];
   screen: string;
   user: User;
-  tickets: Ticket[];
 };
 export default async function Page({ searchParams }: { searchParams: { session_id?: string } }) {
   const sessionId = searchParams.session_id;

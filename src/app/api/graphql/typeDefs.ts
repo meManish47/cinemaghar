@@ -35,6 +35,8 @@ const typeDefs = gql`
     id: String!
     hall_name: String!
     capacity: Int!
+    rows: Int!
+    columns: Int!
     cinemaId: String!
     cinema: Cinema!
     seats: [Seat]
@@ -58,11 +60,6 @@ const typeDefs = gql`
     hall: Hall!
     movie: Movie!
   }
-  input SeatInput {
-    hallId: String!
-    row_no: Int!
-    seat_no: Int!
-  }
   input SeatInputForTicket {
     id: String!
     row_no: Int!
@@ -70,12 +67,12 @@ const typeDefs = gql`
   }
   type Seat {
     id: String!
-    row_no: Int!
-    seat_no: Int!
     hallId: String!
     hall: Hall
-    isBooked: Boolean
-  }
+    row_no: Int
+    col_no: Int
+    seat_no: String
+    }
   type Ticket {
     id: String
     bookingId: String
@@ -108,8 +105,13 @@ const typeDefs = gql`
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
-    addHall(hall_name: String!, capacity: Int!, cinemaId: String!): Hall!
-    addBulkSeats(hallId: String!, seats: [SeatInput!]!): [Seat!]!
+    addHall(
+      hall_name: String!
+      capacity: Int!
+      cinemaId: String!
+      rows: Int!
+      columns: Int!
+    ): Hall!
     addShow(
       movieId: String!
       hallId: String!
@@ -119,7 +121,6 @@ const typeDefs = gql`
     ): Show
     createBooking(userId: String!, showId: String!, status: String!): Booking
     confirmBooking(bookingId: String!): Booking
-    generateTickets(seats: [SeatInputForTicket!]!, bookingId: String!): [Ticket]
     logoutUser: Boolean
   }
 `;

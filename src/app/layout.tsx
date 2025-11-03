@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 import HeaderComponent from "@/components/header/header";
-import NavBar from "@/components/header/navbar";
-import SyncUser from "@/components/layout/syncUser";
 import LogoutCleanup from "@/components/layout/logoutclean";
+import SyncUser from "@/components/layout/syncUser";
+import { ClerkProvider } from "@clerk/nextjs";
+import type { Metadata } from "next";
 import { Toaster } from "sonner";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Show Time",

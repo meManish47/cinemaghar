@@ -17,7 +17,7 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
       </p>
     );
   }
-
+  console.log("TICKET DATA", ticketData);
   return (
     <main className="flex flex-col items-center min-h-screen bg-gray-100 py-10 px-4">
       <h1 className="text-2xl font-bold text-green-600 mb-6">
@@ -82,13 +82,13 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
       <div className="mt-6 flex gap-4">
         <button
           onClick={() => window.print()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer"
         >
           Download Ticket
         </button>
         <button
           onClick={() => (window.location.href = "/")}
-          className="px-4 py-2 bg-gray-600 text-white rounded-lg"
+          className="px-4 py-2 bg-gray-600 text-white rounded-lg cursor-pointer"
         >
           Back to Home
         </button>

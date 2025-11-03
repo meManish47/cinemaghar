@@ -7,7 +7,7 @@ import {
 } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import Stripe from "stripe";
-import { Booking, Seat, Ticket, User } from "../../../../../generated/prisma";
+import { Booking, Seat, User } from "../../../../../generated/prisma";
 import prismaClient from "@/services/prisma";
 import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
 
@@ -52,8 +52,7 @@ export async function getTicketDataFromSession(
             seatId,
           }
         );
-        const rowLetter = String.fromCharCode(64 + seatRes.getSeatById.row_no);
-        return `${rowLetter} ${seatRes.getSeatById.seat_no}`;
+        return ` ${seatRes.getSeatById.seat_no}`;
       })
     );
     const seatsInputs = await Promise.all(
@@ -84,13 +83,7 @@ export async function getTicketDataFromSession(
     await gqlClient.request(CONFIRM_BOOKING, {
       bookingId,
     });
-    const ticketsRes: { generateTickets: Ticket[] } = await gqlClient.request(
-      GENERATE_TICKETS,
-      {
-        seats: seatsInputs,
-        bookingId,
-      }
-    );
+    
 
     const returnObj = {
       movieTitle: movie.movie_title,
@@ -102,53 +95,10 @@ export async function getTicketDataFromSession(
       seats: seatsData,
       screen: showRes.getShowById.hall.hall_name,
       user: user,
-      tickets: ticketsRes.generateTickets,
-    };
-
+     };
+    console.log("SUCCESPAGE TICKET ", returnObj);
     return returnObj;
   } catch (error) {
     return { error: (error as Error).message, status: 500 };
-  }
-}
-
-export type SeatInput = {
-  id: string;
-  row_no: number;
-  seat_no: number;
-};
-export async function generateTickets(
-  parent: unknown,
-  { seats, bookingId }: { seats: SeatInput[]; bookingId: string }
-) {
-  try {
-    await prismaClient.ticket.createMany({
-      data: seats.map((seat) => ({
-        seatId: seat.id,
-        bookingId: bookingId,
-      })),
-    });
-    await prismaClient.seat.updateMany({
-      where: {
-        id: {
-          in: seats.map((seat) => seat.id),
-        },
-      },
-      data: { isBooked: true },
-    });
-    return await prismaClient.ticket.findMany({
-      where: { bookingId },
-      include: {
-        booking: true,
-        seat: {
-          include: {
-            hall: {
-              include: { cinema: true },
-            },
-          },
-        },
-      },
-    });
-  } catch (error) {
-    return null;
   }
 }

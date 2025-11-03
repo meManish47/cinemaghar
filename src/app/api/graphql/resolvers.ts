@@ -2,14 +2,14 @@ import { confirmBooking, createBooking } from "./resolvers/booking";
 import { addCinema, getAllCinemas } from "./resolvers/cinema";
 import { addHall, getAllHalls } from "./resolvers/halls";
 import { getAllMovies, getMovieWithId } from "./resolvers/movie";
-import { addBulkSeats, getSeatById } from "./resolvers/seats";
+import { getSeatById } from "./resolvers/seats";
 import {
   addShow,
   getShowById,
   getShowsByCinema,
   getShowsByMovie,
 } from "./resolvers/shows";
-import { generateTickets, getTicketDataFromSession } from "./resolvers/ticket";
+import {  getTicketDataFromSession } from "./resolvers/ticket";
 import {
   getCurrentUserEmail,
   getUserByClerkId,
@@ -33,11 +33,9 @@ const resolvers = {
   Mutation: {
     addCinema,
     addHall,
-    addBulkSeats,
     addShow,
     createBooking,
     confirmBooking,
-    generateTickets,
     logoutUser,
   },
 };

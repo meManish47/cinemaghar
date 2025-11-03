@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { gql } from "graphql-request";
 import { gqlClient } from "@/services/gql";
 import { Cinema } from "../../../generated/prisma";
+import { toast } from "sonner";
 
 const GET_CINEMAS = gql`
   query {
@@ -19,12 +20,14 @@ const GET_CINEMAS = gql`
   }
 `;
 const ADD_HALL = gql`
-  mutation Mutation($hallName: String!, $capacity: Int!, $cinemaId: String!) {
-    addHall(hall_name: $hallName, capacity: $capacity, cinemaId: $cinemaId) {
+  mutation Mutation($hallName: String!, $capacity: Int!, $cinemaId: String!, $rows: Int!, $columns: Int!) {
+    addHall(hall_name: $hallName, capacity: $capacity, cinemaId: $cinemaId, rows: $rows, columns: $columns) {
       hall_name
       id
       cinemaId
       capacity
+      rows
+      columns
     }
   }
 `;
@@ -33,6 +36,8 @@ export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
   const [cinemaId, setCinemaId] = useState("");
   const [hallName, setHallName] = useState("");
   const [capacity, setCapacity] = useState(0);
+  const [rows, setRows] = useState(0);
+  const [columns, setColumns] = useState(0);
 
   const load = async () => {
     const data: { getAllCinemas: Cinema[] } = await gqlClient.request(
@@ -46,10 +51,24 @@ export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!cinemaId) {
+      toast.error("Please select Cinema!");
+      return;
+    }
+    if (!hallName) {
+      toast.error("Please enter hall name!");
+      return;
+    }
+    if (capacity <= 0) {
+      toast.error("Please enter valid capacity!");
+      return;
+    }
     const addData = await gqlClient.request(ADD_HALL, {
       hallName,
       cinemaId,
       capacity,
+      rows,
+      columns
     });
 
     setHallName("");
@@ -87,6 +106,22 @@ export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
         value={capacity}
         onChange={(e) => setCapacity(Number(e.target.value))}
         placeholder="Capacity"
+      />
+      <label className="text-muted-foreground ">Rows :</label>
+      <input
+        type="number"
+        className="w-full border p-2 rounded mt-2"
+        value={rows}
+        onChange={(e) => setRows(Number(e.target.value))}
+        placeholder="Rows"
+      />
+      <label className="text-muted-foreground ">Columns :</label>
+      <input
+        type="number"
+        className="w-full border p-2 rounded mt-2"
+        value={columns}
+        onChange={(e) => setColumns(Number(e.target.value))}
+        placeholder="Columns"
       />
       <button type="submit" className="bg-red-600 text-white px-4 py-2 rounded">
         Add Hall

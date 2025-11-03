@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Hall, Movie, Show, Cinema } from "../../../../../generated/prisma";
+import { SignedOut, SignInButton, useUser } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 export type ShowWithHall = Show & {
   hall: Hall & { cinema: Cinema };
@@ -21,7 +23,7 @@ export default function BuyTicketsPage() {
   const [shows, setShows] = useState<ShowWithHall[]>([]);
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState<Movie>();
-
+  const { isLoaded, isSignedIn, user } = useUser();
   useEffect(() => {
     async function fetchShows() {
       try {
@@ -34,7 +36,6 @@ export default function BuyTicketsPage() {
         setLoading(false);
       }
     }
-
     async function fetchMovie() {
       try {
         const movRes: {
@@ -63,6 +64,7 @@ export default function BuyTicketsPage() {
         <span className="loading loading-spinner loading-xl"></span>
       </p>
     );
+  console.log("shows--_--", shows);
 
   if (!shows.length)
     return <p className="p-6 h-screen">No shows available for this movie.</p>;
@@ -104,21 +106,40 @@ export default function BuyTicketsPage() {
               </p>
             </div>
             <div className="flex flex-wrap gap-3 w-3/5">
-              {group.shows.map((show: ShowWithHall) => (
-                <Link
-                  key={show.id}
-                  href={`/movie/seatselection/${show.id}`}
-                  className="px-4 py-2 text-muted-foreground text-sm flex flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32"
-                >
-                  {new Date(Number(show.start)).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                  <p className="text-[8px] font-bold text-muted-foreground">
-                    Dolby Atmos
-                  </p>
-                </Link>
-              ))}
+              {group.shows.map((show: ShowWithHall) =>
+                isSignedIn ? (
+                  <Link
+                    key={show.id}
+                    href={`/movie/seatselection/${show.id}`}
+                    className="px-4 py-2 text-muted-foreground text-sm flex cursor-pointer flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32"
+                  >
+                    {new Date(Number(show.start)).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      timeZone: "UTC",
+                    })}
+                    <p className="text-[8px] font-bold text-muted-foreground">
+                      Dolby Atmos
+                    </p>
+                  </Link>
+                ) : (
+                  <SignedOut>
+                    {/* Sign In Modal */}
+                    <SignInButton mode="modal">
+                      <Button className="px-4 py-2 text-muted-foreground cursor-pointer bg-white hover:bg-white text-sm flex flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32">
+                        {new Date(Number(show.start)).toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          timeZone: "UTC",
+                        })}
+                        <p className="text-[8px] font-bold text-muted-foreground">
+                          Dolby Atmos
+                        </p>
+                      </Button>
+                    </SignInButton>
+                  </SignedOut>
+                )
+              )}
             </div>
           </div>
         ))}

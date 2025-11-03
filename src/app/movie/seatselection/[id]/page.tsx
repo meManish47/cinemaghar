@@ -27,17 +27,19 @@ const stripePromise = loadStripe(
 export default function SeatSelection() {
   const { id } = useParams();
   const [seats, setSeats] = useState<Seat[]>([]);
+  const [hall, setHall] = useState<Hall>();
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const currentUser = useUser();
   const currentUserId = currentUser.user?.id;
+  const seatMap = [];
   useEffect(() => {
     async function fetchSeats() {
       try {
         const data: { getShowById: SHOW_WITH_HALL_MOVIE } =
           await gqlClient.request(GET_SHOW_BY_ID, { showId: id });
-
         setSeats(data.getShowById.hall.seats);
+        setHall(data.getShowById.hall);
       } catch (err) {
         console.error("Failed to fetch seats:", err);
       } finally {
@@ -47,23 +49,16 @@ export default function SeatSelection() {
     fetchSeats();
   }, [id]);
 
-  const grouped = seats.reduce((acc, seat) => {
-    if (!acc[seat.row_no]) acc[seat.row_no] = [];
-    acc[seat.row_no].push(seat);
-    return acc;
-  }, {} as Record<number, Seat[]>);
-
   const toggleSeat = (seatId: string) => {
     setSelected((prev) =>
       prev.includes(seatId)
         ? prev.filter((s) => s !== seatId)
         : [...prev, seatId]
     );
+    console.log(selected);
   };
 
   const handleProceed = async () => {
-    console.log("Proceeding with seats:", selected);
-
     if (!selected.length) {
       alert("Please select at least one seat.");
       return;
@@ -91,58 +86,71 @@ export default function SeatSelection() {
     }
   };
 
-  function selectSeat(id: string) {
-    if (selected.length >= 6) {
-      toast.error("Cant select more than 6 seats!!!");
-      return;
-    }
-    toggleSeat(id);
-  }
+  const selectSeat = (seatId: string) => {
+    setSelected((prev) => {
+      const alreadySelected = prev.includes(seatId);
 
+      if (alreadySelected) {
+        return prev.filter((s) => s !== seatId);
+      }
+
+      if (prev.length >= 6) {
+        toast.error("Can't select more than 6 seats!");
+        return prev;
+      }
+
+      return [...prev, seatId];
+    });
+  };
+
+  function renderSeatMap() {
+    if (!hall) return null;
+    const rows = [];
+
+    for (let i = 0; i < hall.rows; i++) {
+      const rowSeats = [];
+      for (let j = 0; j < hall.columns; j++) {
+        const seatLabel = `${String.fromCharCode(65 + i)}${j + 1}`;
+        const seat = seats.find((seat) => seat.seat_no == seatLabel);
+        const seatId = seat ? seat.id : "xx";
+        const isSelected = selected.includes(seatId);
+
+        rowSeats.push(
+          <button
+            key={seatId}
+            onClick={() => selectSeat(seatId)}
+            className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded border transition
+    ${
+      selected.includes(seatId)
+        ? "bg-green-600 text-white"
+        : "bg-white hover:bg-green-100"
+    }`}
+          >
+            {seatLabel}
+          </button>
+        );
+      }
+      rows.push(
+        <div key={i} className="flex justify-center gap-1 mb-1">
+          {rowSeats}
+        </div>
+      );
+    }
+    return rows;
+  }
   return (
-    <main className="min-h-screen w-full flex  justify-center p-10">
+    <main className="min-h-screen w-full flex  justify-center gap-4 p-10">
       <div className="w-5xl flex flex-col items-center">
         <h1 className="text-2xl font-bold mb-6">🎟 Select Your Seats</h1>
 
         {loading ? (
           <p className="text-gray-600">Loading seats...</p>
         ) : (
-          <div className="h-160 bg-gray-100 rounded-xl p-6 shadow-md overflow-auto">
-            {Object.keys(grouped)
-              .sort((a, b) => Number(a) - Number(b))
-              .map((row) => (
-                <div key={row} className="flex gap-2 mb-4 justify-center">
-                  <span className="w-6 font-bold text-gray-700">
-                    {String.fromCharCode(64 + Number(row))}
-                  </span>
-
-                  {grouped[Number(row)]
-                    .sort((a, b) => a.seat_no - b.seat_no)
-                    .map((seat) => {
-                      const isSelected = selected.includes(seat.id);
-                      const isBooked = seat.isBooked;
-
-                      return (
-                        <button
-                          key={seat.id}
-                          onClick={() => selectSeat(seat.id)}
-                          disabled={isBooked}
-                          className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded 
-                          border transition
-                          ${
-                            isBooked
-                              ? "bg-gray-400 cursor-not-allowed text-white"
-                              : isSelected
-                              ? "bg-green-600 text-white"
-                              : "bg-white hover:bg-green-100"
-                          }`}
-                        >
-                          {seat.seat_no}
-                        </button>
-                      );
-                    })}
-                </div>
-              ))}
+          <div className="min-h-160 bg-gray-100 rounded-xl p-6 shadow-md overflow-auto flex flex-col gap-2 justify-center max-w-5xl overflow-x-scroll">
+            <h4 className="text-center h-8 text-white tracking-widest rounded-t-full p-2 w-full bg-gray-600 self-center">
+              SCREEN
+            </h4>
+            {renderSeatMap()}
           </div>
         )}
       </div>
@@ -154,7 +162,7 @@ export default function SeatSelection() {
         <button
           disabled={!selected.length}
           onClick={handleProceed}
-          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg disabled:bg-gray-400"
+          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg disabled:bg-gray-400 cursor-pointer"
         >
           Proceed to Pay
         </button>

@@ -39,8 +39,6 @@ export default function ShowsPage() {
       <div className="mb-10">
         <AddShowForm movies={movies} halls={halls} onAdded={load} />
       </div>
-
-      {/* Future: list existing shows */}
       <p className="text-gray-500">
         (Coming soon) List of all shows will appear here...
       </p>

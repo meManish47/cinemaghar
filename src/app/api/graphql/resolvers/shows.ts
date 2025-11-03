@@ -55,8 +55,10 @@ export async function addShow(
       },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
-
+    // console.log("---------")
+    // console.log(startDateTime,finishDateTime,args.date)
     return show;
+    return null
   } catch (error) {
     console.error("Error adding show:", error);
     return null;

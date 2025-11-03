@@ -7,7 +7,6 @@ import { gqlClient } from "./services/gql";
 
 // Match /admin routes
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
-const isSeatRoute = createRouteMatcher(["/movie/seatselection/(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   // If route is /admin, check user
   if (isAdminRoute(req)) {
@@ -21,17 +20,14 @@ export default clerkMiddleware(async (auth, req) => {
       GET_USER_BY_CLERK_ID,
       { clerkId }
     );
+    if(!currentUser.getUserByClerkId){
+      return NextResponse.redirect(new URL("/", req.url));
+    }
     if (currentUser.getUserByClerkId.email !== "kmanish57610@gmail.com") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
-  if (isSeatRoute(req)) {
-    const userCookies = await getUserFromCookie();
-    if (!userCookies) {
-      return NextResponse.redirect(new URL("/?q=auth_error", req.url));
-    }
-  }
   return NextResponse.next();
 });
 

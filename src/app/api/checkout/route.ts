@@ -30,14 +30,10 @@ export async function POST(req: Request) {
       seats.map(async (seatId) => {
         const seatRes: { getSeatById: Seat & { hall: HallsWithCinema } } =
           await gqlClient.request(GET_SEAT_BY_ID, { seatId });
-
-        const rowLetter = String.fromCharCode(64 + seatRes.getSeatById.row_no);
-
-        return `${rowLetter} ${seatRes.getSeatById.seat_no}`;
+        return ` ${seatRes.getSeatById.seat_no}`;
       })
     );
 
-    // console.log("_-_-_--_-_-_-_____-_--_-----_--__-___-__----_", currentUserId);
     const currentUser = await prismaClient.user.findUnique({
       where: { clerkId: currentUserId },
     });

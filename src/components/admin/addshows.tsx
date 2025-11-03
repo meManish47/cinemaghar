@@ -1,6 +1,10 @@
 "use client";
 
+import { Label } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { gqlClient } from "@/services/gql";
 import { ADD_SHOW } from "@/app/queries";
 
@@ -32,7 +36,11 @@ type ShowForm = {
   date: string;
 };
 
-export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps) {
+export default function AddShowForm({
+  movies,
+  halls,
+  onAdded,
+}: AddShowFormProps) {
   const [form, setForm] = useState<ShowForm>({
     movieId: "",
     hallId: "",
@@ -43,6 +51,17 @@ export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (
+      !form.movieId ||
+      !form.date ||
+      !form.finish ||
+      !form.hallId ||
+      !form.start
+    ) {
+      toast.error("Please fill all details!");
+      return;
+    }
+    console.log(form);
     await gqlClient.request(ADD_SHOW, form);
     setForm({ movieId: "", hallId: "", start: "", finish: "", date: "" });
     if (onAdded) onAdded();
@@ -51,14 +70,13 @@ export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white shadow-md border rounded-2xl p-6 space-y-4"
+      className=" shadow-md border rounded-2xl p-6 space-y-4 max-w-md"
     >
       <h2 className="text-xl font-semibold text-gray-800 mb-2">➕ Add Show</h2>
 
       <select
         value={form.movieId}
         onChange={(e) => setForm({ ...form, movieId: e.target.value })}
-        required
         className="w-full border rounded-lg px-3 py-2"
       >
         <option value="">Select Movie</option>
@@ -72,7 +90,6 @@ export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps
       <select
         value={form.hallId}
         onChange={(e) => setForm({ ...form, hallId: e.target.value })}
-        required
         className="w-full border rounded-lg px-3 py-2"
       >
         <option value="">Select Hall</option>
@@ -82,35 +99,43 @@ export default function AddShowForm({ movies, halls, onAdded }: AddShowFormProps
           </option>
         ))}
       </select>
+      <div className="flex  justify-between items-center pe-16">
+        <Label>Release Date :</Label>
+        <Input
+          type="date"
+          value={form.date}
+          onChange={(e) => setForm({ ...form, date: e.target.value })}
+          className="w-max border rounded-lg px-3 py-2 appearance-none p-2  [&::-webkit-calendar-picker-indicator]:invert"
+        />
+      </div>
+      <div className="flex  justify-between items-center pe-16">
+        <Label>Start Time :</Label>
+        <Input
+          type="time"
+          value={form.start}
+          onChange={(e) => setForm({ ...form, start: e.target.value })}
+          className="w-max min-w-35 border rounded-lg px-3 py-2 appearance-none 
+         [&::-webkit-calendar-picker-indicator]:invert"
+        />
+      </div>
+      <div className="flex  justify-between items-center pe-16">
+        <Label>End Time :</Label>
 
-      <input
-        type="date"
-        value={form.date}
-        onChange={(e) => setForm({ ...form, date: e.target.value })}
-        required
-        className="w-full border rounded-lg px-3 py-2"
-      />
-      <input
-        type="time"
-        value={form.start}
-        onChange={(e) => setForm({ ...form, start: e.target.value })}
-        required
-        className="w-full border rounded-lg px-3 py-2"
-      />
-      <input
-        type="time"
-        value={form.finish}
-        onChange={(e) => setForm({ ...form, finish: e.target.value })}
-        required
-        className="w-full border rounded-lg px-3 py-2"
-      />
+        <Input
+          type="time"
+          value={form.finish}
+          onChange={(e) => setForm({ ...form, finish: e.target.value })}
+          className="w-max min-w-35 border rounded-lg px-3 py-2 appearance-none 
+         [&::-webkit-calendar-picker-indicator]:invert"
+        />
+      </div>
 
-      <button
+      <Button
         type="submit"
         className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
       >
         Add Show
-      </button>
+      </Button>
     </form>
   );
 }

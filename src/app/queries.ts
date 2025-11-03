@@ -96,14 +96,16 @@ export const GET_SHOW_BY_ID = gql`
       movieId
       start
       hall {
+        rows
+        columns
         cinema {
           name
         }
         seats {
           id
-          seat_no
           row_no
-          isBooked
+          col_no
+          seat_no
         }
         hall_name
         id
