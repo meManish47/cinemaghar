@@ -5,11 +5,13 @@ import { getAllMovies, getMovieWithId } from "./resolvers/movie";
 import { getSeatById } from "./resolvers/seats";
 import {
   addShow,
+  deleteShow,
+  getAllShows,
   getShowById,
   getShowsByCinema,
   getShowsByMovie,
 } from "./resolvers/shows";
-import {  getTicketDataFromSession } from "./resolvers/ticket";
+import { getTicketDataFromSession } from "./resolvers/ticket";
 import {
   getCurrentUserEmail,
   getUserByClerkId,
@@ -29,6 +31,7 @@ const resolvers = {
     getTicketDataFromSession,
     getUserByClerkId,
     getCurrentUserEmail,
+    getAllShows,
   },
   Mutation: {
     addCinema,
@@ -37,6 +40,7 @@ const resolvers = {
     createBooking,
     confirmBooking,
     logoutUser,
+    deleteShow,
   },
 };
 export default resolvers;

@@ -17,16 +17,14 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
       </p>
     );
   }
-  console.log("TICKET DATA", ticketData);
+  // console.log("TICKET DATA", ticketData);
   return (
     <main className="flex flex-col items-center min-h-screen bg-gray-100 py-10 px-4">
       <h1 className="text-2xl font-bold text-green-600 mb-6">
         Booking Confirmed 🎉
       </h1>
 
-      {/* Ticket Card */}
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md relative overflow-hidden">
-        {/* Movie Poster */}
         <Image
           src={
             ticketData.moviePoster
@@ -39,7 +37,6 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
           className="w-full h-48 object-cover"
         />
 
-        {/* Ticket Details */}
         <div className="p-6">
           <h2 className="text-xl font-bold">{ticketData.movieTitle}</h2>
           <p className="text-gray-600">{ticketData.cinemaName}</p>
@@ -65,7 +62,6 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
             </div>
           </div>
 
-          {/* QR Code */}
           <div className="mt-6 flex justify-center">
             <QRCode value={sessionId} size={128} />
           </div>
@@ -74,11 +70,9 @@ export default function SuccessPageClient({ ticketData, sessionId }: Props) {
           </p>
         </div>
 
-        {/* Perforation effect */}
         <div className="absolute top-48 left-0 w-full border-t border-dashed border-gray-300"></div>
       </div>
 
-      {/* Buttons */}
       <div className="mt-6 flex gap-4">
         <button
           onClick={() => window.print()}

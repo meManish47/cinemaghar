@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import {
+  Booking,
   Cinema,
   Hall,
   Movie,
@@ -18,6 +19,7 @@ import { toast } from "sonner";
 export type SHOW_WITH_HALL_MOVIE = Show & {
   hall: Hall & { cinema: Cinema; seats: Seat[] };
   movie: Movie;
+  bookings: Booking & { seats: [Seat] }[];
 };
 
 const stripePromise = loadStripe(
@@ -27,12 +29,12 @@ const stripePromise = loadStripe(
 export default function SeatSelection() {
   const { id } = useParams();
   const [seats, setSeats] = useState<Seat[]>([]);
+  const [bookedSeatsIds, setBookedSeatsIds] = useState<string[]>([]);
   const [hall, setHall] = useState<Hall>();
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const currentUser = useUser();
   const currentUserId = currentUser.user?.id;
-  const seatMap = [];
   useEffect(() => {
     async function fetchSeats() {
       try {
@@ -40,6 +42,18 @@ export default function SeatSelection() {
           await gqlClient.request(GET_SHOW_BY_ID, { showId: id });
         setSeats(data.getShowById.hall.seats);
         setHall(data.getShowById.hall);
+        const arr = data.getShowById.bookings.map((booking) => {
+          const newArr = booking.seats.map((seatobj) => {
+            return seatobj.id;
+          });
+          return newArr;
+        });
+        arr.forEach((booking) => {
+          booking.forEach((id) => {
+            setBookedSeatsIds((prev) => [...prev, id]);
+          });
+        });
+        // console.log("bnooked ", arr[0]);
       } catch (err) {
         console.error("Failed to fetch seats:", err);
       } finally {
@@ -49,18 +63,9 @@ export default function SeatSelection() {
     fetchSeats();
   }, [id]);
 
-  const toggleSeat = (seatId: string) => {
-    setSelected((prev) =>
-      prev.includes(seatId)
-        ? prev.filter((s) => s !== seatId)
-        : [...prev, seatId]
-    );
-    console.log(selected);
-  };
-
   const handleProceed = async () => {
     if (!selected.length) {
-      alert("Please select at least one seat.");
+      toast.error("Please select at least one seat.");
       return;
     }
 
@@ -76,6 +81,7 @@ export default function SeatSelection() {
 
       if (!res.ok || !data.url) {
         alert("Failed to create checkout: " + (data.error || "Unknown error"));
+        console.log(data.error);
         return;
       }
 
@@ -114,14 +120,17 @@ export default function SeatSelection() {
         const seat = seats.find((seat) => seat.seat_no == seatLabel);
         const seatId = seat ? seat.id : "xx";
         const isSelected = selected.includes(seatId);
-
+        const isBooked = bookedSeatsIds.includes(seatId);
         rowSeats.push(
           <button
             key={seatId}
+            disabled={isBooked}
             onClick={() => selectSeat(seatId)}
             className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded border transition
     ${
-      selected.includes(seatId)
+      isBooked
+        ? "cursor-not-allowed bg-gray-400"
+        : selected.includes(seatId)
         ? "bg-green-600 text-white"
         : "bg-white hover:bg-green-100"
     }`}

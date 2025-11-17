@@ -116,6 +116,12 @@ export const GET_SHOW_BY_ID = gql`
         release_date
         cover
       }
+      bookings {
+        createdAt
+        seats {
+          id
+        }
+      }
     }
   }
 `;
@@ -169,8 +175,18 @@ export const GET_USER_BY_CLERK_ID = gql`
 `;
 
 export const CREATE_BOOKING = gql`
-  mutation CreateBooking($userId: String!, $showId: String!, $status: String!) {
-    createBooking(userId: $userId, showId: $showId, status: $status) {
+  mutation CreateBooking(
+    $userId: String!
+    $showId: String!
+    $status: String!
+    $seats: [String]!
+  ) {
+    createBooking(
+      userId: $userId
+      showId: $showId
+      status: $status
+      seats: $seats
+    ) {
       createdAt
       id
       show {
@@ -183,10 +199,6 @@ export const CREATE_BOOKING = gql`
         clerkId
       }
       userId
-      ticket {
-        id
-        seatId
-      }
     }
   }
 `;
@@ -237,6 +249,30 @@ export const GENERATE_TICKETS = gql`
         id
       }
       seatId
+    }
+  }
+`;
+export const DELETE_SHOW = gql`
+  mutation DeleteShow($showId: String!) {
+    deleteShow(showId: $showId)
+  }
+`;
+
+export const GET_ALL_SHOWS = gql`
+  query GetAllShows {
+    getAllShows {
+      start
+      movieId
+      id
+      hallId
+      finish
+      date
+      hall {
+        hall_name
+      }
+      movie {
+        movie_title
+      }
     }
   }
 `;

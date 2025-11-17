@@ -41,6 +41,7 @@ export async function POST(req: Request) {
       CREATE_BOOKING,
       {
         showId,
+        seats,
         userId: currentUser?.id,
         status: "PENDING",
       }

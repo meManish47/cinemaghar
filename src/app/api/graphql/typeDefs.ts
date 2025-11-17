@@ -16,7 +16,6 @@ const typeDefs = gql`
     seats: [String!]
     screen: String
     user: User
-    tickets: [Ticket]
   }
   type User {
     id: String!
@@ -59,12 +58,12 @@ const typeDefs = gql`
     movieId: String!
     hall: Hall!
     movie: Movie!
+    bookings: [Booking]
   }
-  input SeatInputForTicket {
+  input SeatInputForBooking {
     id: String!
-    row_no: Int!
-    seat_no: Int!
   }
+
   type Seat {
     id: String!
     hallId: String!
@@ -72,13 +71,7 @@ const typeDefs = gql`
     row_no: Int
     col_no: Int
     seat_no: String
-    }
-  type Ticket {
-    id: String
     bookingId: String
-    seatId: String
-    booking: Booking
-    seat: Seat
   }
   type Booking {
     id: String
@@ -88,7 +81,7 @@ const typeDefs = gql`
     showId: String
     user: User
     show: Show
-    ticket: [Ticket]
+    seats: [Seat]
   }
   type Query {
     getAllMovies: [Movie]
@@ -97,11 +90,12 @@ const typeDefs = gql`
     getAllHalls: [Hall!]!
     getShowsByMovie(movieId: String!): [Show!]!
     getShowsByCinema(cinemaId: String!): [Show!]!
-    getShowById(showId: String!): Show!
+    getShowById(showId: String!): Show
     getSeatById(seatId: String!): Seat
     getUserByClerkId(clerkId: String!): User
     getTicketDataFromSession(sessionId: String!): TicketResponse
     getCurrentUserEmail: String
+    getAllShows:[Show]
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
@@ -119,9 +113,15 @@ const typeDefs = gql`
       finish: String!
       date: String!
     ): Show
-    createBooking(userId: String!, showId: String!, status: String!): Booking
+    createBooking(
+      userId: String!
+      showId: String!
+      status: String!
+      seats: [String]!
+    ): Booking
     confirmBooking(bookingId: String!): Booking
     logoutUser: Boolean
+    deleteShow(showId: String!): Boolean
   }
 `;
 export default typeDefs;

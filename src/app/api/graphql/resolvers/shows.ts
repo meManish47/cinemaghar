@@ -58,7 +58,7 @@ export async function addShow(
     // console.log("---------")
     // console.log(startDateTime,finishDateTime,args.date)
     return show;
-    return null
+    return null;
   } catch (error) {
     console.error("Error adding show:", error);
     return null;
@@ -74,10 +74,42 @@ export async function getShowById(
       include: {
         hall: { include: { seats: true, cinema: true } },
         movie: true,
+        bookings: { include: { seats: true } },
       },
     });
     if (show) return show;
     return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function deleteShow(parent: unknown, args: { showId: string }) {
+  try {
+    // console.log("entered deleted");
+    const show = await prismaClient.show.findUnique({
+      where: { id: args.showId },
+      include: { bookings: true },
+    });
+    console.log("show found");
+    if (!show) return false;
+    // await prismaClient.booking.deleteMany({ where: { showId: args.showId } });
+    await prismaClient.show.delete({
+      where: { id: args.showId },
+    });
+    console.log("deleted");
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+export async function getAllShows() {
+  try {
+    const shows = await prismaClient.show.findMany({
+      include: { hall: true, movie: true },
+    });
+    return shows;
   } catch (error) {
     return null;
   }

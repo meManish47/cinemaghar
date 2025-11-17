@@ -1,6 +1,10 @@
 "use client";
 
-import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
+import {
+  DELETE_SHOW,
+  GET_MOVIES_BY_ID,
+  GET_SHOWS_BY_MOVIE,
+} from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -11,6 +15,7 @@ import { Button } from "@/components/ui/button";
 
 export type ShowWithHall = Show & {
   hall: Hall & { cinema: Cinema };
+  movie: Movie;
 };
 
 type GroupedCinema = {
@@ -23,19 +28,43 @@ export default function BuyTicketsPage() {
   const [shows, setShows] = useState<ShowWithHall[]>([]);
   const [loading, setLoading] = useState(true);
   const [movie, setMovie] = useState<Movie>();
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
+
+  async function deleteOvertimeShow(showId: string) {
+    try {
+      console.log("Deleting expired show:", showId);
+      await gqlClient.request(DELETE_SHOW, { showId });
+    } catch (error) {
+      console.error("Error deleting show", error);
+    }
+  }
+
   useEffect(() => {
     async function fetchShows() {
       try {
         const res: { getShowsByMovie: ShowWithHall[] } =
           await gqlClient.request(GET_SHOWS_BY_MOVIE, { movieId: id });
-        setShows(res.getShowsByMovie || []);
+
+        const allShows = res.getShowsByMovie || [];
+        const now = new Date();
+
+        const showsToKeep = allShows.filter((show) => {
+          const deleteTime =
+            now.getTime() >= new Date(Number(show.start) - 21600000).getTime();
+          if (deleteTime) {
+            deleteOvertimeShow(show.id);
+          }
+          return !deleteTime;
+        });
+
+        setShows(showsToKeep);
       } catch (err) {
         console.error("Error fetching shows:", err);
       } finally {
         setLoading(false);
       }
     }
+
     async function fetchMovie() {
       try {
         const movRes: {
@@ -64,12 +93,10 @@ export default function BuyTicketsPage() {
         <span className="loading loading-spinner loading-xl"></span>
       </p>
     );
-  console.log("shows--_--", shows);
 
   if (!shows.length)
     return <p className="p-6 h-screen">No shows available for this movie.</p>;
 
-  // Group shows by cinema
   const groupedByCinema: Record<string, GroupedCinema> = shows.reduce(
     (acc: Record<string, GroupedCinema>, show: ShowWithHall) => {
       const cinemaId = show.hall.cinema.id;
@@ -113,6 +140,9 @@ export default function BuyTicketsPage() {
                     href={`/movie/seatselection/${show.id}`}
                     className="px-4 py-2 text-muted-foreground text-sm flex cursor-pointer flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32"
                   >
+                    <p className="text-[8px] font-bold text-muted-foreground">
+                      {new Date(Number(show.date)).toISOString().split("T")[0]}
+                    </p>
                     {new Date(Number(show.start)).toLocaleTimeString([], {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -124,7 +154,6 @@ export default function BuyTicketsPage() {
                   </Link>
                 ) : (
                   <SignedOut>
-                    {/* Sign In Modal */}
                     <SignInButton mode="modal">
                       <Button className="px-4 py-2 text-muted-foreground cursor-pointer bg-white hover:bg-white text-sm flex flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32">
                         {new Date(Number(show.start)).toLocaleTimeString([], {

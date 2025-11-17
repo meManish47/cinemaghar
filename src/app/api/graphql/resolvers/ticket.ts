@@ -96,7 +96,7 @@ export async function getTicketDataFromSession(
       screen: showRes.getShowById.hall.hall_name,
       user: user,
      };
-    console.log("SUCCESPAGE TICKET ", returnObj);
+    // console.log("SUCCESPAGE TICKET ", returnObj);
     return returnObj;
   } catch (error) {
     return { error: (error as Error).message, status: 500 };
