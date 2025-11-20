@@ -153,7 +153,7 @@ export default function BuyTicketsPage() {
                     </p>
                   </Link>
                 ) : (
-                  <SignedOut>
+                  <SignedOut key={show.id}>
                     <SignInButton mode="modal">
                       <Button className="px-4 py-2 text-muted-foreground cursor-pointer bg-white hover:bg-white text-sm flex flex-col items-center justify-center rounded-xs border-2 border-green-500 border-l-4 h-12 w-32">
                         {new Date(Number(show.start)).toLocaleTimeString([], {

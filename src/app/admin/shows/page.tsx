@@ -63,7 +63,7 @@ export default function ShowsPage() {
         <h1>Upcoming Shows:</h1>
         {shows.map((show) => {
           return (
-            <div className="mx-4 h-max w-max text-black  rounded-2xl drop-shadow-2xl flex justify-between  px-4 py-2 border-2 gap-2">
+            <div key={show.id} className="mx-4 h-max w-max text-black  rounded-2xl drop-shadow-2xl flex justify-between  px-4 py-2 border-2 gap-2">
               <div className="flex flex-col">
                 <p>
                   <span className="text-muted-foreground">Movie:</span>{" "}
