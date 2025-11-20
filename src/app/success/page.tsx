@@ -14,9 +14,13 @@ export type TicketResponse = {
   screen: string;
   user: User;
 };
-export default async function Page({ searchParams }: { searchParams: { session_id?: string } }) {
-  const sessionId = searchParams.session_id;
-
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ session_id: string }>;
+}) {
+  const { session_id } = await searchParams;
+  const sessionId = session_id;
   if (!sessionId) return <p>No session id provided</p>;
 
   const res: { getTicketDataFromSession: TicketResponse } =
