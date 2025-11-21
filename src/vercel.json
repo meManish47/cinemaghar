@@ -1,5 +1,6 @@
 {
-  "cron": {
-    "dailyJob": "*/10 * * * * *"
-  }
+  "crons": [{
+    "path": "/api/dailyjob",
+    "schedule": "*/20 * * * * *"
+  }]
 }
