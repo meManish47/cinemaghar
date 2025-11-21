@@ -276,3 +276,24 @@ export const GET_ALL_SHOWS = gql`
     }
   }
 `;
+
+export const GETMOVIEWITHID = gql`
+  query GetMovieWithId($getMovieWithIdId: String!) {
+    getMovieWithId(id: $getMovieWithIdId) {
+      success
+      movie {
+        cover
+        movie_title
+        id
+        overview
+        popularity
+        release_date
+        thumbnail
+        shows {
+          id
+        }
+      }
+      message
+    }
+  }
+`;

@@ -1,29 +1,14 @@
 import { notFound } from "next/navigation";
-import { Movie } from "../../../../generated/prisma";
+import { Movie, Show } from "../../../../generated/prisma";
 import Link from "next/link";
 import { gql } from "graphql-request";
 import { gqlClient } from "@/services/gql";
-const GETMOVIEWITHID = gql`
-  query GetMovieWithId($getMovieWithIdId: String!) {
-    getMovieWithId(id: $getMovieWithIdId) {
-      success
-      movie {
-        cover
-        movie_title
-        id
-        overview
-        popularity
-        release_date
-        thumbnail
-      }
-      message
-    }
-  }
-`;
+import { GETMOVIEWITHID } from "@/app/queries";
 
-async function getMovie(id: string): Promise<Movie | null> {
+type MovieWithShow = Movie & { shows: Show[] };
+async function getMovie(id: string): Promise<MovieWithShow | null> {
   const data: {
-    getMovieWithId: { success: boolean; movie: Movie; message: string };
+    getMovieWithId: { success: boolean; movie: MovieWithShow; message: string };
   } = await gqlClient.request(GETMOVIEWITHID, { getMovieWithIdId: id });
   const res = data.getMovieWithId;
   if (res.success) return res.movie;
@@ -38,7 +23,6 @@ export default async function MoviePage({
   const { id } = await params;
   const movie = await getMovie(id);
   if (!movie) return notFound();
-
   return (
     <main className="w-full min-h-screen text-white">
       {/* Hero Section */}
@@ -92,9 +76,13 @@ export default async function MoviePage({
             {/* CTA */}
             <Link
               href={`/movie/buytickets/${movie.id}`}
-              className="inline-block px-6 py-3 bg-pink-600 hover:bg-pink-700 text-lg font-semibold rounded-lg transition"
+              className={
+                movie.shows.length
+                  ? `inline-block px-6 py-3 bg-pink-600 hover:bg-pink-700 text-lg font-semibold rounded-lg transition`
+                  : `inline-block px-6 py-3 bg-gray-600 hover:bg-gray-700 text-lg font-semibold rounded-lg transition cursor-not-allowed pointer-events-none`
+              }
             >
-              Book Tickets
+              {movie.shows.length ? `Book Tickets` : `No shows`}
             </Link>
           </div>
         </div>

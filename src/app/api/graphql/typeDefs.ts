@@ -48,6 +48,7 @@ const typeDefs = gql`
     cover: String
     release_date: String
     overview: String
+    shows: [Show]
   }
   type Show {
     id: String!
@@ -95,7 +96,7 @@ const typeDefs = gql`
     getUserByClerkId(clerkId: String!): User
     getTicketDataFromSession(sessionId: String!): TicketResponse
     getCurrentUserEmail: String
-    getAllShows:[Show]
+    getAllShows: [Show]
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
