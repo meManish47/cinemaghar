@@ -7,7 +7,7 @@ import HomePage from "../homepage/homepage";
 export default async function HomeLogic() {
   // const { user, isSignedIn, isLoaded } = useUser();
   const User = await currentUser();
-  console.log(User);
+  // console.log(User);
   const adminEmail = "kmanish57610@gmail.com";
   // const currentEmail = user?.primaryEmailAddress?.emailAddress;
   const currentEmail = User?.emailAddresses[0].emailAddress;
