@@ -22,7 +22,7 @@ export default async function MoviePage({
   const { id } = await params;
   const movie = await getMovie(id);
   if (!movie) return notFound();
-  // console.log(movie);
+  console.log(movie);
   return (
     <main className="w-full min-h-screen text-white sm:pt-4">
       <section
@@ -53,7 +53,7 @@ export default async function MoviePage({
             </p>
 
             <div className="flex flex-wrap justify-center md:justify-start gap-2 sm:gap-3 mb-4 sm:mb-6 text-xs sm:text-sm">
-              <span className="px-2 py-1 bg-pink-600 rounded-md font-medium">
+              <span className="px-2 py-1 bg-white text-black rounded-md font-medium">
                 ⭐ 8.4/10
               </span>
               <span className="px-2 py-1 bg-gray-800 rounded-md">2D</span>
