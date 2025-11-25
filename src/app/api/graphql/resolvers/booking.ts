@@ -40,3 +40,26 @@ export async function confirmBooking(
     return null;
   }
 }
+
+export async function getBookingsByHall(
+  parent: unknown,
+  args: { hallId: string }
+) {
+  try {
+    const bookings = await prismaClient.booking.findMany({
+      where: { show: { hallId: args.hallId } },
+      include: {
+        seats: true,
+        user: true,
+        show: {
+          include: {
+            movie: true,
+          },
+        },
+      },
+    });
+    return bookings;
+  } catch (error) {
+    return null;
+  }
+}

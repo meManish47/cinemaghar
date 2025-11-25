@@ -11,7 +11,10 @@ export async function getAllMovies() {
 }
 export async function getMovieWithId(_: unknown, args: { id: string }) {
   try {
-    const movie = await prismaClient.movie.findUnique({ where: { id :args.id} ,include:{shows:true}});
+    const movie = await prismaClient.movie.findUnique({
+      where: { id: args.id },
+      include: { shows: { where: { deletedAt: { equals: undefined } } } },
+    });
 
     if (!movie) {
       return { success: false, movie: null, message: "Movie not found" };

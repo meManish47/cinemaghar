@@ -8,6 +8,7 @@ import {
   Movie,
   Seat,
   Show,
+  User,
 } from "../../../../../generated/prisma";
 import { gqlClient } from "@/services/gql";
 import { GET_SHOW_BY_ID } from "@/app/queries";
@@ -15,11 +16,12 @@ import { useParams } from "next/navigation";
 import { loadStripe } from "@stripe/stripe-js";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "sonner";
+import { BookingWithSeats } from "@/components/show/showBookingDialog";
 
 export type SHOW_WITH_HALL_MOVIE = Show & {
   hall: Hall & { cinema: Cinema; seats: Seat[] };
   movie: Movie;
-  bookings: Booking & { seats: [Seat] }[];
+  bookings: BookingWithSeats[];
 };
 
 const stripePromise = loadStripe(
@@ -35,25 +37,26 @@ export default function SeatSelection() {
   const [loading, setLoading] = useState(true);
   const currentUser = useUser();
   const currentUserId = currentUser.user?.id;
+
   useEffect(() => {
     async function fetchSeats() {
       try {
         const data: { getShowById: SHOW_WITH_HALL_MOVIE } =
           await gqlClient.request(GET_SHOW_BY_ID, { showId: id });
+
         setSeats(data.getShowById.hall.seats);
         setHall(data.getShowById.hall);
+
         const arr = data.getShowById.bookings.map((booking) => {
-          const newArr = booking.seats.map((seatobj) => {
-            return seatobj.id;
-          });
+          const newArr = booking.seats.map((seatobj) => seatobj.id);
           return newArr;
         });
+
         arr.forEach((booking) => {
-          booking.forEach((id) => {
-            setBookedSeatsIds((prev) => [...prev, id]);
+          booking.forEach((seatId) => {
+            setBookedSeatsIds((prev) => [...prev, seatId]);
           });
         });
-        // console.log("bnooked ", arr[0]);
       } catch (err) {
         console.error("Failed to fetch seats:", err);
       } finally {
@@ -77,18 +80,16 @@ export default function SeatSelection() {
       });
 
       const data = await res.json();
-      console.log("checkout response:", data);
 
       if (!res.ok || !data.url) {
         alert("Failed to create checkout: " + (data.error || "Unknown error"));
-        console.log(data.error);
         return;
       }
 
       window.location.href = data.url;
     } catch (err) {
       console.error("Checkout error:", err);
-      alert("Something went wrong. See console for details.");
+      alert("Something went wrong.");
     }
   };
 
@@ -111,67 +112,77 @@ export default function SeatSelection() {
 
   function renderSeatMap() {
     if (!hall) return null;
-    const rows = [];
 
+    const rows = [];
     for (let i = 0; i < hall.rows; i++) {
       const rowSeats = [];
       for (let j = 0; j < hall.columns; j++) {
         const seatLabel = `${String.fromCharCode(65 + i)}${j + 1}`;
-        const seat = seats.find((seat) => seat.seat_no == seatLabel);
+        const seat = seats.find((seat) => seat.seat_no === seatLabel);
         const seatId = seat ? seat.id : "xx";
-        const isSelected = selected.includes(seatId);
         const isBooked = bookedSeatsIds.includes(seatId);
+        const isSelected = selected.includes(seatId);
+
         rowSeats.push(
           <button
             key={seatId}
             disabled={isBooked}
             onClick={() => selectSeat(seatId)}
-            className={`w-8 h-8 flex items-center justify-center text-xs font-medium rounded border transition
-    ${
-      isBooked
-        ? "cursor-not-allowed bg-gray-400"
-        : selected.includes(seatId)
-        ? "bg-green-600 text-white"
-        : "bg-white hover:bg-green-100"
-    }`}
+            className={`w-9 h-9 flex items-center justify-center text-xs font-semibold rounded-md border shadow-sm transition-all
+              ${
+                isBooked
+                  ? "bg-gray-400/70 text-white cursor-not-allowed"
+                  : isSelected
+                  ? "bg-green-600 text-white scale-105"
+                  : "bg-white hover:bg-green-100"
+              }`}
           >
             {seatLabel}
           </button>
         );
       }
+
       rows.push(
-        <div key={i} className="flex justify-center gap-1 mb-1">
+        <div key={i} className="flex justify-center gap-2 mb-2">
           {rowSeats}
         </div>
       );
     }
+
     return rows;
   }
-  return (
-    <main className="min-h-screen w-full flex  justify-center gap-4 p-10">
-      <div className="w-5xl flex flex-col items-center">
-        <h1 className="text-2xl font-bold mb-6">🎟 Select Your Seats</h1>
 
+  return (
+    <main className="min-h-screen w-full flex flex-col items-center p-6 relative bg-gray-50 pb-24">
+      <h1 className="text-3xl font-bold mb-6 tracking-wide">
+        Select Your Seats
+      </h1>
+
+      <div className="bg-gray-900 text-white text-center w-80 p-2 rounded-t-xl shadow-lg mb-3">
+        SCREEN THIS WAY
+      </div>
+
+      {/* SEAT MAP */}
+      <div className="bg-white p-6 rounded-xl shadow-lg max-w-4xl w-full overflow-auto border border-gray-200">
         {loading ? (
-          <p className="text-gray-600">Loading seats...</p>
+          <p className="text-center text-gray-500">Loading seats...</p>
         ) : (
-          <div className="min-h-160 bg-gray-100 rounded-xl p-6 shadow-md overflow-auto flex flex-col gap-2 justify-center max-w-5xl overflow-x-scroll">
-            <h4 className="text-center h-8 text-white tracking-widest rounded-t-full p-2 w-full bg-gray-600 self-center">
-              SCREEN
-            </h4>
+          <div className="flex flex-col items-center sm:gap-3 overflow-auto w-max">
             {renderSeatMap()}
           </div>
         )}
       </div>
-      {/* Bottom actions */}
-      <div className=" flex gap-4 flex-col mt-20">
-        <span className="px-4 py-2 text-black rounded-lg">
-          Selected: {selected.length}
-        </span>
+
+      {/* FOOTER ACTION BAR */}
+      <div className="fixed bottom-0 left-0 w-full bg-white py-4 border-t shadow-lg flex justify-center items-center gap-6">
+        <div className="text-lg font-semibold">
+          Selected: <span className="text-green-600">{selected.length}</span>
+        </div>
+
         <button
           disabled={!selected.length}
           onClick={handleProceed}
-          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white font-semibold rounded-lg disabled:bg-gray-400 cursor-pointer"
+          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white text-lg font-semibold rounded-lg disabled:bg-gray-400"
         >
           Proceed to Pay
         </button>

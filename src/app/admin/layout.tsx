@@ -1,4 +1,3 @@
-import AdminNav from "@/components/admin/adminnav";
 import AdminNavBar from "@/components/admin/adminNavBar";
 
 export default function AdminLayout({
@@ -10,8 +9,8 @@ export default function AdminLayout({
     <div className="flex flex-col">
       <AdminNavBar />
       <div className="flex">
-        <AdminNav />
-        <main className="flex-1 p-6">{children}</main>
+        {/* <AdminNav /> */}
+        <main className="flex-1 p-6 sm:px-32">{children}</main>
       </div>
     </div>
   );

@@ -98,6 +98,8 @@ model Show {
   movie    Movie     @relation(fields: [movieId], references: [id])
   bookings Booking[]
 
+  deletedAt  DateTime?
+
   @@index([movieId])
   @@index([hallId])
 }

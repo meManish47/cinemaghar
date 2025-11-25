@@ -5,9 +5,36 @@ export const GET_ALL_HALLS = gql`
     getAllHalls {
       id
       hall_name
+      capacity
+      rows
+      columns
       cinema {
         id
         name
+        location
+      }
+      shows {
+        id
+        start
+        finish
+        date
+        movie {
+          id
+          movie_title
+        }
+        bookings {
+          id
+          createdAt
+          seats {
+            id
+            seat_no
+          }
+          user {
+            name
+            email
+            id
+          }
+        }
       }
     }
   }
@@ -272,11 +299,59 @@ export const GET_ALL_SHOWS = gql`
       }
       movie {
         movie_title
+        thumbnail
+      }
+      bookings {
+        id
+      }
+    }
+  }
+`;
+export const GET_ALL_SHOWS_WITH_DELETED = gql`
+  query GetAllShowsWithDeltedOnes {
+    getAllShowsWithDeltedOnes {
+      start
+      movieId
+      id
+      hallId
+      finish
+      date
+      hall {
+        hall_name
+        cinema {
+          name
+          location
+        }
+      }
+      movie {
+        movie_title
+        thumbnail
+      }
+      bookings {
+        id
+        createdAt
+        user {
+          name
+          email
+          id
+        }
+        seats {
+          seat_no
+        }
       }
     }
   }
 `;
 
+export const GET_COUNTS = gql`
+  query GetCounts {
+    getCounts {
+      cinemaCount
+      hallCount
+      userCount
+    }
+  }
+`;
 export const GETMOVIEWITHID = gql`
   query GetMovieWithId($getMovieWithIdId: String!) {
     getMovieWithId(id: $getMovieWithIdId) {
@@ -291,9 +366,68 @@ export const GETMOVIEWITHID = gql`
         thumbnail
         shows {
           id
+          deletedAt
         }
       }
       message
+    }
+  }
+`;
+export const GET_CINEMAS = gql`
+  query {
+    getAllCinemas {
+      id
+      name
+      location
+      halls {
+        id
+        hall_name
+        capacity
+      }
+    }
+  }
+`;
+export const GETALLMOVIESCOVERS = gql`
+  query GetAllMovies {
+    getAllMovies {
+      cover
+    }
+  }
+`;
+
+export const GETALLMOVIES = gql`
+  query GetAllMovies {
+    getAllMovies {
+      movie_title
+      cover
+      thumbnail
+      id
+      release_date
+      overview
+      popularity
+    }
+  }
+`;
+export const GET_BOOKINGS_BY_HALL = gql`
+  query GetBookingsByHall($hallId: String!) {
+    getBookingsByHall(hallId: $hallId) {
+      id
+      createdAt
+      seats {
+        seat_no
+      }
+      user {
+        name
+        email
+      }
+      show {
+        date
+        start
+        movie {
+          movie_title
+          thumbnail
+        }
+      }
     }
   }
 `;

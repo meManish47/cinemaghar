@@ -28,3 +28,16 @@ export async function addCinema(
     return null;
   }
 }
+export async function getCounts() {
+  const [cinemaCount, hallCount, userCount] = await Promise.all([
+    prismaClient.cinema.count(),
+    prismaClient.hall.count(),
+    prismaClient.user.count(),
+  ]);
+  // console.log(cinemaCount, "cinema count on cinema ts");
+  return {
+    cinemaCount,
+    hallCount,
+    userCount,
+  };
+}

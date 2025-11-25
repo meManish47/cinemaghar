@@ -3,7 +3,12 @@ import prismaClient from "@/services/prisma";
 export async function getAllHalls() {
   try {
     const halls = await prismaClient.hall.findMany({
-      include: { cinema: true, shows: true },
+      include: {
+        cinema: true,
+        shows: {
+          include: { movie: true, bookings: { include: { seats: true ,user:true} } },
+        },
+      },
     });
     if (halls) return halls;
     return null;

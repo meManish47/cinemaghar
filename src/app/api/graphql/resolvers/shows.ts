@@ -6,10 +6,10 @@ export async function getShowsByMovie(
 ) {
   try {
     const shows = await prismaClient.show.findMany({
-      where: { movieId: args.movieId },
+      where: { movieId: args.movieId, deletedAt: { equals: undefined } },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
-    if (shows) return shows;
+    if (shows) return shows.filter((show) => show.deletedAt == undefined);
     return null;
   } catch (error) {
     return null;
@@ -21,7 +21,10 @@ export async function getShowsByCinema(
 ) {
   try {
     const shows = await prismaClient.show.findMany({
-      where: { hall: { cinemaId: args.cinemaId } },
+      where: {
+        hall: { cinemaId: args.cinemaId },
+        deletedAt: { equals: undefined },
+      },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
     if (shows) return shows;
@@ -58,7 +61,6 @@ export async function addShow(
     // console.log("---------")
     // console.log(startDateTime,finishDateTime,args.date)
     return show;
-    return null;
   } catch (error) {
     console.error("Error adding show:", error);
     return null;
@@ -86,18 +88,11 @@ export async function getShowById(
 
 export async function deleteShow(parent: unknown, args: { showId: string }) {
   try {
-    // console.log("entered deleted");
-    const show = await prismaClient.show.findUnique({
+    await prismaClient.show.update({
       where: { id: args.showId },
-      include: { bookings: true },
+      data: { deletedAt: new Date() },
     });
-    console.log("show found");
-    if (!show) return false;
-    // await prismaClient.booking.deleteMany({ where: { showId: args.showId } });
-    await prismaClient.show.delete({
-      where: { id: args.showId },
-    });
-    console.log("deleted");
+    console.log("show updated");
     return true;
   } catch (error) {
     return false;
@@ -107,7 +102,22 @@ export async function deleteShow(parent: unknown, args: { showId: string }) {
 export async function getAllShows() {
   try {
     const shows = await prismaClient.show.findMany({
-      include: { hall: true, movie: true },
+      where: { deletedAt: null },
+      include: { hall: true, movie: true, bookings: true },
+    });
+    return shows;
+  } catch (error) {
+    return null;
+  }
+}
+export async function getAllShowsWithDeltedOnes() {
+  try {
+    const shows = await prismaClient.show.findMany({
+      include: {
+        hall: { include: { cinema: true } },
+        movie: true,
+        bookings: { include: { seats: true, user: true } },
+      },
     });
     return shows;
   } catch (error) {

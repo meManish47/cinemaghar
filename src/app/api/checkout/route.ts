@@ -5,8 +5,9 @@ import { gqlClient } from "@/services/gql";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { Booking, Hall, Seat } from "../../../../generated/prisma";
-import { HallsWithCinema } from "@/app/admin/halls/page";
+// import { HallsWithCinema } from "@/app/admin/halls/page";
 import prismaClient from "@/services/prisma";
+import { HallsWithCinema } from "@/app/admin/managehalls/page";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",

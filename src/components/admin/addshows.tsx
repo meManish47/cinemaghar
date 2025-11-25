@@ -61,7 +61,6 @@ export default function AddShowForm({
       toast.error("Please fill all details!");
       return;
     }
-    console.log(form);
     await gqlClient.request(ADD_SHOW, form);
     setForm({ movieId: "", hallId: "", start: "", finish: "", date: "" });
     if (onAdded) onAdded();
@@ -70,69 +69,80 @@ export default function AddShowForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className=" shadow-md border rounded-2xl p-6 space-y-4 max-w-md"
+      className=" py-6 space-y-4 w-full max-w-xl bg-white mx-auto"
     >
       <h2 className="text-xl font-semibold text-gray-800 mb-2">➕ Add Show</h2>
 
-      <select
-        value={form.movieId}
-        onChange={(e) => setForm({ ...form, movieId: e.target.value })}
-        className="w-full border rounded-lg px-3 py-2"
-      >
-        <option value="">Select Movie</option>
-        {movies.map((m) => (
-          <option key={m.id} value={m.id}>
-            {m.movie_title}
-          </option>
-        ))}
-      </select>
+      {/* Movie Select */}
+      <div className="flex flex-col gap-1">
+        <Label className="text-sm font-medium">Select Movie</Label>
+        <select
+          value={form.movieId}
+          onChange={(e) => setForm({ ...form, movieId: e.target.value })}
+          className="w-full border rounded-lg px-3 py-2 bg-white"
+        >
+          <option value="">Select Movie</option>
+          {movies.map((m) => (
+            <option key={m.id} value={m.id}>
+              {m.movie_title}
+            </option>
+          ))}
+        </select>
+      </div>
 
-      <select
-        value={form.hallId}
-        onChange={(e) => setForm({ ...form, hallId: e.target.value })}
-        className="w-full border rounded-lg px-3 py-2"
-      >
-        <option value="">Select Hall</option>
-        {halls.map((h) => (
-          <option key={h.id} value={h.id}>
-            {h.hall_name} ({h.cinema.name})
-          </option>
-        ))}
-      </select>
-      <div className="flex  justify-between items-center pe-16">
-        <Label>Release Date :</Label>
+      {/* Hall Select */}
+      <div className="flex flex-col gap-1">
+        <Label className="text-sm font-medium">Select Hall</Label>
+        <select
+          value={form.hallId}
+          onChange={(e) => setForm({ ...form, hallId: e.target.value })}
+          className="w-full border rounded-lg px-3 py-2 bg-white"
+        >
+          <option value="">Select Hall</option>
+          {halls.map((h) => (
+            <option key={h.id} value={h.id}>
+              {h.hall_name} ({h.cinema.name})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Date */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <Label className="text-sm font-medium">Release Date:</Label>
         <Input
           type="date"
           value={form.date}
           onChange={(e) => setForm({ ...form, date: e.target.value })}
-          className="w-max border rounded-lg px-3 py-2 appearance-none p-2  [&::-webkit-calendar-picker-indicator]:invert"
+          className="w-full sm:w-auto border rounded-lg px-3 py-2"
         />
       </div>
-      <div className="flex  justify-between items-center pe-16">
-        <Label>Start Time :</Label>
+
+      {/* Start Time */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <Label className="text-sm font-medium">Start Time:</Label>
         <Input
           type="time"
           value={form.start}
           onChange={(e) => setForm({ ...form, start: e.target.value })}
-          className="w-max min-w-35 border rounded-lg px-3 py-2 appearance-none 
-         [&::-webkit-calendar-picker-indicator]:invert"
+          className="w-full sm:w-auto border rounded-lg px-3 py-2"
         />
       </div>
-      <div className="flex  justify-between items-center pe-16">
-        <Label>End Time :</Label>
 
+      {/* End Time */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <Label className="text-sm font-medium">End Time:</Label>
         <Input
           type="time"
           value={form.finish}
           onChange={(e) => setForm({ ...form, finish: e.target.value })}
-          className="w-max min-w-35 border rounded-lg px-3 py-2 appearance-none 
-         [&::-webkit-calendar-picker-indicator]:invert"
+          className="w-full sm:w-auto border rounded-lg px-3 py-2"
         />
       </div>
 
       <Button
         type="submit"
-        className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition"
+        className="bg-red-600 text-white w-full py-2 rounded-lg hover:bg-red-700 transition"
       >
         Add Show
       </Button>

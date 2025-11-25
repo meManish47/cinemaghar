@@ -1,5 +1,9 @@
-import { confirmBooking, createBooking } from "./resolvers/booking";
-import { addCinema, getAllCinemas } from "./resolvers/cinema";
+import {
+  confirmBooking,
+  createBooking,
+  getBookingsByHall,
+} from "./resolvers/booking";
+import { addCinema, getAllCinemas, getCounts } from "./resolvers/cinema";
 import { addHall, getAllHalls } from "./resolvers/halls";
 import { getAllMovies, getMovieWithId } from "./resolvers/movie";
 import { getSeatById } from "./resolvers/seats";
@@ -7,6 +11,7 @@ import {
   addShow,
   deleteShow,
   getAllShows,
+  getAllShowsWithDeltedOnes,
   getShowById,
   getShowsByCinema,
   getShowsByMovie,
@@ -32,6 +37,9 @@ const resolvers = {
     getUserByClerkId,
     getCurrentUserEmail,
     getAllShows,
+    getAllShowsWithDeltedOnes,
+    getCounts,
+    getBookingsByHall,
   },
   Mutation: {
     addCinema,

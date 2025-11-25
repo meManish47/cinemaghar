@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import ScrollToTop from "@/components/layout/scrollToTop";
 
 export const metadata: Metadata = {
   title: "Show Time",
@@ -20,11 +21,11 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className="bg-[#FFFFFF]" suppressHydrationWarning>
+          <ScrollToTop />
           <HeaderComponent />
-          
           <SyncUser />
           <LogoutCleanup />
-          <Toaster richColors position="top-center"/>
+          <Toaster richColors position="top-center" />
           {children}
         </body>
       </html>

@@ -17,20 +17,17 @@ const ADD_CINEMA = gql`
 export default function AddCinemaForm({ onAdded }: { onAdded?: () => void }) {
   const [name, setName] = useState("");
   const [location, setLocation] = useState("");
-  const[loading,setLoading] = useState(false)
-  const handleSubmit = async(e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true)
-    const data  = await gqlClient.request(ADD_CINEMA,{name,location})
-    setLoading(false)
-    onAdded
+    setLoading(true);
+    const data = await gqlClient.request(ADD_CINEMA, { name, location });
+    setLoading(false);
+    onAdded;
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white p-6 rounded-2xl shadow-md space-y-4 max-w-md mx-auto border border-gray-200"
-    >
+    <form onSubmit={handleSubmit} className="bg-white py-8 space-y-4 ">
       <h2 className="text-xl font-semibold text-gray-800">🎬 Add New Cinema</h2>
 
       <input

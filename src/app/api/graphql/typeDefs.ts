@@ -39,6 +39,7 @@ const typeDefs = gql`
     cinemaId: String!
     cinema: Cinema!
     seats: [Seat]
+    shows: [Show]
   }
   type Movie {
     id: String
@@ -50,6 +51,7 @@ const typeDefs = gql`
     overview: String
     shows: [Show]
   }
+  scalar DateTime
   type Show {
     id: String!
     start: String!
@@ -58,8 +60,9 @@ const typeDefs = gql`
     hallId: String!
     movieId: String!
     hall: Hall!
-    movie: Movie!
+    movie: Movie
     bookings: [Booking]
+    deletedAt: DateTime
   }
   input SeatInputForBooking {
     id: String!
@@ -84,6 +87,11 @@ const typeDefs = gql`
     show: Show
     seats: [Seat]
   }
+  type Counts {
+    cinemaCount: Int!
+    hallCount: Int!
+    userCount: Int!
+  }
   type Query {
     getAllMovies: [Movie]
     getMovieWithId(id: String!): MovieResponse
@@ -97,6 +105,9 @@ const typeDefs = gql`
     getTicketDataFromSession(sessionId: String!): TicketResponse
     getCurrentUserEmail: String
     getAllShows: [Show]
+    getAllShowsWithDeltedOnes: [Show]
+    getCounts: Counts!
+    getBookingsByHall(hallId:String!): [Booking]
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!

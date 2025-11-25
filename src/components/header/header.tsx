@@ -7,9 +7,9 @@ import SignIn from "./clerkSignIn";
 export default function HeaderComponent() {
   return (
     <header>
-      <div className="w-full h-18 flex items-center px-32 justify-between bg-[#FFFFFF]">
-        <div className="h-full w-max flex items-center gap-4">
-          <div className="h-full flex items-center overflow-hidden w-40">
+      <div className="w-full h-18 flex items-center px-2 sm:px-32 justify-between bg-[#FFFFFF]">
+        <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start  ">
+          <div className="h-full flex items-center overflow-hidden w-24 sm:w-40">
             <Link href={"/"}>
               <Image
                 src={"/showLogo.png"}
@@ -19,7 +19,7 @@ export default function HeaderComponent() {
               />
             </Link>
           </div>
-          <div className="h-full w-max flex items-center ">
+          <div className="h-4 sm:h-full w-max flex items-center ">
             <SearchBar />
           </div>
         </div>

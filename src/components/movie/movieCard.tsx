@@ -5,7 +5,7 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
   return (
     <div
       key={movieItem.id}
-      className="w-56 min-h-max backdrop-blur-xl p-1 rounded-md shadow-md hover:shadow-xl transition duration-300 ease-in-out flex flex-col items-center gap-2"
+      className="w-56 min-h-max backdrop-blur-xl p-1 rounded-md shadow-md hover:shadow-xl transition duration-300 ease-in-out flex flex-col items-center justify-center gap-2"
     >
       <Link href={`/movie/${movieItem.id}`}>
         {movieItem.thumbnail && (

@@ -1,89 +1,139 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
+import { GET_ALL_SHOWS_WITH_DELETED } from "@/app/queries";
+import { BookingsDialog } from "@/components/show/showBookingDialog";
 import { gqlClient } from "@/services/gql";
-import {
-  DELETE_SHOW,
-  GET_ALL_HALLS,
-  GET_ALL_MOVIES,
-  GET_ALL_SHOWS,
-} from "@/app/queries";
-import AddShowForm from "@/components/admin/addshows";
-import { HallsWithCinema } from "../halls/page";
-import { Movie } from "../../../../generated/prisma";
-import { ShowWithHall } from "@/app/movie/buytickets/[id]/page";
-import { TrashIcon } from "lucide-react";
-import { toast } from "sonner";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ShowsPage() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [halls, setHalls] = useState<HallsWithCinema[]>([]);
+  const [shows, setShows] = useState<SHOW_WITH_HALL_MOVIE[]>([]);
   const [loading, setLoading] = useState(true);
-  const [shows, setShows] = useState<ShowWithHall[]>([]);
+
   const load = async () => {
-    setLoading(true);
-    const dataHalls: { getAllHalls: HallsWithCinema[] } =
-      await gqlClient.request(GET_ALL_HALLS);
-
-    const dataShows: { getAllShows: ShowWithHall[] } = await gqlClient.request(
-      GET_ALL_SHOWS
-    );
-
-    const dataMovies: { getAllMovies: Movie[] } = await gqlClient.request(
-      GET_ALL_MOVIES
-    );
-
-    setHalls(dataHalls.getAllHalls);
-    setShows(dataShows.getAllShows);
-    setMovies(dataMovies.getAllMovies);
-    setLoading(false);
+    try {
+      const data: { getAllShowsWithDeltedOnes: SHOW_WITH_HALL_MOVIE[] } =
+        await gqlClient.request(GET_ALL_SHOWS_WITH_DELETED);
+      setShows(data.getAllShowsWithDeltedOnes);
+      // console.log(data, "data");
+    } finally {
+      setLoading(false);
+    }
   };
-  const handleShowDelete = async (id: string) => {
-    
-    await gqlClient.request(DELETE_SHOW, { showId: id });
-    setShows((prev) => prev.filter((show) => show.id !== id));
-    toast.success("Deleted")
-  };
+
   useEffect(() => {
     load();
   }, []);
-
-  if (loading) return <p className="p-6">Loading...</p>;
-
+  // console.log("SHJHOWS", shows);
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div className="w-full h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">📅 Manage Shows</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
+          Manage Shows
+        </h1>
+
+        <Link
+          href="/admin/manageshows"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-sm"
+        >
+          ➕ Create New Show
+        </Link>
       </div>
 
-      <div className="mb-10">
-        <AddShowForm movies={movies} halls={halls} onAdded={load} />
-      </div>
-      <p className="text-gray-500">
-        <h1>Upcoming Shows:</h1>
-        {shows.map((show) => {
-          return (
-            <div key={show.id} className="mx-4 h-max w-max text-black  rounded-2xl drop-shadow-2xl flex justify-between  px-4 py-2 border-2 gap-2">
-              <div className="flex flex-col">
-                <p>
-                  <span className="text-muted-foreground">Movie:</span>{" "}
-                  {show.movie.movie_title}
-                </p>
-                <p>
-                  <span className="text-muted-foreground">Schedule:</span>
-                  {`${new Date(Number(show.start) - 21600000)}`.split("GMT")[0]}
+      {loading && (
+        <p className="text-gray-500 text-center py-10 text-lg">
+          Loading shows...
+        </p>
+      )}
+
+      {!loading && shows?.length === 0 && (
+        <p className="text-gray-600 bg-white border shadow p-6 rounded-xl text-center">
+          No shows found. Click “Create New Show” to add one.
+        </p>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {shows?.map((show) => (
+          <div key={show.id} className="bg-white  border  p-6 ">
+            <div className="flex items-center gap-4 mb-4">
+              <img
+                src={
+                  `https://image.tmdb.org/t/p/w500${show.movie.thumbnail}` ||
+                  "/placeholder.png"
+                }
+                className="w-20 h-28 object-cover rounded-lg border"
+                alt="movie"
+              />
+              <div>
+                <h2 className="text-lg font-semibold text-gray-800">
+                  🎬 {show.movie.movie_title}
+                </h2>
+                <p className="text-sm text-gray-500">{show.hall.cinema.name}</p>
+                <p className="text-sm text-gray-400">
+                  {show.hall.cinema.location}
                 </p>
               </div>
-              <TrashIcon
-                className="cursor-pointer"
-                onClick={() => {
-                  handleShowDelete(show.id);
-                }}
-              />
             </div>
-          );
-        })}
-      </p>
+
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="bg-gray-100 rounded-lg p-3">
+                <span className="text-gray-600">Hall</span>
+                <p className="text-gray-800 font-semibold">
+                  {show.hall.hall_name}
+                </p>
+              </div>
+
+              <div className="bg-gray-100 rounded-lg p-3">
+                <div className="flex w-full justify-between">
+                  <p className="text-gray-600">Bookings</p>{" "}
+                  <BookingsDialog bookings={show.bookings} />
+                </div>
+                <p className="text-gray-800 font-semibold">
+                  {show.bookings.length}
+                </p>
+              </div>
+
+              <div className="bg-gray-100 col-span-2 rounded-lg p-3">
+                <span className="text-gray-600">Date</span>
+                <p className="text-gray-800 font-semibold">
+                  {new Date(Number(show.date)).toISOString().split("T")[0]}
+                </p>
+              </div>
+
+              <div className="bg-gray-100 rounded-lg p-3">
+                <span className="text-gray-600">Start</span>
+                <p className="text-gray-800 font-semibold">
+                  {new Date(Number(show.start)).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "UTC",
+                  })}
+                </p>
+              </div>
+
+              <div className="bg-gray-100 rounded-lg p-3">
+                <span className="text-gray-600">End</span>
+                <p className="text-gray-800 font-semibold">
+                  {new Date(Number(show.finish)).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZone: "UTC",
+                  })}
+                </p>
+              </div>
+            </div>
+
+            {/* MANAGE BUTTON */}
+            {/* <Link
+              href={`/admin/shows/${show.id}`}
+              className="block mt-4 bg-blue-600 text-white text-center py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+            >
+              Manage Show
+            </Link> */}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
