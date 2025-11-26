@@ -1,15 +1,13 @@
 import {
   CONFIRM_BOOKING,
-  GENERATE_TICKETS,
   GET_SEAT_BY_ID,
   GET_SHOW_BY_ID,
-  GET_USER_BY_CLERK_ID,
+  GET_USER_BY_CLERK_ID
 } from "@/app/queries";
+import { SHOW_WITH_HALL_MOVIE } from "@/app/types";
 import { gqlClient } from "@/services/gql";
 import Stripe from "stripe";
-import { Booking, Seat, User } from "../../../../../generated/prisma";
-import prismaClient from "@/services/prisma";
-import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
+import { Seat, User } from "../../../../../generated/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",
