@@ -1,7 +1,7 @@
-import { revalidateTag } from "next/cache.js";
-import { DELETE_SHOW } from "../app/queries.js";
-import { gqlClient } from "./gql.js";
-import prismaClient from "./prisma.js";
+import { revalidateTag } from "next/cache";
+import { DELETE_SHOW } from "../app/queries";
+import { gqlClient } from "./gql";
+import prismaClient from "./prisma";
 
 export async function softDeleteShows() {
   try {
