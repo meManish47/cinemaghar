@@ -4,9 +4,9 @@ import { GET_ALL_HALLS } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { HallsWithCinema } from "../managehalls/page";
 import { BookingsDialog } from "@/components/show/showBookingDialog";
 import { ShowDialog } from "@/components/show/showDialog";
+import { HallsWithCinema } from "@/app/types";
 
 export default function HallsPage() {
   const [halls, setHalls] = useState<HallsWithCinema[]>([]);

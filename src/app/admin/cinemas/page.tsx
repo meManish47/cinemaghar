@@ -1,14 +1,13 @@
 "use client";
 
+import { GET_CINEMAS } from "@/app/queries";
+import { CinemaWithHall } from "@/app/types";
 import { gqlClient } from "@/services/gql";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Cinema, Hall } from "../../../../generated/prisma";
-import { GET_CINEMAS } from "@/app/queries";
+import { Hall } from "../../../../generated/prisma";
 
-export type CinemaWithHall = Cinema & {
-  halls: Hall[];
-};
+
 export default function CinemasPage() {
   const [cinemas, setCinemas] = useState<CinemaWithHall[]>([]);
   const [loading, setLoading] = useState(true);

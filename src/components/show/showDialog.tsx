@@ -1,16 +1,8 @@
 "use client";
 
+import { ShowItem } from "@/app/types";
 import { useState } from "react";
 
-type ShowItem = {
-  movieTitle: string;
-  date: string;
-  start: string;
-  end: string;
-  hallName: string;
-  cinemaName: string;
-  cinemaLocation: string;
-};
 
 export function ShowDialog({ shows }: { shows: ShowItem[] }) {
   const [open, setOpen] = useState(false);

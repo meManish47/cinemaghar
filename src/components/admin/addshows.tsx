@@ -1,40 +1,13 @@
 "use client";
 
+import { ADD_SHOW } from "@/app/queries";
+import { AddShowFormProps, ShowForm } from "@/app/types";
+import { gqlClient } from "@/services/gql";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { gqlClient } from "@/services/gql";
-import { ADD_SHOW } from "@/app/queries";
-
-type Movie = {
-  id: string;
-  movie_title: string;
-};
-
-type HallWithCinema = {
-  id: string;
-  hall_name: string;
-  cinema: {
-    id: string;
-    name: string;
-  };
-};
-
-type AddShowFormProps = {
-  movies: Movie[];
-  halls: HallWithCinema[];
-  onAdded: () => void;
-};
-
-type ShowForm = {
-  movieId: string;
-  hallId: string;
-  start: string;
-  finish: string;
-  date: string;
-};
 
 export default function AddShowForm({
   movies,
@@ -73,7 +46,6 @@ export default function AddShowForm({
     >
       <h2 className="text-xl font-semibold text-gray-800 mb-2">➕ Add Show</h2>
 
-      {/* Movie Select */}
       <div className="flex flex-col gap-1">
         <Label className="text-sm font-medium">Select Movie</Label>
         <select
@@ -90,7 +62,6 @@ export default function AddShowForm({
         </select>
       </div>
 
-      {/* Hall Select */}
       <div className="flex flex-col gap-1">
         <Label className="text-sm font-medium">Select Hall</Label>
         <select
@@ -107,7 +78,6 @@ export default function AddShowForm({
         </select>
       </div>
 
-      {/* Date */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <Label className="text-sm font-medium">Release Date:</Label>
         <Input
@@ -118,7 +88,6 @@ export default function AddShowForm({
         />
       </div>
 
-      {/* Start Time */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <Label className="text-sm font-medium">Start Time:</Label>
         <Input
@@ -129,7 +98,6 @@ export default function AddShowForm({
         />
       </div>
 
-      {/* End Time */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
         <Label className="text-sm font-medium">End Time:</Label>
         <Input

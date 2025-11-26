@@ -1,7 +1,7 @@
 "use client";
 
-import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
 import { GET_ALL_SHOWS_WITH_DELETED } from "@/app/queries";
+import { SHOW_WITH_HALL_MOVIE } from "@/app/types";
 import { BookingsDialog } from "@/components/show/showBookingDialog";
 import { gqlClient } from "@/services/gql";
 import Link from "next/link";

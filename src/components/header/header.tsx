@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import SearchBar from "./searchbar";
-import UserProfile from "./userProfile";
 import SignIn from "./clerkSignIn";
+import SearchBar from "./searchbar";
+import { currentUser } from "@clerk/nextjs/server";
 
-export default function HeaderComponent() {
+export default async function HeaderComponent() {
+  const User = await currentUser();
   return (
     <header>
       <div className="w-full h-18 flex items-center px-2 sm:px-32 justify-between bg-[#FFFFFF]">
@@ -20,7 +21,8 @@ export default function HeaderComponent() {
             </Link>
           </div>
           <div className="h-4 sm:h-full w-max flex items-center ">
-            <SearchBar />
+            {User?.emailAddresses[0].emailAddress !=
+              "kmanish57610@gmail.com" && <SearchBar />}
           </div>
         </div>
         <SignIn />

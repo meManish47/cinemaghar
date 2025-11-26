@@ -1,8 +1,6 @@
-// Improved BuyTicketsPage UI — cleaner, BookMyShow-like, better "no shows" message
 "use client";
-
-import { CinemaWithHall } from "@/app/admin/cinemas/page";
 import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
+import { GroupedCinema, ShowWithHall } from "@/app/types";
 import ShowShows from "@/components/show/showcard";
 import { gqlClient } from "@/services/gql";
 import { useUser } from "@clerk/nextjs";
@@ -10,17 +8,8 @@ import { Film } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Hall, Movie, Show } from "../../../../../generated/prisma";
+import { Movie } from "../../../../../generated/prisma";
 
-export type ShowWithHall = Show & {
-  hall: Hall & { cinema: CinemaWithHall };
-  movie: Movie;
-};
-
-type GroupedCinema = {
-  cinema: CinemaWithHall;
-  shows: ShowWithHall[];
-};
 
 export default function BuyTicketsPage() {
   const { id } = useParams();

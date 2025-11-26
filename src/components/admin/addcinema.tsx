@@ -1,18 +1,8 @@
 "use client";
 
+import { ADD_CINEMA } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
-import { gql } from "graphql-request";
 import { useState } from "react";
-
-const ADD_CINEMA = gql`
-  mutation AddCinema($name: String!, $location: String!) {
-    addCinema(name: $name, location: $location) {
-      id
-      name
-      location
-    }
-  }
-`;
 
 export default function AddCinemaForm({ onAdded }: { onAdded?: () => void }) {
   const [name, setName] = useState("");

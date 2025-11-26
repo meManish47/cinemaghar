@@ -1,4 +1,3 @@
-// CustomUserProfile.tsx
 "use client";
 
 import React from "react";
@@ -18,11 +17,9 @@ import {
 export default function CustomUserProfile() {
   return (
     <ClerkUserProfile>
-      {/* You can optionally pass appearance props here if needed */}
       <div className="drawer drawer-end overflow-hidden">
         <input id="my-drawer" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content">
-          {/* Trigger Button */}
           <label
             htmlFor="my-drawer"
             className="flex items-center cursor-pointer drawer-button"
@@ -39,7 +36,6 @@ export default function CustomUserProfile() {
           ></label>
 
           <div className="bg-white text-base-content min-h-full w-80 flex flex-col justify-between py-4">
-            {/* Profile Header */}
             <div className="h-full w-full flex flex-col text-base-content">
               <div className="p-5 border-b bg-gray-50">
                 <h2 className="text-lg font-semibold text-gray-700">Hey!</h2>
@@ -48,7 +44,6 @@ export default function CustomUserProfile() {
                 </button>
               </div>
 
-              {/* Sidebar Menu */}
               <ul className="w-full p-0 flex-1 text-gray-700">
                 <li>
                   <Link
@@ -94,8 +89,6 @@ export default function CustomUserProfile() {
                 </li>
               </ul>
             </div>
-
-            {/* Sign Out */}
             <div className="mx-2">
               <SignOutButton>
                 <Button

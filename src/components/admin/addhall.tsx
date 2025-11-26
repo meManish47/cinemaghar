@@ -1,36 +1,11 @@
 "use client";
-import { useState, useEffect } from "react";
-import { gql } from "graphql-request";
 import { gqlClient } from "@/services/gql";
-import { Cinema } from "../../../generated/prisma";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Cinema } from "../../../generated/prisma";
+import { ADD_HALL, GET_CINEMAS } from "@/app/queries";
 
-const GET_CINEMAS = gql`
-  query {
-    getAllCinemas {
-      id
-      name
-      location
-      halls {
-        id
-        hall_name
-        capacity
-      }
-    }
-  }
-`;
-const ADD_HALL = gql`
-  mutation Mutation($hallName: String!, $capacity: Int!, $cinemaId: String!, $rows: Int!, $columns: Int!) {
-    addHall(hall_name: $hallName, capacity: $capacity, cinemaId: $cinemaId, rows: $rows, columns: $columns) {
-      hall_name
-      id
-      cinemaId
-      capacity
-      rows
-      columns
-    }
-  }
-`;
+
 export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
   const [cinemas, setCinemas] = useState<Cinema[]>([]);
   const [cinemaId, setCinemaId] = useState("");

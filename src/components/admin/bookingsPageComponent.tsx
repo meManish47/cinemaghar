@@ -1,9 +1,9 @@
 "use client"
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { BookingWithSeats } from "../show/showBookingDialog";
 import { GET_BOOKINGS_BY_HALL } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
+import { BookingWithSeats } from "@/app/types";
 
 export default function BookingsPage({hallId}:{hallId:string}) {
   const [bookings, setBookings] = useState<BookingWithSeats[]>([]);

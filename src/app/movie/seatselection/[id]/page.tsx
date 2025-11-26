@@ -1,28 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  Booking,
-  Cinema,
-  Hall,
-  Movie,
-  Seat,
-  Show,
-  User,
-} from "../../../../../generated/prisma";
-import { gqlClient } from "@/services/gql";
 import { GET_SHOW_BY_ID } from "@/app/queries";
-import { useParams } from "next/navigation";
-import { loadStripe } from "@stripe/stripe-js";
+import { gqlClient } from "@/services/gql";
 import { useUser } from "@clerk/nextjs";
+import { loadStripe } from "@stripe/stripe-js";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { BookingWithSeats } from "@/components/show/showBookingDialog";
+import {
+  Hall,
+  Seat
+} from "../../../../../generated/prisma";
+import { SHOW_WITH_HALL_MOVIE } from "@/app/types";
 
-export type SHOW_WITH_HALL_MOVIE = Show & {
-  hall: Hall & { cinema: Cinema; seats: Seat[] };
-  movie: Movie;
-  bookings: BookingWithSeats[];
-};
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!

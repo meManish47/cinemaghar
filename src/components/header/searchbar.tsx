@@ -1,17 +1,15 @@
-// SearchBar with GraphQL movie suggestions, controlled input, dropdown, navigation
 "use client";
 
-import {
-  useEffect,
-  useState,
-  useRef,
-  ReactEventHandler,
-  FormEvent,
-} from "react";
-import { useRouter } from "next/navigation";
-import { FaSearch } from "react-icons/fa";
+import { GET_ALL_MOVIES } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
-import { GET_ALL_MOVIES } from "@/app/queries"; // create this query if not exists
+import { useRouter } from "next/navigation";
+import {
+  FormEvent,
+  useEffect,
+  useRef,
+  useState
+} from "react";
+import { FaSearch } from "react-icons/fa";
 import { Movie } from "../../../generated/prisma";
 
 export default function SearchBar() {
@@ -96,8 +94,6 @@ export default function SearchBar() {
           placeholder="Search for movies"
         />
       </form>
-
-      {/* Dropdown Suggestions */}
       {open && (
         <ul className="absolute mt-1 bg-white shadow-md border border-gray-200 w-full rounded-md max-h-60 overflow-y-auto z-50">
           {filtered.map((movie) => (

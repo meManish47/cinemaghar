@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { SignedOut, SignInButton, useUser } from "@clerk/nextjs";
 import { Calendar, Clock } from "lucide-react";
-import { ShowWithHall } from "@/app/movie/buytickets/[id]/page";
-import { CinemaWithHall } from "@/app/admin/cinemas/page";
+import { CinemaWithHall, ShowWithHall } from "@/app/types";
+
 
 export type GroupedCinema = {
   cinema: CinemaWithHall;

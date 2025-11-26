@@ -2,18 +2,9 @@ import { gqlClient } from "@/services/gql";
 import { User } from "../../../generated/prisma";
 import { GET_TICKET_RESPONSE } from "../queries";
 import SuccessPageClient from "@/components/success/successpageClient";
+import { TicketResponse } from "../types";
 
-export type TicketResponse = {
-  movieTitle: string;
-  moviePoster: string;
-  hallName: string;
-  cinemaName: string;
-  showDate: string;
-  showTime: string;
-  seats: string[];
-  screen: string;
-  user: User;
-};
+
 export default async function Page({
   searchParams,
 }: {

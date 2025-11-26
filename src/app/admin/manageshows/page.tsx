@@ -10,10 +10,9 @@ import {
 } from "@/app/queries";
 import AddShowForm from "@/components/admin/addshows";
 import { Movie } from "../../../../generated/prisma";
-import { ShowWithHall } from "@/app/movie/buytickets/[id]/page";
 import { TrashIcon } from "lucide-react";
 import { toast } from "sonner";
-import { HallsWithCinema } from "../managehalls/page";
+import { HallsWithCinema, ShowWithHall } from "@/app/types";
 
 export default function ShowsPage() {
   const [movies, setMovies] = useState<Movie[]>([]);

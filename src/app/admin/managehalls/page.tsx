@@ -1,29 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { GET_HALLS } from "@/app/queries";
+import { HallsWithCinema } from "@/app/types";
 import AddHallForm from "@/components/admin/addhall";
-import { gql } from "graphql-request";
 import { gqlClient } from "@/services/gql";
-import { Cinema, Hall, Show } from "../../../../generated/prisma";
-import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
-const GET_HALLS = gql`
-  query {
-    getAllHalls {
-      id
-      hall_name
-      capacity
-      cinema {
-        id
-        name
-        location
-      }
-      cinemaId
-    }
-  }
-`;
-export type HallsWithCinema = Hall & {
-  cinema: Cinema;
-  shows: SHOW_WITH_HALL_MOVIE[];
-};
+import { gql } from "graphql-request";
+import { useEffect, useState } from "react";
+
 export default function HallsPage() {
   const [halls, setHalls] = useState<HallsWithCinema[]>([]);
   const [loading, setLoading] = useState(false);

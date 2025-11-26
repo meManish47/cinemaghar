@@ -1,13 +1,10 @@
-// src/app/api/checkout/route.ts
-import { SHOW_WITH_HALL_MOVIE } from "@/app/movie/seatselection/[id]/page";
 import { CREATE_BOOKING, GET_SEAT_BY_ID, GET_SHOW_BY_ID } from "@/app/queries";
+import { HallsWithCinema, SHOW_WITH_HALL_MOVIE } from "@/app/types";
 import { gqlClient } from "@/services/gql";
+import prismaClient from "@/services/prisma";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
-import { Booking, Hall, Seat } from "../../../../generated/prisma";
-// import { HallsWithCinema } from "@/app/admin/halls/page";
-import prismaClient from "@/services/prisma";
-import { HallsWithCinema } from "@/app/admin/managehalls/page";
+import { Booking, Seat } from "../../../../generated/prisma";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil",

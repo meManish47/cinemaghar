@@ -8,7 +8,6 @@ export default async function AdminDashboard() {
     prisma.hall.count(),
     prisma.user.count(),
   ]);
-
   return (
     <div className="flex min-h-screen">
       {/* ---------------- MAIN CONTENT ---------------- */}

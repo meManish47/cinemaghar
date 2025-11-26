@@ -373,20 +373,6 @@ export const GETMOVIEWITHID = gql`
     }
   }
 `;
-export const GET_CINEMAS = gql`
-  query {
-    getAllCinemas {
-      id
-      name
-      location
-      halls {
-        id
-        hall_name
-        capacity
-      }
-    }
-  }
-`;
 export const GETALLMOVIESCOVERS = gql`
   query GetAllMovies {
     getAllMovies {
@@ -428,6 +414,57 @@ export const GET_BOOKINGS_BY_HALL = gql`
           thumbnail
         }
       }
+    }
+  }
+`;
+
+export const GET_HALLS = gql`
+  query {
+    getAllHalls {
+      id
+      hall_name
+      capacity
+      cinema {
+        id
+        name
+        location
+      }
+      cinemaId
+    }
+  }
+`;
+export const ADD_CINEMA = gql`
+  mutation AddCinema($name: String!, $location: String!) {
+    addCinema(name: $name, location: $location) {
+      id
+      name
+      location
+    }
+  }
+`;
+export const GET_CINEMAS = gql`
+  query {
+    getAllCinemas {
+      id
+      name
+      location
+      halls {
+        id
+        hall_name
+        capacity
+      }
+    }
+  }
+`;
+export const ADD_HALL = gql`
+  mutation Mutation($hallName: String!, $capacity: Int!, $cinemaId: String!, $rows: Int!, $columns: Int!) {
+    addHall(hall_name: $hallName, capacity: $capacity, cinemaId: $cinemaId, rows: $rows, columns: $columns) {
+      hall_name
+      id
+      cinemaId
+      capacity
+      rows
+      columns
     }
   }
 `;

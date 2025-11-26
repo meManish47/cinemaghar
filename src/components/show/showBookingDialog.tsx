@@ -1,11 +1,6 @@
+import { BookingWithSeats } from "@/app/types";
 import { useState } from "react";
-import { Booking, Movie, Seat, Show, User } from "../../../generated/prisma";
 
-export type BookingWithSeats = Booking & {
-  seats: Seat[];
-  user: User;
-  show: Show & { movie: Movie };
-};
 
 export function BookingsDialog({ bookings }: { bookings: BookingWithSeats[] }) {
   const [open, setOpen] = useState(false);

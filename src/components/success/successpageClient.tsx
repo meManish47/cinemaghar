@@ -2,7 +2,7 @@
 
 import QRCode from "react-qr-code";
 import Image from "next/image";
-import { TicketResponse } from "@/app/success/page";
+import { TicketResponse } from "@/app/types";
 
 type Props = {
   ticketData: TicketResponse;
