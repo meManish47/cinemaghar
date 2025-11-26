@@ -99,6 +99,7 @@ model Show {
   bookings Booking[]
 
   deletedAt  DateTime?
+  
 
   @@index([movieId])
   @@index([hallId])

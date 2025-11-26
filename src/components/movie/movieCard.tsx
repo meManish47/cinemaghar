@@ -18,7 +18,7 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
           </div>
         )}
       </Link>
-      <p className="text-black font-medium text-md tracking-wide text-center line-clamp-2 leading-snug h-8 overflow-hidden">
+      <p className="text-black font-medium text-md tracking-wide text-center line-clamp-2 leading-snug h-8 overflow-hidden truncate">
         {movieItem.movie_title}
       </p>
       <p className="text-gray-500 font-normal text-sm text-center line-clamp-2 leading-snug h-10 overflow-hidden">
