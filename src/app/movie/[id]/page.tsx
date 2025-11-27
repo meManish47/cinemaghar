@@ -22,7 +22,7 @@ export default async function MoviePage({
   const { id } = await params;
   const movie = await getMovie(id);
   if (!movie) return notFound();
-  console.log(movie);
+  // console.log(movie);
   return (
     <main className="w-full min-h-screen text-white ">
       <section
