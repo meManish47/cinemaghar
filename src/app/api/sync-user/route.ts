@@ -8,19 +8,28 @@ export async function POST(req: Request) {
   if (!clerkId) {
     return new NextResponse("Missing Clerk ID", { status: 400 });
   }
-
-  const user = await prismaClient.user.upsert({
+  const existingUser = await prismaClient.user.findUnique({
     where: { clerkId },
-    update: { email, name, role: "USER" },
-    create: { clerkId, email, name },
   });
-  if (user) {
-    const payload: { clerkId: string; id: string; email: string } = {
-      id: user.id,
-      email: user.email,
-      clerkId,
-    };
-    await generateCookies(payload);
+  let user;
+  if (existingUser) {
+    user = await prismaClient.user.update({
+      where: { clerkId },
+      data: { email, name },
+    });
+  } else {
+    user = await prismaClient.user.create({
+      data: { clerkId, email, name, role: "USER" },
+    });
   }
+
+  const payload = {
+    id: user.id,
+    email: user.email,
+    clerkId: user.clerkId,
+  };
+
+  await generateCookies(payload);
+
   return NextResponse.json({ success: true });
 }
