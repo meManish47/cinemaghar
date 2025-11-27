@@ -33,7 +33,7 @@ export default async function MoviePage({
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/90 via-black/50 to-transparent" />
 
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 flex flex-col md:flex-row items-start gap-4 sm:gap-8 bg-black/40 backdrop-blur-sm sm:rounded-xl shadow-2xl mb-4 sm:mb-8">
           <div className="w-32 sm:w-48 md:w-56 rounded-lg overflow-hidden shadow-lg self-center md:self-start">
