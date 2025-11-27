@@ -1,4 +1,5 @@
 import prismaClient from "@/services/prisma";
+import { revalidateTag } from "next/cache";
 
 export async function getAllMovies() {
   try {
@@ -13,7 +14,7 @@ export async function getMovieWithId(_: unknown, args: { id: string }) {
   try {
     const movie = await prismaClient.movie.findUnique({
       where: { id: args.id },
-      include: { shows: { where: { deletedAt: { equals: undefined } } } },
+      include: { shows: { where: { isDeleted: false } } },
     });
 
     if (!movie) {
@@ -23,5 +24,14 @@ export async function getMovieWithId(_: unknown, args: { id: string }) {
     return { success: true, movie, message: "Fetched successfully" };
   } catch (error) {
     return { success: false, movie: null, message: "Database error" };
+  }
+}
+
+export async function revalidateTagFromGql(){
+  try {
+    revalidateTag("moviesChanged")
+    return true
+  } catch (error) {
+    return false
   }
 }

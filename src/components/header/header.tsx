@@ -3,12 +3,21 @@ import Link from "next/link";
 import SignIn from "./clerkSignIn";
 import SearchBar from "./searchbar";
 import { currentUser } from "@clerk/nextjs/server";
+import UserSidebar from "../homepage/userSidebar";
+import { User } from "../../../generated/prisma";
+import { gqlClient } from "@/services/gql";
+import { GET_USER_BY_CLERK_ID } from "@/app/queries";
 
 export default async function HeaderComponent() {
   const User = await currentUser();
+  const data: { getUserByClerkId: User } = await gqlClient.request(
+    GET_USER_BY_CLERK_ID,
+    { clerkId: User!!.id }
+  );
+  const user = data.getUserByClerkId;
   return (
     <header>
-      <div className="w-full h-18 flex items-center px-2 sm:px-32 justify-between bg-[#FFFFFF]">
+      <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between ">
         <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start  ">
           <div className="h-full flex items-center overflow-hidden w-24 sm:w-40">
             <Link href={"/"}>
@@ -21,11 +30,11 @@ export default async function HeaderComponent() {
             </Link>
           </div>
           <div className="h-4 sm:h-full w-max flex items-center ">
-            {User?.emailAddresses[0].emailAddress !=
-              "kmanish57610@gmail.com" && <SearchBar />}
+            {user.role != "ADMIN" && <SearchBar />}
           </div>
         </div>
         <SignIn />
+        <UserSidebar />
       </div>
     </header>
   );

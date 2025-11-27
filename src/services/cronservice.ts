@@ -1,5 +1,5 @@
 import { revalidateTag } from "next/cache";
-import { DELETE_SHOW } from "../app/queries";
+import { DELETE_SHOW, REVALIDATE_TAG } from "../app/queries";
 import { gqlClient } from "./gql";
 import prismaClient from "./prisma";
 
@@ -17,7 +17,8 @@ export async function softDeleteShows() {
         await gqlClient.request(DELETE_SHOW, { showId: show.id });
       }
     }
-    revalidateTag("moviesChanged");
+    // revalidateTag("moviesChanged");
+    await gqlClient.request(REVALIDATE_TAG);
   } catch (err) {
     console.error("Error:", err);
   }

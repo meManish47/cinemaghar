@@ -20,10 +20,10 @@ export default clerkMiddleware(async (auth, req) => {
       GET_USER_BY_CLERK_ID,
       { clerkId }
     );
-    if(!currentUser.getUserByClerkId){
+    if (!currentUser.getUserByClerkId) {
       return NextResponse.redirect(new URL("/", req.url));
     }
-    if (currentUser.getUserByClerkId.email !== "kmanish57610@gmail.com") {
+    if (currentUser.getUserByClerkId.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }

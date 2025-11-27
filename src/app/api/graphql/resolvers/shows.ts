@@ -6,7 +6,7 @@ export async function getShowsByMovie(
 ) {
   try {
     const shows = await prismaClient.show.findMany({
-      where: { movieId: args.movieId, deletedAt: { equals: undefined } },
+      where: { movieId: args.movieId, isDeleted: false },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
     if (shows) return shows.filter((show) => show.deletedAt == undefined);
@@ -23,7 +23,7 @@ export async function getShowsByCinema(
     const shows = await prismaClient.show.findMany({
       where: {
         hall: { cinemaId: args.cinemaId },
-        deletedAt: { equals: undefined },
+        isDeleted: false,
       },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
@@ -55,6 +55,8 @@ export async function addShow(
         start: startDateTime,
         finish: finishDateTime,
         date: new Date(args.date),
+        deletedAt: null,
+        isDeleted: false,
       },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
@@ -76,7 +78,7 @@ export async function getShowById(
       include: {
         hall: { include: { seats: true, cinema: true } },
         movie: true,
-        bookings: { include: { seats: true } },
+        bookings: { include: { seats: true }, where: { status: "CONFIRMED" } },
       },
     });
     if (show) return show;
@@ -90,9 +92,9 @@ export async function deleteShow(parent: unknown, args: { showId: string }) {
   try {
     await prismaClient.show.update({
       where: { id: args.showId },
-      data: { deletedAt: new Date() },
+      data: { deletedAt: new Date(), isDeleted: true },
     });
-    console.log("show updated");
+    // console.log("show updated");
     return true;
   } catch (error) {
     return false;
@@ -102,7 +104,7 @@ export async function deleteShow(parent: unknown, args: { showId: string }) {
 export async function getAllShows() {
   try {
     const shows = await prismaClient.show.findMany({
-      where: { deletedAt: null },
+      where: { isDeleted: false },
       include: { hall: true, movie: true, bookings: true },
     });
     return shows;

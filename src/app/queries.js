@@ -107,6 +107,7 @@ export const GET_MOVIES_BY_ID = gql`
       movie {
         movie_title
         id
+        popularity
       }
       success
     }
@@ -145,6 +146,7 @@ export const GET_SHOW_BY_ID = gql`
       }
       bookings {
         createdAt
+        status
         seats {
           id
         }
@@ -197,6 +199,7 @@ export const GET_USER_BY_CLERK_ID = gql`
       email
       clerkId
       id
+      role
     }
   }
 `;
@@ -366,6 +369,7 @@ export const GETMOVIEWITHID = gql`
         thumbnail
         shows {
           id
+          isDeleted
           deletedAt
         }
       }
@@ -457,8 +461,20 @@ export const GET_CINEMAS = gql`
   }
 `;
 export const ADD_HALL = gql`
-  mutation Mutation($hallName: String!, $capacity: Int!, $cinemaId: String!, $rows: Int!, $columns: Int!) {
-    addHall(hall_name: $hallName, capacity: $capacity, cinemaId: $cinemaId, rows: $rows, columns: $columns) {
+  mutation Mutation(
+    $hallName: String!
+    $capacity: Int!
+    $cinemaId: String!
+    $rows: Int!
+    $columns: Int!
+  ) {
+    addHall(
+      hall_name: $hallName
+      capacity: $capacity
+      cinemaId: $cinemaId
+      rows: $rows
+      columns: $columns
+    ) {
       hall_name
       id
       cinemaId
@@ -466,5 +482,10 @@ export const ADD_HALL = gql`
       rows
       columns
     }
+  }
+`;
+export const REVALIDATE_TAG = gql`
+  mutation Mutation {
+    revalidateTagFromGql
   }
 `;

@@ -24,7 +24,7 @@ export default async function MoviePage({
   if (!movie) return notFound();
   console.log(movie);
   return (
-    <main className="w-full min-h-screen text-white sm:pt-4">
+    <main className="w-full min-h-screen text-white ">
       <section
         className="relative w-full h-[70vh] sm:h-[80vh] flex items-end "
         style={{

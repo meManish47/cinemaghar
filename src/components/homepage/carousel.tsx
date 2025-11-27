@@ -2,83 +2,102 @@
 
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Movie } from "../../../generated/prisma";
 import Image from "next/image";
 
-export default function Carousel({ slides }: { slides: Movie[] }) {
-  const [current, setCurrent] = useState(0);
-  const lastIndex = slides.length - 1;
+const covers = [
+  "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1762774640782_desktopjourney.jpg",
+  "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1763979457294_axwellsaraweb.jpeg",
+  "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1763016311773_kljwebnov.jpg",
+  "https://assets-in-gm.bmscdn.com/promotions/cms/creatives/1760430005960_popccweb.jpg",
+];
 
-  const previous = () => {
-    setCurrent(current === 0 ? lastIndex : current - 1);
-  };
+export default function Carousel() {
+  const slides = covers;
+  const [current, setCurrent] = useState(1); // Start at first REAL slide
 
-  const next = () => {
-    setCurrent(current === lastIndex ? 0 : current + 1);
-  };
+  // Clone last slide to beginning & first slide to end
+  const extendedSlides = [
+    slides[slides.length - 1],
+    ...slides,
+    slides[0],
+  ];
 
+  const previous = () => setCurrent((prev) => prev - 1);
+  const next = () => setCurrent((prev) => prev + 1);
+
+  // Loop jump effect
   useEffect(() => {
-    const interval = setInterval(next, 3000);
-    return () => clearInterval(interval);
+    if (current === 0) {
+      setTimeout(() => setCurrent(slides.length), 300);
+    }
+    if (current === slides.length + 1) {
+      setTimeout(() => setCurrent(1), 300);
+    }
   }, [current]);
-  useEffect(() => {
-    const interval = setInterval(next, 3000);
-    return () => clearInterval(interval);
-  }, [current]);
-  if (!slides || slides.length === 0) {
-    return <div>No slides to display.</div>;
-  }
 
-  // Automatic slide
+  // Auto slide
+  useEffect(() => {
+    const interval = setInterval(next, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="overflow-hidden h-full relative">
+    <div className="relative w-full overflow-hidden py-6 flex items-center justify-center">
+      
+      {/* Track */}
       <div
-        className="flex transition-transform h-full ease-out duration-700"
+        className="flex items-center transition-transform duration-700 ease-out w-[83%]"
         style={{
-          transform: `translateX(-${current * 100}%)`,
+          transform: `translateX(calc(-${current * 100}%))`,
         }}
       >
-        {slides.map((s, i) => (
-          <div key={i} className="relative w-full h-full flex-shrink-0">
-            {/* Next.js Image with fill */}
-            <div className="relative w-full h-full">
-              <Image
-                src={`https://image.tmdb.org/t/p/original${s.cover}`}
-                alt={s.movie_title || "Carousel image"}
-                fill
-                style={{ objectFit: "cover", objectPosition: "80% 30%" }}
-                priority={i === 0} // optional: preload first slide
-              />
-            </div>
+        {extendedSlides.map((s, i) => {
+          const isActive = i === current;
 
-            {/* Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 md:p-8 bg-gradient-to-t from-black/90 to-transparent z-10">
-              <h2 className="relative text-xl md:text-3xl font-bold text-white">
-                {s.movie_title}
-              </h2>
-              <p className="relative mt-2 text-white/90 text-sm hidden md:block">
-                {s.overview}
-              </p>
+          return (
+            <div
+              key={i}
+              className={`relative shrink-0 transition-all duration-500
+              ${isActive ? "scale-100 opacity-100" : "scale-[0.90] opacity-50"}
+              w-full`}
+            >
+              <div className="relative w-full h-[200px] md:h-[300px] rounded-sm overflow-hidden shadow-lg">
+                <Image src={s} alt="slide" fill className="object-cover" />
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      {/* Controls */}
-      <div className="absolute inset-0 w-full flex justify-between items-center px-4">
-        <button
-          onClick={previous}
-          className="p-1 rounded-full bg-black/40 text-white/80 z-10 hover:bg-black/60"
-        >
-          <ArrowLeft size={32} />
-        </button>
-        <button
-          onClick={next}
-          className="p-1 rounded-full bg-black/40 text-white/80 z-10 hover:bg-black/60"
-        >
-          <ArrowRight size={32} />
-        </button>
+      {/* Left Arrow */}
+      <button
+        onClick={previous}
+        className="absolute left-4 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full z-20 top-1/2 transition"
+      >
+        <ArrowLeft size={24} />
+      </button>
+
+      {/* Right Arrow */}
+      <button
+        onClick={next}
+        className="absolute right-4 -translate-y-1/2 bg-black/60 hover:bg-black/80 text-white p-3 rounded-full z-20 top-1/2 transition"
+      >
+        <ArrowRight size={24} />
+      </button>
+
+      {/* Pagination Dots */}
+      <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2 z-20">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i + 1)}
+            className={`w-3 h-3 rounded-full transition-all ${
+              i + 1 === current
+                ? "bg-white scale-110"
+                : "bg-gray-300 opacity-45"
+            }`}
+          />
+        ))}
       </div>
     </div>
   );

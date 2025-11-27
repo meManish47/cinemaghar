@@ -3,12 +3,7 @@
 import { GET_ALL_MOVIES } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import { useRouter } from "next/navigation";
-import {
-  FormEvent,
-  useEffect,
-  useRef,
-  useState
-} from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { Movie } from "../../../generated/prisma";
 
@@ -80,7 +75,7 @@ export default function SearchBar() {
     <main className="relative" ref={containerRef}>
       <form
         onSubmit={handleSubmit}
-        className="flex gap-2 h-8 w-max items-center border border-gray-300 px-3 rounded-md bg-white"
+        className="flex gap-2 h-8 w-max items-center border border-gray-200 px-3 rounded-xs bg-white"
       >
         <button type="submit" className="cursor-pointer">
           <FaSearch color="gray" />
@@ -90,8 +85,8 @@ export default function SearchBar() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-16 sm:w-80 rounded-md border-0 h-full px-2 focus:outline-none"
-          placeholder="Search for movies"
+          className="w-16 sm:w-120 border-0 h-full px-2 focus:outline-none placeholder:text-gray-500 placeholder:font-normal "
+          placeholder="Search for Movies,Events,Plays and Sports"
         />
       </form>
       {open && (

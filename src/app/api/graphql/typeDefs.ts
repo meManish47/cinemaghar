@@ -22,6 +22,7 @@ const typeDefs = gql`
     clerkId: String!
     email: String!
     name: String!
+    role:String!
   }
   type Cinema {
     id: String!
@@ -63,6 +64,7 @@ const typeDefs = gql`
     movie: Movie
     bookings: [Booking]
     deletedAt: DateTime
+    isDeleted: Boolean
   }
   input SeatInputForBooking {
     id: String!
@@ -134,6 +136,7 @@ const typeDefs = gql`
     confirmBooking(bookingId: String!): Booking
     logoutUser: Boolean
     deleteShow(showId: String!): Boolean
+    revalidateTagFromGql:Boolean
   }
 `;
 export default typeDefs;

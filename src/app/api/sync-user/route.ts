@@ -11,7 +11,7 @@ export async function POST(req: Request) {
 
   const user = await prismaClient.user.upsert({
     where: { clerkId },
-    update: { email, name },
+    update: { email, name, role: "USER" },
     create: { clerkId, email, name },
   });
   if (user) {

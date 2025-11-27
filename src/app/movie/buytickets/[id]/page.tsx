@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Movie } from "../../../../../generated/prisma";
-
+import CustomUserProfile from "@/components/header/userProfile";
 
 export default function BuyTicketsPage() {
   const { id } = useParams();
@@ -92,11 +92,16 @@ export default function BuyTicketsPage() {
   );
 
   return (
-    <div className="max-w-6xl mx-auto p-6 min-h-screen">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 flex items-center gap-2">
-        Shows for {movie?.movie_title}
-      </h1>
-
+    <div className="w-full px-34 mx-auto p-6 min-h-screen ">
+      <div className="flex flex-col gap-4 mb-4">
+        <h1 className="text-2xl sm:text-3xl font-bold  flex items-center gap-2">
+          Shows for {movie?.movie_title}
+        </h1>
+        <div className="w-max rounded-2xl border text-sm px-2  text-muted-foreground border-gray-500">
+          <p>Movie Runtime : 2h 25m</p>
+        </div>
+      </div>
+      <div className="w-full border border-gray-300 mb-2"></div>
       <div className="space-y-6">
         <ShowShows grouped={Object.values(groupedByCinema)} />
       </div>

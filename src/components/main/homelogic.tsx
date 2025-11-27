@@ -1,24 +1,20 @@
-// "use client";
 import AdminDashboard from "@/app/admin/page";
+import { GET_USER_BY_CLERK_ID } from "@/app/queries";
+import { gqlClient } from "@/services/gql";
 import { currentUser } from "@clerk/nextjs/server";
+import { User } from "../../../generated/prisma";
 import AdminNavBar from "../admin/adminNavBar";
 import HomePage from "../homepage/homepage";
 
 export default async function HomeLogic() {
-  // const { user, isSignedIn, isLoaded } = useUser();
   const User = await currentUser();
-  // console.log(User);
-  const adminEmail = "kmanish57610@gmail.com";
-  // const currentEmail = user?.primaryEmailAddress?.emailAddress;
-  const currentEmail = User?.emailAddresses[0].emailAddress;
-  // if (!isLoaded)
-  //   return (
-  //     <p className="h-screen w-full flex items-center justify-center ">
-  //       <span className="loading loading-spinner loading-xl"></span>
-  //     </p>
-  //   );
-  if (!currentEmail) return <HomePage />;
-  if (currentEmail !== adminEmail) return <HomePage />;
+  if (!User) return <HomePage />;
+  const data: { getUserByClerkId: User } = await gqlClient.request(
+    GET_USER_BY_CLERK_ID,
+    { clerkId: User.id }
+  );
+  const user = data.getUserByClerkId;
+  if (user.role !== "ADMIN") return <HomePage />;
   return (
     <div className="flex flex-col">
       <AdminNavBar />

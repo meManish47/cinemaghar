@@ -7,12 +7,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import {
-  Hall,
-  Seat
-} from "../../../../../generated/prisma";
+import { Hall, Seat } from "../../../../../generated/prisma";
 import { SHOW_WITH_HALL_MOVIE } from "@/app/types";
-
 
 const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
@@ -37,16 +33,15 @@ export default function SeatSelection() {
         setSeats(data.getShowById.hall.seats);
         setHall(data.getShowById.hall);
 
-        const arr = data.getShowById.bookings.map((booking) => {
-          const newArr = booking.seats.map((seatobj) => seatobj.id);
-          return newArr;
-        });
-
-        arr.forEach((booking) => {
-          booking.forEach((seatId) => {
-            setBookedSeatsIds((prev) => [...prev, seatId]);
-          });
-        });
+        const confirmedSeatIds = data.getShowById.bookings.reduce<string[]>(
+          (acc, booking) => {
+            booking.seats.forEach((seatobj) => acc.push(seatobj.id));
+            return acc;
+          },
+          []
+        );
+        // console.log("-_-_--", confirmedSeatIds);
+        setBookedSeatsIds(confirmedSeatIds);
       } catch (err) {
         console.error("Failed to fetch seats:", err);
       } finally {
@@ -172,7 +167,7 @@ export default function SeatSelection() {
         <button
           disabled={!selected.length}
           onClick={handleProceed}
-          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white text-lg font-semibold rounded-lg disabled:bg-gray-400"
+          className="px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white text-lg font-semibold rounded-lg disabled:bg-gray-400 cursor-pointer"
         >
           Proceed to Pay
         </button>
