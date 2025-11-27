@@ -7,6 +7,7 @@ import UserSidebar from "../homepage/userSidebar";
 import { gqlClient } from "@/services/gql";
 import { GET_USER_BY_CLERK_ID } from "@/app/queries";
 import { User } from "../../../generated/prisma";
+import LocationSelector from "../layout/locationselector";
 
 export default async function HeaderComponent() {
   const authUser = await currentUser();
@@ -51,12 +52,14 @@ export default async function HeaderComponent() {
           </Link>
 
           {!isAdmin && (
-            <div className="h-4 sm:h-full w-max flex items-center">
-              <SearchBar />
+            <div className="flex items-center gap-4">
+              <div className="h-4 sm:h-full w-max flex items-center">
+                <SearchBar />
+              </div>
             </div>
           )}
         </div>
-
+        {!isAdmin && <LocationSelector />}
         <SignIn />
         <UserSidebar />
       </div>

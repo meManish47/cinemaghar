@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
+import LocationModal from "@/components/layout/locationmodal";
 
 export const metadata: Metadata = {
   title: "Show Time",
@@ -24,6 +25,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body className="bg-[#FFFFFF]" suppressHydrationWarning>
           <ScrollToTop />
+          {/* <LocationModal /> */}
           <HeaderComponent />
           <NavBarWrapper />
           <SyncUser />

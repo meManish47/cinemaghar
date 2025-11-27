@@ -21,6 +21,7 @@ export default clerkMiddleware(async (auth, req) => {
       { clerkId }
     );
     if (!currentUser.getUserByClerkId) {
+      
       return NextResponse.redirect(new URL("/", req.url));
     }
     if (currentUser.getUserByClerkId.role !== "ADMIN") {
