@@ -1,15 +1,10 @@
-import Image from "next/image";
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaTwitter,
-  FaYoutube,
-  FaPinterestP,
-  FaLinkedinIn,
-  FaGithub,
-} from "react-icons/fa";
+import { headers } from "next/headers";
+import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
-export default function Footer() {
+export default async function Footer() {
+  const hdrs = await headers();
+  const pathname = hdrs.get("x-pathname") || "";
+  if (pathname.includes("/seatselection")) return null;
   return (
     <footer className="bg-[#2B2B2D] text-gray-400 py-10">
       {/* Logo with lines */}

@@ -101,7 +101,6 @@ export default function BuyTicketsPage() {
           <p>Movie Runtime : 2h 25m</p>
         </div>
       </div>
-      <div className="w-full border border-gray-300 mb-2"></div>
       <div className="space-y-6">
         <ShowShows grouped={Object.values(groupedByCinema)} />
       </div>

@@ -99,10 +99,16 @@ export default function SeatSelection() {
     if (!hall) return null;
 
     const rows = [];
+
     for (let i = 0; i < hall.rows; i++) {
+      const rowLabel = String.fromCharCode(65 + i); // A, B, C etc
+
       const rowSeats = [];
+
       for (let j = 0; j < hall.columns; j++) {
-        const seatLabel = `${String.fromCharCode(65 + i)}${j + 1}`;
+        const seatNumber = j + 1;
+        const seatLabel = `${rowLabel}${seatNumber}`;
+
         const seat = seats.find((seat) => seat.seat_no === seatLabel);
         const seatId = seat ? seat.id : "xx";
         const isBooked = bookedSeatsIds.includes(seatId);
@@ -113,23 +119,34 @@ export default function SeatSelection() {
             key={seatId}
             disabled={isBooked}
             onClick={() => selectSeat(seatId)}
-            className={`w-9 h-9 flex items-center justify-center text-xs font-semibold rounded-md border shadow-sm transition-all
-              ${
-                isBooked
-                  ? "bg-gray-400/70 text-white cursor-not-allowed"
-                  : isSelected
-                  ? "bg-green-600 text-white scale-105"
-                  : "bg-white hover:bg-green-100"
-              }`}
+            className={`w-8 h-8 flex items-center justify-center text-[10px] font-medium rounded-md border transition-all
+            ${
+              isBooked
+                ? "bg-gray-400/60 text-white cursor-not-allowed"
+                : isSelected
+                ? "bg-green-500 text-white scale-110 shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-green-100"
+            }
+          `}
           >
-            {seatLabel}
+            {seatNumber}
           </button>
         );
       }
 
       rows.push(
-        <div key={i} className="flex justify-center gap-2 mb-2">
-          {rowSeats}
+        <div key={i} className="flex items-center gap-2 mb-1">
+          {/* Row Label on Left (only A, B, C...) */}
+          <span className="w-4 text-sm font-semibold text-gray-700">
+            {rowLabel}
+          </span>
+
+          <div className="flex gap-2">{rowSeats}</div>
+
+          {/* Row Label on Right (optional like BookMyShow) */}
+          <span className="w-4 text-sm font-semibold text-gray-700">
+            {rowLabel}
+          </span>
         </div>
       );
     }
@@ -143,7 +160,7 @@ export default function SeatSelection() {
         Select Your Seats
       </h1>
 
-      <div className="bg-gray-900 text-white text-center w-80 p-2 rounded-t-xl shadow-lg mb-3">
+      <div className="bg-gray-800 text-white text-center px-6 py-3 rounded-t-xl shadow-md mb-4 tracking-wider w-96">
         SCREEN THIS WAY
       </div>
 

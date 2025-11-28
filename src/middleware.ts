@@ -7,7 +7,14 @@ import { gqlClient } from "./services/gql";
 
 // Match /admin routes
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+
 export default clerkMiddleware(async (auth, req) => {
+  const url = new URL(req.url);
+  const pathname = url.pathname;
+
+  const res = NextResponse.next();
+  res.headers.set("x-pathname", pathname);
+
   // If route is /admin, check user
   if (isAdminRoute(req)) {
     const userCookies = await getUserFromCookie();
@@ -16,27 +23,27 @@ export default clerkMiddleware(async (auth, req) => {
     if (!clerkId) {
       return NextResponse.redirect(new URL("/", req.url));
     }
+
     const currentUser: { getUserByClerkId: User } = await gqlClient.request(
       GET_USER_BY_CLERK_ID,
       { clerkId }
     );
+
     if (!currentUser.getUserByClerkId) {
-      
       return NextResponse.redirect(new URL("/", req.url));
     }
+
     if (currentUser.getUserByClerkId.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
-  return NextResponse.next();
+  return res;
 });
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
     "/(api|trpc)(.*)",
   ],
 };

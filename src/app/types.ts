@@ -1,4 +1,12 @@
-import { Booking, Cinema, Hall, Movie, Seat, Show, User } from "../../generated/prisma";
+import {
+  Booking,
+  Cinema,
+  Hall,
+  Movie,
+  Seat,
+  Show,
+  User,
+} from "../../generated/prisma";
 
 export type CinemaWithHall = Cinema & {
   halls: Hall[];
@@ -35,7 +43,7 @@ export type TicketResponse = {
   seats: string[];
   screen: string;
   user: User;
-};  
+};
 export type AddShowFormProps = {
   movies: Movie[];
   halls: HallsWithCinema[];
@@ -57,5 +65,4 @@ export type ShowItem = {
   cinemaName: string;
   cinemaLocation: string;
 };
-
-
+export type MovieWithShow = Movie & { shows: Show[] };

@@ -26,10 +26,10 @@ export default function NavBar() {
       </div>
       <div className=" w-max  h-full px-3  flex gap-8 text-xs text-gray-800 items-center ">
         <span>
-          <p className="cursor-pointer">Offers</p>
+          <p className="cursor-pointer text-muted-foreground">Offers</p>
         </span>
         <span>
-          <p className="cursor-pointer">Gift Cards</p>
+          <p className="cursor-pointer text-muted-foreground">Gift Cards</p>
         </span>
       </div>
     </div>

@@ -40,12 +40,12 @@ export default function LocationModal({
     onClose?.();
   };
 
-  const detectLocation = () => {
-    navigator.geolocation.getCurrentPosition(
-      () => handleSelect("Detected Location"),
-      () => alert("Location access denied!")
-    );
-  };
+  // const detectLocation = () => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     () => handleSelect("Detected Location"),
+  //     () => alert("Location access denied!")
+  //   );
+  // };
 
   return (
     <AnimatePresence>
@@ -93,12 +93,12 @@ export default function LocationModal({
             )}
           </div>
 
-          <button
+          {/* <button
             onClick={detectLocation}
             className="flex items-center gap-2 text-red-500 font-medium mb-4 hover:opacity-80"
           >
             <LocateFixed size={18} /> Detect my location
-          </button>
+          </button> */}
 
           {/* Popular Cities */}
           {!searchText && (

@@ -61,7 +61,7 @@ export default async function HeaderComponent() {
         </div>
         {!isAdmin && <LocationSelector />}
         <SignIn />
-        <UserSidebar />
+        <UserSidebar userDb={userDb}/>
       </div>
     </header>
   );
