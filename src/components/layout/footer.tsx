@@ -1,37 +1,25 @@
-import { headers } from "next/headers";
+"use client";
+
+import { usePathname } from "next/navigation";
 import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
-export default async function Footer() {
-  const hdrs = await headers();
-  const pathname = hdrs.get("x-pathname") || "";
+export default function Footer() {
+  const pathname = usePathname();
+
   if (pathname.includes("/seatselection")) return null;
+
   return (
     <footer className="bg-[#2B2B2D] text-gray-400 py-10">
-      {/* Logo with lines */}
       <div className="flex items-center justify-center gap-4 mb-6">
-        {/* <div className="h-px bg-gray-500 w-14/19"></div> */}
-
-        {/* <Image
-          src="/showLogo.png"
-          alt="Logo"
-          className="h-24 w-1/19 object-contain"
-          height={100}
-          width={100}
-        /> */}
-
         <div className="h-px bg-gray-500 w-full mb-8"></div>
       </div>
 
-      {/* Social Icons */}
       <div className="flex justify-center gap-3 mb-6">
         {[
-          //   { icon: <FaFacebookF />, link: "https://facebook.com" },
-          //   { icon: <FaTwitter />, link: "https://twitter.com" },
           {
             icon: <FaInstagram />,
             link: "https://instagram.com/manish_kumar3045",
           },
-          //   { icon: <FaYoutube />, link: "https://youtube.com" },
           { icon: <FaGithub />, link: "https://github.com/meManish47" },
           {
             icon: <FaLinkedinIn />,
@@ -51,7 +39,6 @@ export default async function Footer() {
         ))}
       </div>
 
-      {/* Copyright */}
       <div className="text-xs text-center space-y-2 leading-relaxed max-w-4xl mx-auto px-4">
         <p>
           Copyright {new Date().getFullYear()} © ShowTime Entertainment Pvt.
