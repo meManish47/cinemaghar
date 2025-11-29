@@ -1,15 +1,12 @@
-import Link from "next/link";
+import { GroupedCinema } from "@/app/types";
 import { SignedOut, SignInButton, useUser } from "@clerk/nextjs";
-import { Calendar, Clock } from "lucide-react";
-import { CinemaWithHall, ShowWithHall } from "@/app/types";
+import { currentUser } from "@clerk/nextjs/server";
+import { Calendar } from "lucide-react";
+import Link from "next/link";
 
-export type GroupedCinema = {
-  cinema: CinemaWithHall;
-  shows: ShowWithHall[];
-};
 
-export default function ShowShows({ grouped }: { grouped: GroupedCinema[] }) {
-  const { isSignedIn } = useUser();
+export default async function ShowShows({ grouped }: { grouped: GroupedCinema[] }) {
+  const User  =await currentUser();
 
   return (
     <div className="space-y-6">
@@ -52,7 +49,7 @@ export default function ShowShows({ grouped }: { grouped: GroupedCinema[] }) {
                 </div>
               );
 
-              return isSignedIn ? (
+              return User ? (
                 <Link key={show.id} href={`/movie/seatselection/${show.id}`}>
                   {card}
                 </Link>

@@ -66,3 +66,4 @@ export type ShowItem = {
   cinemaLocation: string;
 };
 export type MovieWithShow = Movie & { shows: Show[] };
+

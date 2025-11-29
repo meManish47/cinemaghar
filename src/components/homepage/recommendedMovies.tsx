@@ -44,7 +44,7 @@ export default function RecommendedMovies({
           <button
             key={filterItem.label}
             onClick={() => handleFilterClick(index)}
-            className={`px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 
+            className={`px-2 py-1.5 text-sm font-normal rounded-full transition-all duration-200 
             border cursor-pointer select-none
             ${
               activeFilter === index

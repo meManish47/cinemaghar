@@ -10,7 +10,7 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
     >
       <Link href={`/movie/${movieItem.id}`}>
         {movieItem.thumbnail && (
-          <div className="w-full h-full aspect-2/3 overflow-hidden rounded-md">
+          <div className="w-full h-76 aspect-2/3 overflow-hidden rounded-md">
             <Image
               src={`https://image.tmdb.org/t/p/w500${movieItem.thumbnail}`}
               alt={movieItem.movie_title}

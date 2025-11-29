@@ -1,60 +1,46 @@
-"use client";
 import { GET_MOVIES_BY_ID, GET_SHOWS_BY_MOVIE } from "@/app/queries";
-import { GroupedCinema, ShowWithHall } from "@/app/types";
-import ShowShows from "@/components/show/showcard";
 import { gqlClient } from "@/services/gql";
-import { useUser } from "@clerk/nextjs";
+import ShowShows from "@/components/show/showcard";
+import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 import { Film } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { GroupedCinema, ShowWithHall } from "@/app/types";
 import { Movie } from "../../../../../generated/prisma";
-import CustomUserProfile from "@/components/header/userProfile";
 
-export default function BuyTicketsPage() {
-  const { id } = useParams();
-  const [shows, setShows] = useState<ShowWithHall[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [movie, setMovie] = useState<Movie>();
-  const { isSignedIn } = useUser();
+export default async function BuyTicketsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const user = await currentUser();
 
-  useEffect(() => {
-    async function fetchShows() {
-      try {
-        const res: { getShowsByMovie: ShowWithHall[] } =
-          await gqlClient.request(GET_SHOWS_BY_MOVIE, { movieId: id });
-        setShows(res.getShowsByMovie || []);
-      } catch (err) {
-        console.error("Error fetching shows:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
+  if (user && user.publicMetadata?.role === "ADMIN") {
+    redirect("/");
+  }
 
-    async function fetchMovie() {
-      try {
-        const movRes: { getMovieWithId: { movie: Movie } } =
-          await gqlClient.request(GET_MOVIES_BY_ID, {
-            getMovieWithIdId: id,
-          });
-        setMovie(movRes.getMovieWithId.movie);
-      } catch (error) {
-        console.error("Error fetching movie:", error);
-      }
-    }
+  const id = params.id;
 
-    if (id) {
-      fetchShows();
-      fetchMovie();
-    }
-  }, [id]);
+  let shows: ShowWithHall[] = [];
+  let movie: Movie | null = null;
 
-  if (loading)
-    return (
-      <div className="h-screen flex items-center justify-center text-gray-600">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
+  try {
+    const res: { getShowsByMovie: ShowWithHall[] } = await gqlClient.request(
+      GET_SHOWS_BY_MOVIE,
+      { movieId: id }
     );
+    shows = res.getShowsByMovie || [];
+  } catch (error) {
+    console.error("Error fetching shows:", error);
+  }
+
+  try {
+    const movRes: { getMovieWithId: { movie: Movie } } =
+      await gqlClient.request(GET_MOVIES_BY_ID, { getMovieWithIdId: id });
+    movie = movRes.getMovieWithId.movie;
+  } catch (error) {
+    console.error("Error fetching movie:", error);
+  }
 
   if (!shows.length)
     return (
@@ -92,18 +78,17 @@ export default function BuyTicketsPage() {
   );
 
   return (
-    <div className="w-full px-34 mx-auto p-6 min-h-screen ">
+    <div className="w-full px-34 mx-auto p-6 min-h-screen">
       <div className="flex flex-col gap-4 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold  flex items-center gap-2">
+        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
           Shows for {movie?.movie_title}
         </h1>
-        <div className="w-max rounded-2xl border text-sm px-2  text-muted-foreground border-gray-500">
+        <div className="w-max rounded-2xl border text-sm px-2 text-muted-foreground border-gray-500">
           <p>Movie Runtime : 2h 25m</p>
         </div>
       </div>
-      <div className="space-y-6">
-        <ShowShows grouped={Object.values(groupedByCinema)} />
-      </div>
+
+      <ShowShows grouped={Object.values(groupedByCinema)} />
     </div>
   );
 }
