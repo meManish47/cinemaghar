@@ -8,10 +8,9 @@ import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import LocationModal from "@/components/layout/locationmodal";
 
 export const metadata: Metadata = {
-  title: "Show Time",
+  title: "Cinema Ghar",
   description: "A movie ticket booking platform",
 };
 

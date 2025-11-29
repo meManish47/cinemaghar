@@ -36,7 +36,7 @@ const categories = [
 export default function LiveEventsSection() {
   return (
     <div className="my-10">
-      <h2 className="text-2xl font-bold mb-6">The Best Of Live Events</h2>
+      <h2 className="text-2xl font-bold mb-6">Coming Soon </h2>
       <div className="flex gap-4 overflow-x-auto pb-3">
         {categories.map((cat) => (
           <EventCategoryCard key={cat.title} {...cat} />

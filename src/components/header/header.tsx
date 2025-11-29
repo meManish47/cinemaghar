@@ -48,7 +48,13 @@ export default async function HeaderComponent() {
       <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between">
         <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
           <Link href="/">
-            <Image src="/showLogo.png" alt="Logo" height={150} width={150} />
+            <Image
+              src="/cinemaghar.png"
+              className="ps-2"
+              alt="Logo"
+              height={150}
+              width={150}
+            />
           </Link>
 
           {!isAdmin && (
@@ -61,7 +67,7 @@ export default async function HeaderComponent() {
         </div>
         {!isAdmin && <LocationSelector />}
         <SignIn />
-        <UserSidebar userDb={userDb}/>
+        <UserSidebar userDb={userDb} />
       </div>
     </header>
   );

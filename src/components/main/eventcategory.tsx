@@ -15,7 +15,7 @@ export default function EventCategoryCard({
 }: Props) {
   return (
     <div
-      className={`rounded-2xl p-6 w-60 h-72 flex flex-col relative overflow-hidden  text-white font-semibold cursor-pointer  ${gradient}`}
+      className={`rounded-2xl p-6 w-60 h-72 flex flex-col relative overflow-hidden  text-white font-semibold   ${gradient}`}
     >
       <div className="text-4xl font-bold leading-tight">{title}</div>
       <p className="text-sm opacity-90">{events}</p>

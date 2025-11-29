@@ -6,7 +6,7 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
   return (
     <div
       key={movieItem.id}
-      className="w-48  min-h-max backdrop-blur-xl p-1   flex flex-col items-start justify-center gap-2"
+      className="w-54  min-h-max backdrop-blur-xl p-1   flex flex-col items-start justify-center gap-2"
     >
       <Link href={`/movie/${movieItem.id}`}>
         {movieItem.thumbnail && (

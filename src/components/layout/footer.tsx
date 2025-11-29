@@ -41,7 +41,7 @@ export default function Footer() {
 
       <div className="text-xs text-center space-y-2 leading-relaxed max-w-4xl mx-auto px-4">
         <p>
-          Copyright {new Date().getFullYear()} © ShowTime Entertainment Pvt.
+          Copyright {new Date().getFullYear()} © Cinema Ghar Entertainment Pvt.
           Ltd. All Rights Reserved.
         </p>
         <p>

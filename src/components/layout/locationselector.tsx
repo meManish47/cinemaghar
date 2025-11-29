@@ -1,18 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { MapPin } from "lucide-react";
-import dynamic from "next/dynamic";
-
-const LocationModal = dynamic(() => import("./locationmodal"), { ssr: false });
+import { motion } from "framer-motion";
+import LocationDropdown from "./locationmodal";
+import { MdKeyboardArrowDown } from "react-icons/md";
 
 export default function LocationSelector() {
   const [city, setCity] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem("user_city");
     if (saved) setCity(saved);
-    else setOpen(true);
   }, []);
 
   const updateCity = (newCity: string) => {
@@ -21,19 +21,56 @@ export default function LocationSelector() {
     setOpen(false);
   };
 
+  // Close dropdown if clicked outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (!containerRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("click", handleClick);
+    return () => document.removeEventListener("click", handleClick);
+  }, []);
+
   return (
-    <>
+    <div ref={containerRef} className="relative">
       <button
-        onClick={() => setOpen(true)}
-        className="flex items-center gap-1 text-sm font-medium text-gray-700 hover:text-red-500"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((prev) => !prev);
+        }}
+        className="flex items-center gap-1 text-sm cursor-pointer font-medium transition text-gray-700 hover:text-red-500"
       >
         <MapPin size={16} />
-        {city ? city : "Select Location"}
+        {city || "Select Location"}
+        <MdKeyboardArrowDown size={16} />
       </button>
 
       {open && (
-        <LocationModal onSelect={updateCity} onClose={() => setOpen(false)} />
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="fixed inset-0 bg-black/45  z-40"
+            onClick={() => setOpen(false)}
+          />
+
+          <motion.div
+            initial={{ y: -20, opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+            animate={{ y: 0, opacity: 1, scale: 1, filter: "blur(0px)" }}
+            exit={{ y: -20, opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+            transition={{
+              duration: 0.28,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute top-10 right-0 min-w-max w-252 z-50 drop-shadow-xl rounded-4xl"
+          >
+            <LocationDropdown onSelect={updateCity} />
+          </motion.div>
+        </>
       )}
-    </>
+    </div>
   );
 }
