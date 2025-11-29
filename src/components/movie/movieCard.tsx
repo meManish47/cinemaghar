@@ -10,17 +10,19 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
     >
       <Link href={`/movie/${movieItem.id}`}>
         {movieItem.thumbnail && (
-          <div className="w-full h-full overflow-hidden rounded-md">
+          <div className="w-full h-full aspect-2/3 overflow-hidden rounded-md">
             <Image
               src={`https://image.tmdb.org/t/p/w500${movieItem.thumbnail}`}
               alt={movieItem.movie_title}
-              className="h-full w-full object-cover rounded-md shadow hover:scale-[1.02] transition ease-in-out duration-400"
+              className="h-full w-full object-cover  rounded-md shadow hover:scale-[1.02] transition ease-in-out duration-400"
               height={1000}
               width={1000}
+              objectFit="cover"
+              placeholder="blur"
+              blurDataURL="/image.png"
             />
           </div>
         )}
-        <div>hello</div>
       </Link>
       <p className="text-black font-medium text-lg tracking-wide  line-clamp-2 leading-snug w-48 h-6 overflow-hidden truncate">
         {movieItem.movie_title}
