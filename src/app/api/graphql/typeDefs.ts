@@ -93,6 +93,8 @@ const typeDefs = gql`
     cinemaCount: Int!
     hallCount: Int!
     userCount: Int!
+    todayBookings: Int!,
+    upcomingShows: Int!,
   }
   type Query {
     getAllMovies: [Movie]

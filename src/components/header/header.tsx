@@ -19,7 +19,12 @@ export default async function HeaderComponent() {
           {/* Logo */}
           <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
             <Link href="/">
-              <Image src="/showLogo.png" alt="Logo" height={150} width={150} />
+              <Image
+                src="/cinemaghar.png"
+                alt="Logo"
+                height={150}
+                width={150}
+              />
             </Link>
           </div>
           <SignIn />

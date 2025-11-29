@@ -31,9 +31,8 @@ export default function HomePageClient({
         <RecommendedMovies movies={filteredMovies} setFilter={setFilter} />
       </div>
 
-      <div className="w-full sm:px-32 px-8 my-8 overflow-hidden">
-        {/* Banner */}
-        <img src="/banner.png" className="rounded-xl" alt="Banner" />
+      <div className="relative  w-full sm:px-32 px-8 my-8 overflow-hidden">
+        <img src="/bannerwithlogo.png" className="rounded-xl" alt="Banner" />
       </div>
 
       <div className="w-full sm:px-32 px-8">

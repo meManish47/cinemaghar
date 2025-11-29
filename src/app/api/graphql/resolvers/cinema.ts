@@ -29,15 +29,35 @@ export async function addCinema(
   }
 }
 export async function getCounts() {
-  const [cinemaCount, hallCount, userCount] = await Promise.all([
-    prismaClient.cinema.count(),
-    prismaClient.hall.count(),
-    prismaClient.user.count(),
-  ]);
-  // console.log(cinemaCount, "cinema count on cinema ts");
+  const now = new Date();
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [cinemaCount, hallCount, userCount, todayBookings, upcomingShows] =
+    await Promise.all([
+      prismaClient.cinema.count(),
+      prismaClient.hall.count(),
+      prismaClient.user.count(),
+      prismaClient.booking.count({
+        where: {
+          createdAt: { gte: startOfToday },
+          status: "CONFIRMED",
+        },
+      }),
+      prismaClient.show.count({
+        where: {
+          start: { gt: now },
+          isDeleted: false,
+        },
+      }),
+    ]);
+
   return {
     cinemaCount,
     hallCount,
     userCount,
+    todayBookings,
+    upcomingShows,
   };
 }

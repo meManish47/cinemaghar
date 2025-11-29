@@ -352,6 +352,8 @@ export const GET_COUNTS = gql`
       cinemaCount
       hallCount
       userCount
+      todayBookings
+      upcomingShows
     }
   }
 `;

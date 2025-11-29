@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { FaGithub, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
@@ -9,9 +10,20 @@ export default function Footer() {
   if (pathname.includes("/seatselection")) return null;
 
   return (
-    <footer className="bg-[#2B2B2D] text-gray-400 py-10">
+    <footer className="bg-[#2B2B2D] text-gray-400 py-4 pb-10">
       <div className="flex items-center justify-center gap-4 mb-6">
-        <div className="h-px bg-gray-500 w-full mb-8"></div>
+        <div className=" w-screen flex  items-center">
+          <div className="bg-gray-500 h-px w-14/19"></div>
+          <div className="w-58 mx-2 relative">
+            <Image
+              src={"/cinemaghar_white.png"}
+              alt="Image"
+              width={1200}
+              height={13}
+            />
+          </div>
+          <div className="bg-gray-500 h-px w-14/19"></div>
+        </div>
       </div>
 
       <div className="flex justify-center gap-3 mb-6">
