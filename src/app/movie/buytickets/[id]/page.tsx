@@ -11,7 +11,7 @@ import { Movie } from "../../../../../generated/prisma";
 export default async function BuyTicketsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const user = await currentUser();
 
@@ -19,7 +19,7 @@ export default async function BuyTicketsPage({
     redirect("/");
   }
 
-  const id = params.id;
+  const { id } = await params;
 
   let shows: ShowWithHall[] = [];
   let movie: Movie | null = null;

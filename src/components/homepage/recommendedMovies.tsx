@@ -37,7 +37,6 @@ export default function RecommendedMovies({
         </p>
       </div>
 
-      {/* Filters - BookMyShow Style */}
       <div className="flex flex-wrap gap-3  w-full py-4 rounded-lg   border-[#E82640] bg-gray-50 ">
         <p className="text-lg mx-2 font-bold">Poularity :</p>
         {popularityFilters.map((filterItem, index) => (
