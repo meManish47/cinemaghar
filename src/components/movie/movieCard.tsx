@@ -20,6 +20,7 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
             />
           </div>
         )}
+        <div>hello</div>
       </Link>
       <p className="text-black font-medium text-lg tracking-wide  line-clamp-2 leading-snug w-48 h-6 overflow-hidden truncate">
         {movieItem.movie_title}
