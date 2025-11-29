@@ -47,8 +47,8 @@ export default function RecommendedMovies({
             border cursor-pointer select-none
             ${
               activeFilter === index
-                ? "bg-[#E82640] text-white border-red-600 shadow-md  scale-[1.01]"
-                : "bg-white text-gray-600 border-gray-300 hover:bg-red-50 hover:border-red-500 hover:text-red-600"
+                ? "bg-[#EB4E62] text-white border shadow-md  scale-[1.01]"
+                : "bg-white text-gray-600 border-gray-300 "
             }`}
           >
             {filterItem.label}

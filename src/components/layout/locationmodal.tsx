@@ -61,7 +61,7 @@ export default function LocationDropdown({
               <button
                 key={city}
                 onClick={() => onSelect(city)}
-                className="flex flex-col items-center gap-2 group "
+                className="flex flex-col items-center gap-2 group cursor-pointer"
               >
                 <div className="group-hover:scale-110 transition-transform duration-200 ">
                   {cityIcons[city]}
