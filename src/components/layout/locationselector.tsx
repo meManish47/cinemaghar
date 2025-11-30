@@ -64,7 +64,7 @@ export default function LocationSelector() {
               duration: 0.28,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="absolute top-10 right-0 min-w-max w-252 z-50 drop-shadow-xl rounded-4xl"
+            className="absolute top-10 right-0  w-60 sm:w-252 z-50 drop-shadow-xl rounded-4xl "
           >
             <LocationDropdown onSelect={updateCity} />
           </motion.div>
