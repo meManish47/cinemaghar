@@ -31,12 +31,12 @@ export default function HomePageClient({
       <div className="relative   w-full sm:px-32 px-8 my-8 overflow-hidden">
         <img
           src="/bannerwithlogo.png"
-          className="rounded-xl h-16"
+          className="rounded-xl h-14 sm:w-full sm:h-full  "
           alt="Banner"
         />
       </div>
 
-      <div className="w-full sm:px-32 ps-8 ">
+      <div className="w-full sm:px-32 pl-8">
         <LiveEventsSection />
       </div>
     </main>
