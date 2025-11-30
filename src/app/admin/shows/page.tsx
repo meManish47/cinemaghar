@@ -35,7 +35,7 @@ export default function ShowsPage() {
 
         <Link
           href="/admin/manageshows"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-sm"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-xs sm:text-sm"
         >
           ➕ Create New Show
         </Link>

@@ -35,9 +35,10 @@ const categories = [
 
 export default function LiveEventsSection() {
   return (
-    <div className="my-10">
-      <h2 className="text-2xl font-bold mb-6">Coming Soon </h2>
-      <div className="flex gap-4 overflow-x-auto pb-3">
+    <div className="my-10 w-full overflow-hidden">
+      <h2 className="text-2xl font-bold mb-6">Coming Soon</h2>
+
+      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide ">
         {categories.map((cat) => (
           <EventCategoryCard key={cat.title} {...cat} />
         ))}

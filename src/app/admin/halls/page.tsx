@@ -35,7 +35,7 @@ export default function HallsPage() {
 
         <Link
           href="/admin/managehalls"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-sm"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-xs sm:text-sm"
         >
           ➕ Add New Hall
         </Link>

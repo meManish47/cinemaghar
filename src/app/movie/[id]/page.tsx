@@ -36,11 +36,11 @@ export default async function MoviePage({
   return (
     <div className="flex flex-col gap-12">
       <MovieDetailCard movie={movie} />
-      <div className="sm:px-51 mb-8">
+      <div className="sm:px-51 mb-8 px-4">
         <TopOffers />
       </div>
-      <p className="text-2xl sm:px-52 font-bold">You might also like </p>
-      <div className="sm:px-51 flex flex-wrap gap-4 justify-between -mt-8 mb-16">
+      <p className="text-2xl sm:px-52 font-bold px-4">You might also like </p>
+      <div className="sm:px-51 flex overflow-auto w-full scrollbar-hide gap-4 justify-between -mt-8 mb-16 px-4">
         {allMovies.slice(15, 20).map((movie) => (
           <MovieCard movieItem={movie} key={movie.id} />
         ))}

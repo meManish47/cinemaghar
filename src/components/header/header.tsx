@@ -51,11 +51,11 @@ export default async function HeaderComponent() {
   return (
     <header>
       <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between">
-        <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
+        <div className="h-full w-full flex items-center  gap-4 justify-between sm:justify-start">
           <Link href="/">
             <Image
               src="/cinemaghar.png"
-              className="ps-2"
+              className="ps-2  w-32 sm:w-max"
               alt="Logo"
               height={150}
               width={150}
@@ -63,7 +63,7 @@ export default async function HeaderComponent() {
           </Link>
 
           {!isAdmin && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full">
               <div className="h-4 sm:h-full w-max flex items-center">
                 <SearchBar />
               </div>

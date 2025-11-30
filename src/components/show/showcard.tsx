@@ -1,21 +1,21 @@
 import { GroupedCinema } from "@/app/types";
-import { SignedOut, SignInButton, useUser } from "@clerk/nextjs";
+import { SignedOut, SignInButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
 import { Calendar } from "lucide-react";
 import Link from "next/link";
 
-
 export default async function ShowShows({ grouped }: { grouped: GroupedCinema[] }) {
-  const User  =await currentUser();
+  const User = await currentUser();
 
   return (
     <div className="space-y-6">
       {grouped.map((group) => (
         <div
           key={group.cinema.id}
-          className="p-5 bg-white  shadow border border-gray-200 flex flex-col md:flex-row gap-4"
+          className="p-5 bg-white shadow border border-gray-200 flex flex-col gap-4"
         >
-          <div className="w-full md:w-1/3 mb-2 md:mb-4">
+          {/* Cinema Name + Location */}
+          <div className="w-full">
             <h2 className="text-lg md:text-xl font-semibold text-gray-900">
               {group.cinema.name}
             </h2>
@@ -24,11 +24,13 @@ export default async function ShowShows({ grouped }: { grouped: GroupedCinema[] 
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3 md:gap-4 w-full">
+          {/* Scrollable Shows Row */}
+          <div className="flex flex-nowrap gap-3 md:gap-4 w-full overflow-x-auto scrollbar-hide pb-2">
             {group.shows.map((show) => {
               const date = new Date(Number(show.date))
                 .toISOString()
                 .split("T")[0];
+
               const time = new Date(Number(show.start)).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -36,11 +38,11 @@ export default async function ShowShows({ grouped }: { grouped: GroupedCinema[] 
               });
 
               const card = (
-                <div className="cursor-pointer w-28 h-14 md:w-32 md:h-14  border-2 border-s-4 border-green-500  p-2 flex flex-col items-center justify-center bg-white hover:bg-green-50 shadow-sm transition text-center">
+                <div className="cursor-pointer w-28 h-14 md:w-32 md:h-16 border-2 border-green-500 p-2 flex-shrink-0 flex flex-col items-center justify-center bg-white hover:bg-green-50 shadow-sm transition text-center rounded">
                   <p className="text-[9px] md:text-[10px] text-gray-500 flex items-center gap-1">
                     <Calendar className="w-3 h-3" /> {date}
                   </p>
-                  <p className="font-normal text-gray-700 flex items-center gap-1 text-xs md:text-sm">
+                  <p className="font-medium text-gray-700 text-xs md:text-sm">
                     {time}
                   </p>
                   <p className="text-[8px] md:text-[9px] text-gray-500">

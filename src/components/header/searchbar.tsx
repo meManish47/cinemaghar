@@ -75,17 +75,17 @@ export default function SearchBar() {
     <main className="relative" ref={containerRef}>
       <form
         onSubmit={handleSubmit}
-        className="flex gap-2 h-8 w-max items-center border border-gray-200 px-3 rounded-xs bg-white"
+        className="flex gap-2 h-6 sm:h-8 w-max items-center border border-gray-200 px-1 sm:px-3 rounded-xs bg-white"
       >
         <button type="submit" className="cursor-pointer">
-          <FaSearch color="gray" />
+          <FaSearch color="gray" size={12} className="w-2 sm:w-max" />
         </button>
 
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-16 sm:w-120 border-0 h-full px-2 focus:outline-none placeholder:text-gray-500 placeholder:font-normal "
+          className="w-24 sm:w-120 border-0 h-full sm:px-2 focus:outline-none text-xs sm:text-sm sm:placeholder:text-gray-500 sm:placeholder:font-normal truncate"
           placeholder="Search for Movies,Events,Plays and Sports"
         />
       </form>

@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Hall } from "../../../../generated/prisma";
 
-
 export default function CinemasPage() {
   const [cinemas, setCinemas] = useState<CinemaWithHall[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +37,7 @@ export default function CinemasPage() {
 
         <Link
           href="/admin/managecinemas"
-          className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 text-sm md:text-base"
+          className="bg-red-600 text-white text-xs sm:text-sm px-4 py-2 rounded-lg shadow hover:bg-red-700  md:text-base"
         >
           ➕ Add New Cinema
         </Link>

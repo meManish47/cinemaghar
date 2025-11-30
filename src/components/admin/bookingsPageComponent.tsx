@@ -1,11 +1,11 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { GET_BOOKINGS_BY_HALL } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import { BookingWithSeats } from "@/app/types";
 
-export default function BookingsPage({hallId}:{hallId:string}) {
+export default function BookingsPage({ hallId }: { hallId: string }) {
   const [bookings, setBookings] = useState<BookingWithSeats[]>([]);
   const [filterDate, setFilterDate] = useState("");
   const [loading, setLoading] = useState(true);
@@ -69,7 +69,7 @@ export default function BookingsPage({hallId}:{hallId:string}) {
         <p className="text-gray-500">No bookings found for this date.</p>
       )}
 
-      <div className="space-y-4 h-120 overflow-auto ">
+      <div className="space-y-4 h-120 overflow-auto text-xs sm:text-normal">
         {filtered.map((b) => (
           <div
             key={b.id}
@@ -112,6 +112,7 @@ export default function BookingsPage({hallId}:{hallId:string}) {
               }
               width={120}
               height={100}
+              className="w-40 h-30"
               alt="Movie Image"
             />
           </div>

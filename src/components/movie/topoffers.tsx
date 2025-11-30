@@ -17,7 +17,7 @@ export default function TopOffers() {
     <div className=" w-full flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Top offers for you</h2>
 
-      <div className="flex gap-4 overflow-x-auto pb-3">
+      <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
         {offers.map((offer, index) => (
           <div
             key={index}

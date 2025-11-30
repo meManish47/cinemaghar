@@ -18,7 +18,7 @@ export default function SyncUser() {
         }),
       });
     };
-    console.log("CUTRENT USER",user)
+    // console.log("CUTRENT USER",user)
     syncUser();
   }, [isLoaded, isSignedIn, user]);
 

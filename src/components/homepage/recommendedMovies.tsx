@@ -30,33 +30,36 @@ export default function RecommendedMovies({
 
   return (
     <section className="h-full w-full rounded-2xl flex flex-col gap-5 sm:px-16">
-      {/* Section Header */}
       <div className="flex justify-between items-center w-full">
         <p className="text-xl sm:text-2xl font-bold tracking-wide">
           Recommended Movies
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-3  w-full py-4 rounded-lg   border-[#E82640] bg-gray-50 ">
-        <p className="text-lg mx-2 font-bold">Poularity :</p>
-        {popularityFilters.map((filterItem, index) => (
-          <button
-            key={filterItem.label}
-            onClick={() => handleFilterClick(index)}
-            className={`px-2 py-1.5 text-sm font-normal rounded-full transition-all duration-200 
+      <div className="flex gap-1 sm:gap-3  w-full py-4 rounded-lg   border-[#E82640] bg-gray-50 ">
+        <div className="text-sm sm:text-lg  min-w-max font-bold  ">
+          Popularity :
+        </div>
+        <div className=" w-max flex flex-wrap gap-2 ">
+          {popularityFilters.map((filterItem, index) => (
+            <button
+              key={filterItem.label}
+              onClick={() => handleFilterClick(index)}
+              className={`sm:px-2 px-1 py-1.5 text-xs sm:text-sm font-normal rounded-full transition-all duration-200 
             border cursor-pointer select-none
             ${
               activeFilter === index
                 ? "bg-[#EB4E62] text-white border shadow-md  scale-[1.01]"
                 : "bg-white text-gray-600 border-gray-300 "
             }`}
-          >
-            {filterItem.label}
-          </button>
-        ))}
+            >
+              {filterItem.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="flex flex-wrap gap-5 justify-between animate-fadeIn w-full ">
+      <div className="flex  gap-5  sm:justify-between sm:overflow-hidden overflow-x-auto scrollbar-hide items-center  animate-fadeIn w-full ">
         {movies.length > 0 ? (
           movies.slice(0, 5).map((movie) => (
             <div key={movie.id} className="transition-opacity duration-200 ">

@@ -15,9 +15,7 @@ export default async function BuyTicketsPage({
 }) {
   const user = await currentUser();
 
-  if (user && user.publicMetadata?.role === "ADMIN") {
-    redirect("/");
-  }
+  if (user && user.publicMetadata?.role === "ADMIN") redirect("/");
 
   const { id } = await params;
 
@@ -78,12 +76,13 @@ export default async function BuyTicketsPage({
   );
 
   return (
-    <div className="w-full px-34 mx-auto p-6 min-h-screen">
-      <div className="flex flex-col gap-4 mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+    <div className="w-full max-w-5xl mx-auto p-4 sm:p-6 min-h-screen">
+      <div className="flex flex-col gap-3 mb-6">
+        <h1 className="text-xl sm:text-3xl font-bold flex items-center gap-2">
           Shows for {movie?.movie_title}
         </h1>
-        <div className="w-max rounded-2xl border text-sm px-2 text-muted-foreground border-gray-500">
+
+        <div className="w-fit rounded-2xl border text-xs sm:text-sm px-3 py-1 text-muted-foreground border-gray-500">
           <p>Movie Runtime : 2h 25m</p>
         </div>
       </div>

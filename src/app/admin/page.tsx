@@ -28,15 +28,12 @@ export default function AdminDashboard() {
           cinemaCount: number;
         };
       } = await gqlClient.request(GET_COUNTS);
-      console.log("Counts fetched from server:", data.getCounts);
       setCounts({
         ...data.getCounts,
         todayBookings: data.getCounts.todayBookings,
         upcomingShows: data.getCounts.upcomingShows,
       });
-      console.log("Counts loaded:", data.getCounts);
     } catch (err) {
-      console.error("Failed to load counts:", err);
     } finally {
       setLoading(false);
     }
@@ -47,8 +44,7 @@ export default function AdminDashboard() {
   }, []);
   console.log("Rendering AdminDashboard with counts:", counts);
   return (
-    <main className="min-h-screen w-full p-6 sm:p-10">
-      {/* Header */}
+    <main className="min-h-screen w-full  sm:p-10">
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
           Admin Dashboard

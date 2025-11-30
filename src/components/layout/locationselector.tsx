@@ -21,7 +21,6 @@ export default function LocationSelector() {
     setOpen(false);
   };
 
-  // Close dropdown if clicked outside
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (!containerRef.current?.contains(e.target as Node)) {
@@ -39,10 +38,10 @@ export default function LocationSelector() {
           e.stopPropagation();
           setOpen((prev) => !prev);
         }}
-        className="flex items-center gap-1 text-sm cursor-pointer font-medium transition text-gray-700 hover:text-red-500"
+        className="flex  items-center gap-1 text-xs  sm:text-sm cursor-pointer font-medium transition text-gray-700 hover:text-red-500"
       >
         <MapPin size={16} />
-        {city || "Select Location"}
+        <span className="sm:block hidden">{city || "Select Location"}</span>
         <MdKeyboardArrowDown size={16} />
       </button>
 
