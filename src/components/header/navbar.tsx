@@ -35,10 +35,10 @@ export default function NavBar() {
       </div>
       <div className="w-max h-full px-2 flex gap-2 sm:gap-8 text-xs text-gray-800 items-center">
         <span>
-          <p className="cursor-pointer text-muted-foreground">Offers</p>
+          <p className=" text-muted-foreground">Offers</p>
         </span>
         <span>
-          <p className="cursor-pointer text-muted-foreground">Gift Cards</p>
+          <p className=" text-muted-foreground">Gift Cards</p>
         </span>
       </div>
     </div>

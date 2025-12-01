@@ -50,7 +50,7 @@ export default function BookingsPage({ hallId }: { hallId: string }) {
           type="date"
           value={filterDate}
           onChange={(e) => setFilterDate(e.target.value)}
-          className="ms-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-gray-900  placeholder-gray-400 [color-scheme:light]"
+          className="ms-2 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-gray-900  placeholder-gray-400 scheme-light"
         />
 
         {filterDate && (

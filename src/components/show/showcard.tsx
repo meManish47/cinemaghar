@@ -38,7 +38,7 @@ export default async function ShowShows({ grouped }: { grouped: GroupedCinema[] 
               });
 
               const card = (
-                <div className="cursor-pointer w-28 h-14 md:w-32 md:h-16 border-2 border-green-500 p-2 flex-shrink-0 flex flex-col items-center justify-center bg-white hover:bg-green-50 shadow-sm transition text-center rounded">
+                <div className="cursor-pointer w-28 h-14 md:w-32 md:h-16 border-2 border-green-500 p-2 shrink-0 flex flex-col items-center justify-center bg-white hover:bg-green-50 shadow-sm transition text-center rounded">
                   <p className="text-[9px] md:text-[10px] text-gray-500 flex items-center gap-1">
                     <Calendar className="w-3 h-3" /> {date}
                   </p>
