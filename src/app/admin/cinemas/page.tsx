@@ -29,7 +29,6 @@ export default function CinemasPage() {
 
   return (
     <div className="w-full h-screen sm:px-8 ">
-      {/* HEADER */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
           Manage Cinemas
@@ -43,32 +42,27 @@ export default function CinemasPage() {
         </Link>
       </div>
 
-      {/* LOADING STATE */}
       {loading && (
         <p className="text-gray-500 text-center py-10 text-lg">
           Loading cinemas...
         </p>
       )}
 
-      {/* EMPTY STATE */}
       {!loading && cinemas.length === 0 && (
         <p className="text-gray-600 bg-white border shadow p-6 rounded-xl text-center">
           No cinemas found. Click “Add New Cinema” to create one.
         </p>
       )}
 
-      {/* CINEMAS GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {cinemas.map((cinema) => (
           <div key={cinema.id} className="bg-white  border  p-6 ">
-            {/* CINEMA NAME */}
             <h2 className="text-xl font-bold text-gray-800 mb-1">
               🎦 {cinema.name}
             </h2>
 
             <p className="text-gray-500 mb-4 text-sm">{cinema.location}</p>
 
-            {/* CINEMA INFO */}
             <div className="flex justify-between text-sm mb-4">
               <span className="font-semibold text-gray-700">
                 Halls: {cinema.halls.length}
@@ -83,7 +77,6 @@ export default function CinemasPage() {
               </span>
             </div>
 
-            {/* HALL LIST */}
             <div className="bg-gray-100 p-3 rounded-lg">
               <h3 className="text-gray-700 font-medium mb-2">Halls:</h3>
 

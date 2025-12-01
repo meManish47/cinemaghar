@@ -20,6 +20,7 @@ model User {
   createdAt DateTime @default(now())
 
   bookings Booking[]
+  cinemas  Cinema[]
 }
 
 model Movie {
@@ -50,11 +51,12 @@ model Booking {
 }
 
 model Cinema {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  location String
-
-  halls Hall[]
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  location      String
+  cinemaOwnerId String? @db.ObjectId
+  cinemaOwner   User?   @relation(fields: [cinemaOwnerId], references: [id])
+  halls         Hall[]
 }
 
 model Hall {
@@ -111,4 +113,5 @@ enum BookingStatus {
 enum UserRole {
   ADMIN
   USER
+  CINEMAOWNER
 }

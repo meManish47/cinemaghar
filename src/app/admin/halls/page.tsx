@@ -53,7 +53,7 @@ export default function HallsPage() {
         </p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 overflow-auto">
         {halls.map((hall) => {
           const totalShows = hall.shows.length;
 

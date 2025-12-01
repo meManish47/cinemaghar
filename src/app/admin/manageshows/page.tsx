@@ -30,13 +30,11 @@ export default function ShowsPage() {
     const dataMovies: { getAllMovies: Movie[] } = await gqlClient.request(
       GET_ALL_MOVIES
     );
-
     setHalls(dataHalls.getAllHalls);
     setShows(dataShows.getAllShows);
     setMovies(dataMovies.getAllMovies);
     setLoading(false);
   };
-
   const handleShowDelete = async (id: string) => {
     await gqlClient.request(DELETE_SHOW, { showId: id });
     setShows((prev) => prev.filter((show) => show.id !== id));
@@ -56,7 +54,7 @@ export default function ShowsPage() {
 
   return (
     <div className="w-full p-4 sm:p-6 flex sm:flex-row flex-col  items-start sm:gap-16 ">
-      <div className="flex flex-col sm:justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:justify-between gap-4 mb-8 w-max">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
           📅 Manage Shows
         </h1>
@@ -70,12 +68,12 @@ export default function ShowsPage() {
           Upcoming Shows:
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ms-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 ms-2 w-max ">
           {shows.length ? (
             shows.map((show) => (
               <div
                 key={show.id}
-                className="bg-white rounded-xl shadow p-4 border flex justify-between items-start gap-4 hover:shadow-md transition-all"
+                className="bg-white rounded-xl shadow p-4 border flex justify-between items-start gap-4 hover:shadow-md transition-all "
               >
                 <div className="flex flex-col text-sm text-gray-700">
                   <p>
