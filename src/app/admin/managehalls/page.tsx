@@ -23,19 +23,18 @@ export default function HallsPage() {
   }, []);
 
   return (
-    <div className=" p-6">
-      {/* Page Heading */}
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">🎭 Manage Halls</h1>
+    <div className=" p-6 w-max flex gap-8">
+      <div>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">🎭 Manage Halls</h1>
+        </div>
+
+        <div className="mb-10">
+          <AddHallForm onAdded={load} />
+        </div>
       </div>
 
-      {/* Add Hall Form */}
-      <div className="mb-10">
-        <AddHallForm onAdded={load} />
-      </div>
-
-      {/* Halls List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-max">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-max mt-12">
         {loading ? (
           <span className="loading loading-spinner loading-xl"></span>
         ) : halls.length === 0 ? (

@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { Cinema } from "../../../generated/prisma";
 import { ADD_HALL, GET_CINEMAS } from "@/app/queries";
 
-
 export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
   const [cinemas, setCinemas] = useState<Cinema[]>([]);
   const [cinemaId, setCinemaId] = useState("");
@@ -43,7 +42,7 @@ export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
       cinemaId,
       capacity,
       rows,
-      columns
+      columns,
     });
 
     setHallName("");
@@ -51,9 +50,9 @@ export default function AddHallForm({ onAdded }: { onAdded?: () => void }) {
     setCinemaId("");
     onAdded?.();
   };
-  console.log("cinemasafsdajfkhskdja", cinemas);
+  // console.log("cinemasafsdajfkhskdja", cinemas);
   return (
-    <form onSubmit={handleSubmit} className="space-y-2">
+    <form onSubmit={handleSubmit} className="space-y-2 max-w-xl">
       <label className="text-muted-foreground ">Cinema :</label>
       <select
         value={cinemaId}

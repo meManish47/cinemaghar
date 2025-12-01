@@ -27,7 +27,7 @@ export default function ShowsPage() {
   }, []);
   // console.log("SHJHOWS", shows);
   return (
-    <div className="w-full h-screen overflow-auto">
+    <div className="w-full h-screen overflow-auto px-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
           Manage Shows

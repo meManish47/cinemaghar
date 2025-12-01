@@ -12,7 +12,7 @@ export default function AdminNavBar() {
     { label: "Shows", href: "/admin/shows" },
   ];
   return (
-    <div className="h-10 max-w-screen px-2 sm:px-32 bg-[#F5F5F5] border-1">
+    <div className="h-10 max-w-screen px-2 sm:px-32 bg-[#F5F5F5] border">
       <div className="w-max sm:w-120 h-full px-3  flex gap-2 text-gray-600 items-center ">
         {/* <DropdownMenu modal={false}>
           <DropdownMenuTrigger className="text-sm sm:text-normal cursor-pointer">

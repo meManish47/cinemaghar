@@ -28,7 +28,7 @@ export default function CinemasPage() {
   }, []);
 
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-screen sm:px-8 ">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
