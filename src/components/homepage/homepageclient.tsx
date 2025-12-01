@@ -24,11 +24,11 @@ export default function HomePageClient({
         <Carousel />
       </div>
 
-      <div className="h-max w-full px-8 sm:px-16">
+      <div className="h-max w-full pl-8 sm:px-16">
         <RecommendedMovies movies={filteredMovies} setFilter={setFilter} />
       </div>
 
-      <div className="relative   w-full sm:px-32 px-8 my-8 overflow-hidden">
+      <div className="relative   w-full sm:px-32 pl-8 pr-4 my-8 overflow-hidden">
         <img
           src="/bannerwithlogo.png"
           className="rounded-xl h-14 sm:w-full sm:h-full  "

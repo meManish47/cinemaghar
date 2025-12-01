@@ -11,7 +11,7 @@ export default function SidebarItem({
 }) {
   return (
     <li
-      className={`flex items-center gap-3 py-3 border-b cursor-pointer group transition
+      className={`flex items-center gap-3 py-3 border-b group transition
       ${locked ? "text-gray-400 cursor-not-allowed" : "hover:text-black"}`}
     >
       <span className={`${locked ? "opacity-40" : ""}`}>{icon}</span>

@@ -38,11 +38,19 @@ export default function LocationSelector() {
           e.stopPropagation();
           setOpen((prev) => !prev);
         }}
-        className="flex  items-center gap-1 text-xs  sm:text-sm cursor-pointer font-medium transition text-gray-700 hover:text-red-500"
+        className="flex  items-center gap-1 text-xs   sm:text-sm cursor-pointer font-medium transition text-gray-700 hover:text-red-500"
       >
-        <MapPin size={16} />
-        <span className="sm:block hidden">{city || "Select Location"}</span>
-        <MdKeyboardArrowDown size={16} />
+        <MapPin
+          size={16}
+          className={`${city && `sm:block hidden text-red-400`}`}
+        />
+        <span className="sm:text-sm text-[8px] text-red-400 ">
+          {city || "Select Location"}
+        </span>
+        <MdKeyboardArrowDown
+          size={14}
+          className={`${city && `text-red-400 `}`}
+        />
       </button>
 
       {open && (
