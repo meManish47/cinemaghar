@@ -72,8 +72,8 @@ export default function AdminDashboard() {
           linkLabel="View Cinemas"
         >
           <ul className="text-sm text-gray-700 leading-relaxed space-y-2">
-            <li>🎬 {counts.cinemaCount} cinema branches managed</li>
-            <li>🏟️ {counts.hallCount} total halls configured</li>
+            <li>🎬 {counts.cinemaCount} cinemas </li>
+            <li>🏟️ {counts.hallCount} total halls</li>
             <li>🎟️ Show scheduling available per hall</li>
           </ul>
         </Panel>
@@ -86,7 +86,6 @@ export default function AdminDashboard() {
           <ul className="text-sm text-gray-700 leading-relaxed space-y-2">
             <li>📅 {counts.upcomingShows} upcoming shows</li>
             <li>🔥 Real-time ticket booking tracking</li>
-            <li>💺 Seat layout & occupancy control</li>
           </ul>
         </Panel>
       </div>
