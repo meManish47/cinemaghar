@@ -491,3 +491,23 @@ export const REVALIDATE_TAG = gql`
     revalidateTagFromGql
   }
 `;
+export const CREATE_CHECKOUT_SESSION = gql`
+  mutation CreateCheckoutSession(
+    $showId: String!
+    $seats: [String!]!
+    $coupon: String
+    $currentUserId: String
+  ) {
+    createCheckoutSession(
+      showId: $showId
+      seats: $seats
+      coupon: $coupon
+      currentUserId: $currentUserId
+    ) {
+      ok
+      id
+      url
+      error
+    }
+  }
+`;

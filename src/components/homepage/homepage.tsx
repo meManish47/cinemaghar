@@ -1,27 +1,72 @@
 import { GETALLMOVIES, GETALLMOVIESCOVERS } from "@/app/queries";
 import HomePageClient from "./homepageclient";
-
-// export const revalidate = 43200;
+import redis from "@/services/redis";
 
 export default async function HomePage() {
-  const dataCovers = await fetch(process.env.GRAPHQL_URL!, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    next: { tags: ["moviesChanged"] },
-    body: JSON.stringify({ query: GETALLMOVIESCOVERS }),
-  }).then((res) => res.json());
+  const CACHE_KEY = "movies:all";
 
-  const dataMovies = await fetch(process.env.GRAPHQL_URL!, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    next: { tags: ["moviesChanged"] },
-    body: JSON.stringify({ query: GETALLMOVIES }),
-  }).then((res) => res.json());
+  let dataCovers: any = null;
+  let dataMovies: any = null;
 
+  // 🟢 1. Try Redis
+  try {
+    const cached = await redis.get(CACHE_KEY);
+
+    if (cached) {
+      const parsed = JSON.parse(cached);
+
+      if (parsed?.dataCovers && parsed?.dataMovies) {
+        dataCovers = parsed.dataCovers;
+        dataMovies = parsed.dataMovies;
+        console.log("✅ CACHE HIT");
+      }
+    }
+  } catch (err) {
+    console.error("Redis error, skipping cache", err);
+  }
+
+  // 🔴 2. Fetch if cache missing
+  if (!dataCovers || !dataMovies) {
+    try {
+      console.log("❌ CACHE MISS → Fetching API");
+
+      const results = await Promise.all([
+        fetch(process.env.GRAPHQL_URL!, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: GETALLMOVIESCOVERS }),
+        }).then((res) => res.json()),
+
+        fetch(process.env.GRAPHQL_URL!, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: GETALLMOVIES }),
+        }).then((res) => res.json()),
+      ]);
+
+      [dataCovers, dataMovies] = results;
+
+      // 🟡 Store in Redis (only if valid)
+      if (dataCovers && dataMovies) {
+        await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
+          EX: 3000,
+        });
+      }
+    } catch (err) {
+      console.error("Fetch failed", err);
+    }
+  }
+
+  // 🛑 3. Hard fallback (no crash)
+  if (!dataCovers || !dataMovies) {
+    return <div>Failed to load movies</div>;
+  }
+
+  // 🟢 4. Safe rendering
   return (
     <HomePageClient
-      covers={dataCovers.data.getAllMovies}
-      movies={dataMovies.data.getAllMovies}
+      covers={dataCovers?.data?.getAllMovies ?? []}
+      movies={dataMovies?.data?.getAllMovies ?? []}
     />
   );
 }

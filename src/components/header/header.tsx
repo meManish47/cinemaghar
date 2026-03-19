@@ -8,6 +8,7 @@ import { gqlClient } from "@/services/gql";
 import { GET_USER_BY_CLERK_ID } from "@/app/queries";
 import { User } from "../../../generated/prisma";
 import LocationSelector from "../layout/locationselector";
+import redis from "@/services/redis";
 
 export default async function HeaderComponent() {
   const authUser = await currentUser();
@@ -16,15 +17,9 @@ export default async function HeaderComponent() {
     return (
       <header>
         <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between">
-          {/* Logo */}
           <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
             <Link href="/">
-              <Image
-                src="/cinemaghar.png"
-                alt="Logo"
-                height={150}
-                width={150}
-              />
+              <Image src="/cinemaghar.png" alt="Logo" height={150} width={150} />
             </Link>
           </div>
           <SignIn />
@@ -33,17 +28,37 @@ export default async function HeaderComponent() {
     );
   }
 
-  let userDb = null;
+  const USER_CACHE_KEY = `user:${authUser.id}`;
+
+  let userDb: User | null = null;
+
   try {
-    const data: { getUserByClerkId: User } = await gqlClient.request(
-      GET_USER_BY_CLERK_ID,
-      {
-        clerkId: authUser.id,
+    // ✅ 1. Try Redis
+    const cached = await redis.get(USER_CACHE_KEY);
+
+    if (cached) {
+      console.log("✅ HEADER CACHE HIT");
+      userDb = JSON.parse(cached);
+    } else {
+      console.log("❌ HEADER CACHE MISS");
+
+      // 🔴 2. Fetch from GraphQL
+      const data: { getUserByClerkId: User } =
+        await gqlClient.request(GET_USER_BY_CLERK_ID, {
+          clerkId: authUser.id,
+        });
+
+      userDb = data?.getUserByClerkId ?? null;
+
+      // 💾 3. Store in Redis
+      if (userDb) {
+        await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
+          EX: 3000,
+        });
       }
-    );
-    userDb = data?.getUserByClerkId ?? null;
+    }
   } catch (err) {
-    console.error("GraphQL fetch error:", err);
+    console.error("Header user fetch error:", err);
   }
 
   const isAdmin = userDb?.role === "ADMIN";
@@ -51,28 +66,18 @@ export default async function HeaderComponent() {
   return (
     <header>
       <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between">
-        <div className="h-full w-full flex items-center  gap-4 justify-between sm:justify-start">
-          {isAdmin ? (
-            <Link href="/">
-              <Image
-                src="/cinemaghar.png"
-                className="sm:px-10 px-4 w-32 sm:w-max"
-                alt="Logo"
-                height={150}
-                width={150}
-              />
-            </Link>
-          ) : (
-            <Link href="/">
-              <Image
-                src="/cinemaghar.png"
-                className="ps-2  w-32 sm:w-max"
-                alt="Logo"
-                height={150}
-                width={150}
-              />
-            </Link>
-          )}
+        <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
+          <Link href="/">
+            <Image
+              src="/cinemaghar.png"
+              className={`w-32 sm:w-max ${
+                isAdmin ? "sm:px-10 px-4" : "ps-2"
+              }`}
+              alt="Logo"
+              height={150}
+              width={150}
+            />
+          </Link>
 
           {!isAdmin && (
             <div className="flex items-center gap-4 w-full">
@@ -82,6 +87,7 @@ export default async function HeaderComponent() {
             </div>
           )}
         </div>
+
         {!isAdmin && <LocationSelector />}
         <SignIn />
         <UserSidebar userDb={userDb} />

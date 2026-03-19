@@ -1,24 +1,21 @@
-import { revalidateTag } from "next/cache";
-import { DELETE_SHOW, REVALIDATE_TAG } from "../app/queries";
-import { gqlClient } from "./gql";
 import prismaClient from "./prisma";
 
 export async function softDeleteShows() {
   try {
-    // const res = await gqlClient.request(GET_SHOWS_BY_MOVIE, { movieId });
-    // // const allShows = res.getShowsByMovie || [];
-    const now = new Date();
-    const allShows = await prismaClient.show.findMany();
+    const cutoffTime = Date.now() - 6 * 60 * 60 * 1000;
 
-    for (const show of allShows) {
-      const deleteTime = now >= new Date(Number(show.start) - 21600000);
+    const result = await prismaClient.show.updateMany({
+      where: {
+        start: {
+          lte: cutoffTime.toString(),
+        },
+      },
+      data: {
+        isDeleted: true,
+      },
+    });
 
-      if (deleteTime) {
-        await gqlClient.request(DELETE_SHOW, { showId: show.id });
-      }
-    }
-    // revalidateTag("moviesChanged");
-    await gqlClient.request(REVALIDATE_TAG);
+    console.log(`✅ Deleted ${result.count} shows`);
   } catch (err) {
     console.error("Error:", err);
   }

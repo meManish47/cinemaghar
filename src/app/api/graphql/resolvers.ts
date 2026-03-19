@@ -3,9 +3,13 @@ import {
   createBooking,
   getBookingsByHall,
 } from "./resolvers/booking";
+import createCheckoutSession from "./resolvers/checkout";
 import { addCinema, getAllCinemas, getCounts } from "./resolvers/cinema";
 import { addHall, getAllHalls } from "./resolvers/halls";
-import { getAllMovies, getMovieWithId, revalidateTagFromGql } from "./resolvers/movie";
+import {
+  getAllMovies,
+  getMovieWithId,
+} from "./resolvers/movie";
 import { getSeatById } from "./resolvers/seats";
 import {
   addShow,
@@ -49,7 +53,7 @@ const resolvers = {
     confirmBooking,
     logoutUser,
     deleteShow,
-    revalidateTagFromGql
+    createCheckoutSession,
   },
 };
 export default resolvers;

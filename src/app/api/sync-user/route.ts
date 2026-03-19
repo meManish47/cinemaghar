@@ -3,50 +3,62 @@ import prismaClient from "@/services/prisma";
 import { generateCookies } from "@/services/jwt";
 import { clerkClient } from "@clerk/nextjs/server";
 
-const clerk = await clerkClient();
-
 export async function POST(req: Request) {
-  const { clerkId, email, name } = await req.json();
+  try {
+    const { clerkId, email, name } = await req.json();
 
-  if (!clerkId) {
-    return new NextResponse("Missing Clerk ID", { status: 400 });
-  }
+    if (!clerkId) {
+      return new NextResponse("Missing Clerk ID", { status: 400 });
+    }
 
-  let user = await prismaClient.user.findUnique({
-    where: { clerkId },
-  });
-
-  if (user) {
-    user = await prismaClient.user.update({
+    // ✅ Use transaction (safe upsert)
+    const user = await prismaClient.user.upsert({
       where: { clerkId },
-      data: { email, name },
+      update: {
+        email,
+        name,
+      },
+      create: {
+        clerkId,
+        email,
+        name,
+        role: "USER",
+      },
     });
-  } else {
-    user = await prismaClient.user.create({
-      data: { clerkId, email, name, role: "USER" },
-    });
-  }
 
-  const payload = {
-    id: user.id,
-    email: user.email,
-    clerkId: user.clerkId,
-    role: user.role,
-  };
-
-  // Update Clerk user metadata
-  await clerk.users.updateUser(clerkId, {
-    publicMetadata: {
-      role: user.role,
-      prismaUserId: user.id,
-    },
-    privateMetadata: {
+    const payload = {
+      id: user.id,
       email: user.email,
-      name: user.name,
-    },
-  });
+      clerkId: user.clerkId,
+      role: user.role,
+    };
 
-  await generateCookies(payload);
+    // ✅ Get clerk inside handler
+    const clerk = await clerkClient();
 
-  return NextResponse.json({ success: true, user: payload });
+    // ✅ Merge metadata safely
+    const existingUser = await clerk.users.getUser(clerkId);
+
+    await clerk.users.updateUser(clerkId, {
+      publicMetadata: {
+        ...existingUser.publicMetadata,
+        role: user.role,
+        prismaUserId: user.id,
+      },
+      privateMetadata: {
+        ...existingUser.privateMetadata,
+        email: user.email,
+        name: user.name,
+      },
+    });
+
+    // ✅ Generate cookies AFTER everything succeeds
+    await generateCookies(payload);
+
+    return NextResponse.json({ success: true, user: payload });
+  } catch (error) {
+    console.error("Sync User Error:", error);
+
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
 }

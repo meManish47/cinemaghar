@@ -17,7 +17,6 @@ export default function MovieCard({ movieItem }: { movieItem: Movie }) {
               className="h-full w-full object-cover  rounded-md shadow hover:scale-[1.02] transition ease-in-out duration-400"
               height={1000}
               width={1000}
-              objectFit="cover"
               placeholder="blur"
               blurDataURL="/image.png"
             />

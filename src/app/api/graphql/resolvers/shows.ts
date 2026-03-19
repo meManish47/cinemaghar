@@ -2,14 +2,14 @@ import prismaClient from "@/services/prisma";
 
 export async function getShowsByMovie(
   parent: unknown,
-  args: { movieId: string }
+  args: { movieId: string },
 ) {
   try {
     const shows = await prismaClient.show.findMany({
       where: { movieId: args.movieId, isDeleted: false },
       include: { hall: { include: { cinema: true } }, movie: true },
     });
-    if (shows) return shows.filter((show) => show.deletedAt == undefined);
+    if (shows) return shows;
     return null;
   } catch (error) {
     return null;
@@ -17,7 +17,7 @@ export async function getShowsByMovie(
 }
 export async function getShowsByCinema(
   parent: unknown,
-  args: { cinemaId: string }
+  args: { cinemaId: string },
 ) {
   try {
     const shows = await prismaClient.show.findMany({
@@ -42,7 +42,7 @@ export async function addShow(
     start: string;
     finish: string;
     date: string;
-  }
+  },
 ) {
   try {
     const startDateTime = new Date(`${args.date}T${args.start}:00.000Z`);
@@ -70,7 +70,7 @@ export async function addShow(
 }
 export async function getShowById(
   parent: unknown,
-  { showId }: { showId: string }
+  { showId }: { showId: string },
 ) {
   try {
     const show = await prismaClient.show.findUnique({

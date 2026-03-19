@@ -27,11 +27,11 @@ export async function getMovieWithId(_: unknown, args: { id: string }) {
   }
 }
 
-export async function revalidateTagFromGql(){
-  try {
-    revalidateTag("moviesChanged")
-    return true
-  } catch (error) {
-    return false
-  }
-}
+// export async function revalidateTagFromGql(){
+//   try {
+//     revalidateTag("moviesChanged")
+//     return true
+//   } catch (error) {
+//     return false
+//   }
+// }

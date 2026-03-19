@@ -7,7 +7,7 @@ import { GET_USER_BY_CLERK_ID } from "@/app/queries";
 
 export async function getUserByClerkId(
   parent: unknown,
-  { clerkId }: { clerkId: string }
+  { clerkId }: { clerkId: string },
 ) {
   try {
     return await prismaClient.user.findUnique({ where: { clerkId } });
@@ -36,7 +36,7 @@ export async function getCurrentUserEmail() {
     }
     const currentUser: { getUserByClerkId: User } = await gqlClient.request(
       GET_USER_BY_CLERK_ID,
-      { clerkId }
+      { clerkId },
     );
     if (currentUser.getUserByClerkId.email !== "kmanish57610@gmail.com") {
       return "blank";

@@ -6,6 +6,12 @@ const typeDefs = gql`
     movie: Movie
     message: String
   }
+  type CheckoutSession {
+    ok: Boolean!
+    id: String
+    url: String
+    error: String
+  }
   type TicketResponse {
     movieTitle: String
     moviePoster: String
@@ -22,7 +28,7 @@ const typeDefs = gql`
     clerkId: String!
     email: String!
     name: String!
-    role:String!
+    role: String!
   }
   type Cinema {
     id: String!
@@ -93,8 +99,8 @@ const typeDefs = gql`
     cinemaCount: Int!
     hallCount: Int!
     userCount: Int!
-    todayBookings: Int!,
-    upcomingShows: Int!,
+    todayBookings: Int!
+    upcomingShows: Int!
   }
   type Query {
     getAllMovies: [Movie]
@@ -111,7 +117,7 @@ const typeDefs = gql`
     getAllShows: [Show]
     getAllShowsWithDeltedOnes: [Show]
     getCounts: Counts!
-    getBookingsByHall(hallId:String!): [Booking]
+    getBookingsByHall(hallId: String!): [Booking]
   }
   type Mutation {
     addCinema(name: String!, location: String!): Cinema!
@@ -138,7 +144,13 @@ const typeDefs = gql`
     confirmBooking(bookingId: String!): Booking
     logoutUser: Boolean
     deleteShow(showId: String!): Boolean
-    revalidateTagFromGql:Boolean
+    revalidateTagFromGql: Boolean
+    createCheckoutSession(
+      showId: String!
+      seats: [String!]!
+      coupon: String
+      currentUserId: String
+    ): CheckoutSession
   }
 `;
 export default typeDefs;

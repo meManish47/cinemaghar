@@ -1,6 +1,6 @@
 "use client";
 
-import { GET_SHOW_BY_ID } from "@/app/queries";
+import { CREATE_CHECKOUT_SESSION, GET_SHOW_BY_ID } from "@/app/queries";
 import { gqlClient } from "@/services/gql";
 import { useUser } from "@clerk/nextjs";
 import { loadStripe } from "@stripe/stripe-js";
@@ -11,7 +11,7 @@ import { Hall, Seat } from "../../../../../generated/prisma";
 import { SHOW_WITH_HALL_MOVIE } from "@/app/types";
 
 const stripePromise = loadStripe(
-  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
 
 export default function SeatSelection() {
@@ -38,7 +38,7 @@ export default function SeatSelection() {
             booking.seats.forEach((seatobj) => acc.push(seatobj.id));
             return acc;
           },
-          []
+          [],
         );
         // console.log("-_-_--", confirmedSeatIds);
         setBookedSeatsIds(confirmedSeatIds);
@@ -58,26 +58,39 @@ export default function SeatSelection() {
     }
 
     try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ showId: id, seats: selected, currentUserId }),
+      const data = await gqlClient.request<{
+        createCheckoutSession: {
+          ok: boolean;
+          id?: string;
+          url?: string;
+          error?: string;
+        } | null;
+      }>(CREATE_CHECKOUT_SESSION, {
+        showId: id,
+        seats: selected,
+        currentUserId,
       });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.url) {
-        alert("Failed to create checkout: " + (data.error || "Unknown error"));
+      const result = data?.createCheckoutSession;
+      console.log("Checkout session result:", result);
+      if (!result) {
+        toast.error("Checkout service unavailable. Please try again.");
         return;
       }
 
-      window.location.href = data.url;
+      if (!result.ok || !result.url) {
+        toast.error(
+          "Failed to create checkout: " + (result.error || "Unknown error"),
+        );
+        return;
+      }
+
+      window.location.href = result.url;
     } catch (err) {
       console.error("Checkout error:", err);
-      alert("Something went wrong.");
+      toast.error("Something went wrong. Please try again.");
     }
   };
-
   const selectSeat = (seatId: string) => {
     setSelected((prev) => {
       const alreadySelected = prev.includes(seatId);
@@ -124,13 +137,13 @@ export default function SeatSelection() {
               isBooked
                 ? "bg-gray-400/60 text-white cursor-not-allowed"
                 : isSelected
-                ? "bg-green-500 text-white scale-110 shadow-md"
-                : "bg-gray-100 text-gray-700 hover:bg-green-100"
+                  ? "bg-green-500 text-white scale-110 shadow-md"
+                  : "bg-gray-100 text-gray-700 hover:bg-green-100"
             }
           `}
           >
             {seatNumber}
-          </button>
+          </button>,
         );
       }
 
@@ -147,7 +160,7 @@ export default function SeatSelection() {
           <span className="w-4 text-sm font-semibold text-gray-700">
             {rowLabel}
           </span>
-        </div>
+        </div>,
       );
     }
 
