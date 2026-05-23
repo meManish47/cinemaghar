@@ -29,7 +29,17 @@ export async function getRedis(): Promise<RedisClientType | null> {
       },
     }) as RedisClientType;
 
-    redis.on("error", (err) => console.error("Redis Client Error", err));
+    redis.on("error", (err) => {
+  console.error("Redis Error:", err);
+});
+
+redis.on("end", () => {
+  console.log("Redis connection ended");
+});
+
+redis.on("reconnecting", () => {
+  console.log("Redis reconnecting...");
+});
     redis.on("connect", () => console.log("✅ Redis connected"));
     redis.on("ready", () => console.log("✅ Redis ready"));
   }

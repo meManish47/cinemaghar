@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "start /B tsx ./cron.ts && next dev --turbopack",
+    "dev": "concurrently \"tsx ./cron.ts\" \"next dev --turbopack\"",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"

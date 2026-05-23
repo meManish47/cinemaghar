@@ -1,13 +1,17 @@
 import prismaClient from "./prisma";
 
+
 export async function softDeleteShows() {
   try {
-    const cutoffTime = Date.now() - 6 * 60 * 60 * 1000;
+    // 6 hours ago
+    const cutoffTime = new Date(
+      Date.now() - 6 * 60 * 60 * 1000
+    );
 
     const result = await prismaClient.show.updateMany({
       where: {
         start: {
-          lte: cutoffTime.toString(),
+          lte: cutoffTime,
         },
       },
       data: {
@@ -15,8 +19,8 @@ export async function softDeleteShows() {
       },
     });
 
-    console.log(`✅ Deleted ${result.count} shows`);
-  } catch (err) {
-    console.error("Error:", err);
+    console.log(`Soft deleted ${result.count} shows`);
+  } catch (error) {
+    console.error("Error:", error);
   }
 }

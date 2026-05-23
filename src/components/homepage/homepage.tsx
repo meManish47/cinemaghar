@@ -55,7 +55,7 @@ export default async function HomePage() {
           const redis = await getRedis();
           if (redis) {
             await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
-              EX: 3,
+              EX: 300,
             });
           }
         } catch (err) {

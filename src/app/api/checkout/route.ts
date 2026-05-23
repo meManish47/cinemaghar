@@ -20,6 +20,14 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    if (!currentUserId) {
+      return NextResponse.json(
+        { ok: false, error: "User not found. Please sign in again." },
+        { status: 401 }
+      );
+    }
+
     const data: { getShowById: SHOW_WITH_HALL_MOVIE } = await gqlClient.request(
       GET_SHOW_BY_ID,
       { showId }
@@ -35,15 +43,32 @@ export async function POST(req: Request) {
     const currentUser = await prismaClient.user.findUnique({
       where: { clerkId: currentUserId },
     });
-    const booking: { createBooking: Booking } = await gqlClient.request(
-      CREATE_BOOKING,
-      {
-        showId,
-        seats,
-        userId: currentUser?.id,
-        status: "PENDING",
-      }
-    );
+
+    if (!currentUser) {
+      return NextResponse.json(
+        { ok: false, error: "User not found. Please sign in again." },
+        { status: 401 }
+      );
+    }
+
+    const bookingResponse = await gqlClient.request<{
+      createBooking: Booking | null;
+    }>(CREATE_BOOKING, {
+      showId,
+      seats,
+      userId: currentUser.id,
+      status: "PENDING",
+    });
+
+    if (!bookingResponse?.createBooking) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Failed to create booking. Please select different seats and try again.",
+        },
+        { status: 409 }
+      );
+    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -61,19 +86,17 @@ export async function POST(req: Request) {
         },
       ],
       mode: "payment",
-      allow_promotion_codes: true,
+      allow_promotion_codes: !coupon,
       discounts: coupon ? [{ coupon }] : [],
       metadata: {
         showId,
         seatIds: seats.join(","),
-        userId: currentUserId || "guest",
-        bookingId: booking.createBooking.id || "bbokingid",
+        userId: currentUserId,
+        bookingId: bookingResponse.createBooking.id,
       },
-      expires_at: Math.floor(Date.now() / 1000) + 600,
+      expires_at: Math.floor(Date.now() / 1000) + 30 * 60,
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${
-        process.env.NEXT_PUBLIC_BASE_URL
-      }/checkout?showId=${encodeURIComponent(showId)}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?showId=${encodeURIComponent(showId)}`,
     });
 
     return NextResponse.json({ ok: true, id: session.id, url: session.url });
