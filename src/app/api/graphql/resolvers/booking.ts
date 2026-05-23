@@ -10,18 +10,41 @@ export async function createBooking(
   }: { status: string; userId: string; showId: string; seats: string[] }
 ) {
   try {
-    const booking = await prismaClient.booking.create({
-      data: {
-        showId,
-        userId,
-        status: "PENDING",
-        seats: {
-          connect: seats.map((seatId) => ({ id: seatId })),
+    const booking = await prismaClient.$transaction(async (tx) => {
+      const requestedSeats = await tx.seat.findMany({
+        where: { id: { in: seats } },
+        include: { booking: { select: { status: true } } },
+      });
+
+      const takenSeats = requestedSeats.filter(
+        (seat) =>
+          seat.bookingId !== null &&
+          seat.booking &&
+          (seat.booking.status === "PENDING" || seat.booking.status === "CONFIRMED")
+      );
+
+      if (takenSeats.length > 0) {
+        const takenSeatNumbers = takenSeats.map((s) => s.seat_no).join(",");
+        throw new Error(`SEATS_TAKEN:${takenSeatNumbers}`);
+      }
+
+      return tx.booking.create({
+        data: {
+          showId,
+          userId,
+          status: "PENDING",
+          seats: {
+            connect: seats.map((seatId) => ({ id: seatId })),
+          },
         },
-      },
+      });
     });
     return booking;
   } catch (error) {
+    const errorMessage = (error as Error).message;
+    if (errorMessage.startsWith("SEATS_TAKEN:")) {
+      console.error(`Booking failed: ${errorMessage}`);
+    }
     return null;
   }
 }
@@ -61,5 +84,23 @@ export async function getBookingsByHall(
     return bookings;
   } catch (error) {
     return null;
+  }
+}
+
+export async function releaseBooking(bookingId: string) {
+  try {
+    await prismaClient.$transaction([
+      prismaClient.seat.updateMany({
+        where: { bookingId },
+        data: { bookingId: null },
+      }),
+      prismaClient.booking.update({
+        where: { id: bookingId },
+        data: { status: "CANCELLED" },
+      }),
+    ]);
+  } catch (error) {
+    console.error(`Failed to release booking ${bookingId}:`, error);
+    throw error;
   }
 }

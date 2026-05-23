@@ -1,6 +1,7 @@
 import "dotenv/config";
 import cron from "node-cron";
 import { softDeleteShows } from "./src/services/cronservice.js";
+import startReleaseExpiredBookingsCron from "./src/lib/crons/releaseExpiredBookings";
 
 declare global {
   var cronStarted: boolean;
@@ -20,4 +21,6 @@ if (!global.cronStarted) {
       console.error("Cron error:", err);
     }
   });
+
+  startReleaseExpiredBookingsCron();
 }

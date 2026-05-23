@@ -69,6 +69,7 @@ export async function POST(req: Request) {
         userId: currentUserId || "guest",
         bookingId: booking.createBooking.id || "bbokingid",
       },
+      expires_at: Math.floor(Date.now() / 1000) + 600,
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${
         process.env.NEXT_PUBLIC_BASE_URL

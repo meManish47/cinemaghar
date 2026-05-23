@@ -87,6 +87,7 @@ export default async function createCheckoutSession(
       userId: currentUserId || "guest",
       bookingId: booking.createBooking.id || "bookingId",
     },
+    expires_at: Math.floor(Date.now() / 1000) + 600,
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/checkout?showId=${encodeURIComponent(showId)}`,
   });
@@ -95,7 +96,7 @@ export default async function createCheckoutSession(
 }
 catch (err) {
     // Log the real error so you can debug it server-side
-    console.error("[createCheckoutSession] error:", err);
+    // console.error("[createCheckoutSession] error:", err);
     return {
       ok: false,
       error: (err as Error).message || "checkout_failed",

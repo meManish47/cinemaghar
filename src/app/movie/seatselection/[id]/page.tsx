@@ -33,13 +33,15 @@ export default function SeatSelection() {
         setSeats(data.getShowById.hall.seats);
         setHall(data.getShowById.hall);
 
-        const confirmedSeatIds = data.getShowById.bookings.reduce<string[]>(
-          (acc, booking) => {
+        const confirmedSeatIds = data.getShowById.bookings
+          .filter(
+            (booking) =>
+              booking.status === "PENDING" || booking.status === "CONFIRMED",
+          )
+          .reduce<string[]>((acc, booking) => {
             booking.seats.forEach((seatobj) => acc.push(seatobj.id));
             return acc;
-          },
-          [],
-        );
+          }, []);
         // console.log("-_-_--", confirmedSeatIds);
         setBookedSeatsIds(confirmedSeatIds);
       } catch (err) {
