@@ -8,7 +8,7 @@ import { gqlClient } from "@/services/gql";
 import { GET_USER_BY_CLERK_ID } from "@/app/queries";
 import { User } from "../../../generated/prisma";
 import LocationSelector from "../layout/locationselector";
-import redis from "@/services/redis";
+import { getRedis } from "@/services/redis";
 
 export default async function HeaderComponent() {
   const authUser = await currentUser();
@@ -33,13 +33,19 @@ export default async function HeaderComponent() {
   let userDb: User | null = null;
 
   try {
-    // ✅ 1. Try Redis
-    const cached = await redis.get(USER_CACHE_KEY);
+    const redis = await getRedis();
 
-    if (cached) {
-      console.log("✅ HEADER CACHE HIT");
-      userDb = JSON.parse(cached);
-    } else {
+    // ✅ 1. Try Redis
+    if (redis) {
+      const cached = await redis.get(USER_CACHE_KEY);
+
+      if (cached) {
+        console.log("✅ HEADER CACHE HIT");
+        userDb = JSON.parse(cached);
+      }
+    }
+
+    if (!userDb) {
       console.log("❌ HEADER CACHE MISS");
 
       // 🔴 2. Fetch from GraphQL
@@ -51,7 +57,7 @@ export default async function HeaderComponent() {
       userDb = data?.getUserByClerkId ?? null;
 
       // 💾 3. Store in Redis
-      if (userDb) {
+      if (userDb && redis) {
         await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
           EX: 3000,
         });

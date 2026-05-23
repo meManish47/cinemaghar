@@ -5,7 +5,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import AdminNavBar from "../admin/adminNavBar";
 import HomePage from "../homepage/homepage";
 import { User } from "../../../generated/prisma";
-import redis from "@/services/redis";
+import { getRedis } from "@/services/redis";
 
 export default async function HomeLogic() {
   const authUser = await currentUser();
@@ -18,13 +18,19 @@ export default async function HomeLogic() {
   let userDb: User | null = null;
 
   try {
-    // 🟢 1. Try cache
-    const cached = await redis.get(USER_CACHE_KEY);
+    const redis = await getRedis();
 
-    if (cached) {
-      userDb = JSON.parse(cached);
-      console.log("✅ USER CACHE HIT");
-    } else {
+    // 🟢 1. Try cache
+    if (redis) {
+      const cached = await redis.get(USER_CACHE_KEY);
+
+      if (cached) {
+        userDb = JSON.parse(cached);
+        console.log("✅ USER CACHE HIT");
+      }
+    }
+
+    if (!userDb) {
       console.log("❌ USER CACHE MISS");
 
       // 🔴 2. Fetch from GraphQL
@@ -36,7 +42,7 @@ export default async function HomeLogic() {
       userDb = data?.getUserByClerkId ?? null;
 
       // 💾 3. Store in Redis
-      if (userDb) {
+      if (userDb && redis) {
         await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
           EX: 3, // cache for 5 minutes
         });

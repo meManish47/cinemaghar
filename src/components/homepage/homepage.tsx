@@ -1,6 +1,6 @@
 import { GETALLMOVIES, GETALLMOVIESCOVERS } from "@/app/queries";
 import HomePageClient from "./homepageclient";
-import redis from "@/services/redis";
+import { getRedis } from "@/services/redis";
 
 export default async function HomePage() {
   const CACHE_KEY = "movies:all";
@@ -10,15 +10,18 @@ export default async function HomePage() {
 
   // 🟢 1. Try Redis
   try {
-    const cached = await redis.get(CACHE_KEY);
+    const redis = await getRedis();
+    if (redis) {
+      const cached = await redis.get(CACHE_KEY);
 
-    if (cached) {
-      const parsed = JSON.parse(cached);
+      if (cached) {
+        const parsed = JSON.parse(cached);
 
-      if (parsed?.dataCovers && parsed?.dataMovies) {
-        dataCovers = parsed.dataCovers;
-        dataMovies = parsed.dataMovies;
-        console.log("✅ CACHE HIT");
+        if (parsed?.dataCovers && parsed?.dataMovies) {
+          dataCovers = parsed.dataCovers;
+          dataMovies = parsed.dataMovies;
+          console.log("✅ CACHE HIT");
+        }
       }
     }
   } catch (err) {
@@ -48,9 +51,16 @@ export default async function HomePage() {
 
       // 🟡 Store in Redis (only if valid)
       if (dataCovers && dataMovies) {
-        await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
-          EX: 3,
-        });
+        try {
+          const redis = await getRedis();
+          if (redis) {
+            await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
+              EX: 3,
+            });
+          }
+        } catch (err) {
+          console.error("Redis set error, skipping cache write", err);
+        }
       }
     } catch (err) {
       console.error("Fetch failed", err);
