@@ -49,7 +49,7 @@ export default async function HomePage() {
       // 🟡 Store in Redis (only if valid)
       if (dataCovers && dataMovies) {
         await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
-          EX: 3000,
+          EX: 3,
         });
       }
     } catch (err) {

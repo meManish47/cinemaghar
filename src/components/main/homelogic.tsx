@@ -38,7 +38,7 @@ export default async function HomeLogic() {
       // 💾 3. Store in Redis
       if (userDb) {
         await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
-          EX: 300, // cache for 5 minutes
+          EX: 3, // cache for 5 minutes
         });
       }
     }
