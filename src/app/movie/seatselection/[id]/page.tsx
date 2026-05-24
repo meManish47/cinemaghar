@@ -81,9 +81,13 @@ export default function SeatSelection() {
       }
 
       if (!result.ok || !result.url) {
+        if(result.error=="Failed to create booking. Please select different seats and try again."){
+          toast.error("Seat is currently reserved by another user.")
+        }
+        else{
         toast.error(
           "Failed to create checkout: " + (result.error || "Unknown error"),
-        );
+        );}
         return;
       }
 

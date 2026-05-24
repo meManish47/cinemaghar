@@ -11,22 +11,79 @@ export async function createBooking(
 ) {
   try {
     const booking = await prismaClient.$transaction(async (tx) => {
+      // --------------------------------------------------
+      // 1. Reuse existing pending booking for same user
+      // --------------------------------------------------
+
+      const existingPendingBooking = await tx.booking.findFirst({
+        where: {
+          userId,
+          showId,
+          status: "PENDING",
+        },
+        include: {
+          seats: true,
+        },
+      });
+
+      if (existingPendingBooking) {
+        const existingSeatIds = existingPendingBooking.seats
+          .map((seat) => seat.id)
+          .sort();
+
+        const requestedSeatIds = [...seats].sort();
+
+        const sameSeats =
+          existingSeatIds.length === requestedSeatIds.length &&
+          existingSeatIds.every(
+            (seatId, index) => seatId === requestedSeatIds[index]
+          );
+
+        if (sameSeats) {
+          return existingPendingBooking;
+        }
+      }
+
+      // --------------------------------------------------
+      // 2. Normal seat validation
+      // --------------------------------------------------
+
       const requestedSeats = await tx.seat.findMany({
-        where: { id: { in: seats } },
-        include: { booking: { select: { status: true } } },
+        where: {
+          id: {
+            in: seats,
+          },
+        },
+        include: {
+          booking: {
+            select: {
+              status: true,
+              userId: true,
+            },
+          },
+        },
       });
 
       const takenSeats = requestedSeats.filter(
         (seat) =>
           seat.bookingId !== null &&
           seat.booking &&
-          (seat.booking.status === "PENDING" || seat.booking.status === "CONFIRMED")
+          seat.booking.userId !== userId &&
+          (seat.booking.status === "PENDING" ||
+            seat.booking.status === "CONFIRMED")
       );
 
       if (takenSeats.length > 0) {
-        const takenSeatNumbers = takenSeats.map((s) => s.seat_no).join(",");
+        const takenSeatNumbers = takenSeats
+          .map((s) => s.seat_no)
+          .join(",");
+
         throw new Error(`SEATS_TAKEN:${takenSeatNumbers}`);
       }
+
+      // --------------------------------------------------
+      // 3. Create new booking
+      // --------------------------------------------------
 
       return tx.booking.create({
         data: {
@@ -34,17 +91,22 @@ export async function createBooking(
           userId,
           status: "PENDING",
           seats: {
-            connect: seats.map((seatId) => ({ id: seatId })),
+            connect: seats.map((seatId) => ({
+              id: seatId,
+            })),
           },
         },
       });
     });
+
     return booking;
   } catch (error) {
     const errorMessage = (error as Error).message;
+
     if (errorMessage.startsWith("SEATS_TAKEN:")) {
       console.error(`Booking failed: ${errorMessage}`);
     }
+
     return null;
   }
 }
