@@ -1,58 +1,21 @@
-import { createClient, RedisClientType } from "redis";
+import { Redis } from "@upstash/redis";
 
-// ─── Singleton instance ───────────────────────────────────────────────────────
-let redis: RedisClientType | null = null;
-let connectPromise: Promise<unknown> | null = null;
+let redis: Redis | null = null;
 
-/**
- * Returns a connected Redis client, or null if REDIS_URL is not set
- * (e.g. during Vercel build time). Always safe to call — never throws.
- */
-export async function getRedis(): Promise<RedisClientType | null> {
-  const redisUrl = process.env.REDIS_URL;
-
-  // No URL configured → skip Redis entirely (build time / no Redis setup)
-  if (!redisUrl) {
+export async function getRedis(): Promise<Redis | null> {
+  if (
+    !process.env.UPSTASH_REDIS_REST_URL ||
+    !process.env.UPSTASH_REDIS_REST_TOKEN
+  ) {
     return null;
   }
 
-  // Already connected
-  if (redis?.isOpen) return redis;
-
-  // Create client once
   if (!redis) {
-    redis = createClient({
-      url: redisUrl,
-      socket: {
-        reconnectStrategy: (retries) => Math.min(retries * 100, 3000),
-        connectTimeout: 5000,
-      },
-    }) as RedisClientType;
-
-    redis.on("error", (err) => {
-  console.error("Redis Error:", err);
-});
-
-redis.on("end", () => {
-  console.log("Redis connection ended");
-});
-
-redis.on("reconnecting", () => {
-  console.log("Redis reconnecting...");
-});
-    redis.on("connect", () => console.log("✅ Redis connected"));
-    redis.on("ready", () => console.log("✅ Redis ready"));
-  }
-
-  // Connect only once (handle concurrent callers)
-  if (!connectPromise) {
-    connectPromise = redis.connect().catch((err) => {
-      console.error("Failed to connect to Redis:", err);
-      redis = null;
-      connectPromise = null;
+    redis = new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
     });
   }
 
-  await connectPromise;
   return redis;
 }

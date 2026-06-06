@@ -12,16 +12,16 @@ export default async function HomePage() {
   try {
     const redis = await getRedis();
     if (redis) {
-      const cached = await redis.get(CACHE_KEY);
+      const cached = await redis.get<{
+        dataCovers: any;
+        dataMovies: any;
+      }>(CACHE_KEY);
 
       if (cached) {
-        const parsed = JSON.parse(cached);
+        dataCovers = cached.dataCovers;
+        dataMovies = cached.dataMovies;
 
-        if (parsed?.dataCovers && parsed?.dataMovies) {
-          dataCovers = parsed.dataCovers;
-          dataMovies = parsed.dataMovies;
-          console.log("✅ CACHE HIT");
-        }
+        console.log("✅ CACHE HIT");
       }
     }
   } catch (err) {
@@ -54,9 +54,16 @@ export default async function HomePage() {
         try {
           const redis = await getRedis();
           if (redis) {
-            await redis.set(CACHE_KEY, JSON.stringify({ dataCovers, dataMovies }), {
-              EX: 300,
-            });
+            await redis.set(
+              CACHE_KEY,
+              {
+                dataCovers,
+                dataMovies,
+              },
+              {
+                ex: 300,
+              }
+            );
           }
         } catch (err) {
           console.error("Redis set error, skipping cache write", err);
