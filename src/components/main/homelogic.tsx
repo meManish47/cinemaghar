@@ -22,10 +22,10 @@ export default async function HomeLogic() {
 
     // 🟢 1. Try cache
     if (redis) {
-      const cached = await redis.get(USER_CACHE_KEY);
+      const cached = await redis.get<User>(USER_CACHE_KEY);
 
       if (cached) {
-        userDb = JSON.parse(cached);
+        userDb = cached;
         console.log("✅ USER CACHE HIT");
       }
     }
@@ -44,7 +44,7 @@ export default async function HomeLogic() {
       // 💾 3. Store in Redis
       if (userDb && redis) {
         await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
-          EX: 3, // cache for 5 minutes
+          ex: 5, // cache for 5 minutes
         });
       }
     }

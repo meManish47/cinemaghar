@@ -37,11 +37,11 @@ export default async function HeaderComponent() {
 
     // ✅ 1. Try Redis
     if (redis) {
-      const cached = await redis.get(USER_CACHE_KEY);
+      const cached = await redis.get<User>(USER_CACHE_KEY);
 
       if (cached) {
         console.log("✅ HEADER CACHE HIT");
-        userDb = JSON.parse(cached);
+        userDb = cached
       }
     }
 
@@ -58,9 +58,13 @@ export default async function HeaderComponent() {
 
       // 💾 3. Store in Redis
       if (userDb && redis) {
-        await redis.set(USER_CACHE_KEY, JSON.stringify(userDb), {
-          EX: 3000,
-        });
+        await redis.set(
+          USER_CACHE_KEY,
+          JSON.stringify(userDb),
+          {
+            ex: 3000,
+          }
+        );
       }
     }
   } catch (err) {
