@@ -37,20 +37,28 @@ export async function POST(req: Request) {
     const clerk = await clerkClient();
 
     // ✅ Merge metadata safely
+
     const existingUser = await clerk.users.getUser(clerkId);
 
-    await clerk.users.updateUser(clerkId, {
-      publicMetadata: {
-        ...existingUser.publicMetadata,
-        role: user.role,
-        prismaUserId: user.id,
-      },
-      privateMetadata: {
-        ...existingUser.privateMetadata,
-        email: user.email,
-        name: user.name,
-      },
-    });
+    if (
+      existingUser.publicMetadata.role !== user.role ||
+      existingUser.publicMetadata.prismaUserId !== user.id
+    ) {
+      await clerk.users.updateUser(clerkId, {
+        publicMetadata: {
+          ...existingUser.publicMetadata,
+          role: user.role,
+          prismaUserId: user.id,
+        },
+        privateMetadata: {
+          ...existingUser.privateMetadata,
+          email: user.email,
+          name: user.name,
+        },
+      });
+    }
+
+
 
     // ✅ Generate cookies AFTER everything succeeds
     await generateCookies(payload);

@@ -12,10 +12,12 @@ export default async function HomePage() {
   try {
     const redis = await getRedis();
     if (redis) {
+      // console.time("REDIS____------");
       const cached = await redis.get<{
         dataCovers: any;
         dataMovies: any;
       }>(CACHE_KEY);
+      // console.timeEnd("REDIS____------");
 
       if (cached) {
         dataCovers = cached.dataCovers;

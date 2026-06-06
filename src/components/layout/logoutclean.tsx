@@ -1,21 +1,22 @@
 "use client";
-import { SignedOut } from "@clerk/nextjs";
-import { gqlClient } from "@/services/gql";
-import { gql } from "graphql-request";
 
+import { gqlClient } from "@/services/gql";
+import { useAuth } from "@clerk/nextjs";
+import { gql } from "graphql-request";
 import { useEffect } from "react";
 
 export default function LogoutCleanup() {
+  const { isSignedIn } = useAuth();
+
   useEffect(() => {
-    const logout = async () => {
-      await gqlClient.request(gql`
+    if (isSignedIn === false) {
+      gqlClient.request(gql`
         mutation Logout {
           logoutUser
         }
       `);
-    };
-    logout();
-  }, []);
+    }
+  }, [isSignedIn]);
 
-  return <SignedOut />;
+  return null;
 }

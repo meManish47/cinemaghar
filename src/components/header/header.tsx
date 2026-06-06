@@ -2,71 +2,39 @@ import Image from "next/image";
 import Link from "next/link";
 import SignIn from "./clerkSignIn";
 import SearchBar from "./searchbar";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import UserSidebar from "../homepage/userSidebar";
-import { gqlClient } from "@/services/gql";
-import { GET_USER_BY_CLERK_ID } from "@/app/queries";
-import { User } from "../../../generated/prisma";
 import LocationSelector from "../layout/locationselector";
-import { getRedis } from "@/services/redis";
+import { getUserByClerkIdCached } from "@/services/user";
 
 export default async function HeaderComponent() {
-  const authUser = await currentUser();
+  const { userId } = await auth();
 
-  if (!authUser) {
+  if (!userId) {
     return (
       <header>
         <div className="w-full h-16 flex items-center px-2 sm:px-32 justify-between">
           <div className="h-full w-full flex items-center gap-4 justify-between sm:justify-start">
             <Link href="/">
-              <Image src="/cinemaghar.png" alt="Logo" height={150} width={150} />
+              <Image
+                src="/cinemaghar.png"
+                alt="Logo"
+                height={150}
+                width={150}
+              />
             </Link>
           </div>
+
           <SignIn />
         </div>
       </header>
     );
   }
 
-  const USER_CACHE_KEY = `user:${authUser.id}`;
-
-  let userDb: User | null = null;
+  let userDb = null;
 
   try {
-    const redis = await getRedis();
-
-    // ✅ 1. Try Redis
-    if (redis) {
-      const cached = await redis.get<User>(USER_CACHE_KEY);
-
-      if (cached) {
-        console.log("✅ HEADER CACHE HIT");
-        userDb = cached
-      }
-    }
-
-    if (!userDb) {
-      console.log("❌ HEADER CACHE MISS");
-
-      // 🔴 2. Fetch from GraphQL
-      const data: { getUserByClerkId: User } =
-        await gqlClient.request(GET_USER_BY_CLERK_ID, {
-          clerkId: authUser.id,
-        });
-
-      userDb = data?.getUserByClerkId ?? null;
-
-      // 💾 3. Store in Redis
-      if (userDb && redis) {
-        await redis.set(
-          USER_CACHE_KEY,
-          JSON.stringify(userDb),
-          {
-            ex: 3000,
-          }
-        );
-      }
-    }
+    userDb = await getUserByClerkIdCached(userId);
   } catch (err) {
     console.error("Header user fetch error:", err);
   }
@@ -99,7 +67,9 @@ export default async function HeaderComponent() {
         </div>
 
         {!isAdmin && <LocationSelector />}
+
         <SignIn />
+
         <UserSidebar userDb={userDb} />
       </div>
     </header>

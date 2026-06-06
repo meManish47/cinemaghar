@@ -17,6 +17,7 @@ export async function getUserByClerkId(
 }
 
 export async function logoutUser() {
+  console.trace("logoutUser");
   try {
     const userCookies = await cookies();
     userCookies.delete("token");
